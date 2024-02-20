@@ -18,9 +18,10 @@
     "build": "npm run build:lib && bunchee ./src/index.ts -m",
     "build:lib": "rm -rf lib && tsc --project tsconfig.json",
     "test": "pnpm build:lib && node --test",
-    "prepare": "is-ci || pnpm build && husky",
+    "checktype": "tsc --noEmit",
     "start-publish": "pnpm test && npm publish --registry=https://registry.npmjs.org",
-    "push": "git lfs push --all origin"
+    "push": "git push && git lfs push --all origin",
+    "prepare": "is-ci || pnpm build && husky"
   },
   "dependencies": {
     "ts-deepmerge": "^7.0.0"
