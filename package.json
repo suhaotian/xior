@@ -1,0 +1,94 @@
+{
+  "name": "xior",
+  "version": "0.0.3",
+  "description": "Axios similiar API request library but based on fetch",
+  "repository": "suhaotian/xior",
+  "bugs": "https://github.com/suhaotian/xior/issues",
+  "homepage": "https://github.com/suhaotian/xior",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    "types": "./dist/types/index.d.ts",
+    "require": "./dist/index.cjs",
+    "import": "./dist/index.mjs",
+    "module": "./dist/index.esm.js"
+  },
+  "scripts": {
+    "build": "npm run build:lib && bunchee ./src/index.ts -m",
+    "build:lib": "rm -rf lib && tsc --project tsconfig.json",
+    "test": "pnpm build:lib && node --test",
+    "prepare": "is-ci || pnpm build && husky",
+    "start-publish": "pnpm test && npm publish --registry=https://registry.npmjs.org"
+  },
+  "dependencies": {
+    "ts-deepmerge": "^7.0.0"
+  },
+  "devDependencies": {
+    "husky": "^9.0.7",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.2.4",
+    "is-ci": "^3.0.1",
+    "typescript": "^5.3.3",
+    "@types/node": "^20.11.13",
+    "eslint-config-universe": "^12.0.0",
+    "@tsconfig/recommended": "^1.0.3",
+    "@types/mime": "^3.0.4",
+    "express": "^4.18.2",
+    "@types/express": "^4.17.21",
+    "axios": "^1.6.7",
+    "multer": "^1.4.5-lts.1",
+    "@types/multer": "^1.4.11",
+    "qs": "^6.11.2",
+    "@types/qs": "^6.9.11",
+    "bunchee": "^4.4.6",
+    "lfs-auto-track": "^1.1.0"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "tabWidth": 2,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "bracketSameLine": true
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-universe",
+    "ignorePatterns": [
+      "node_modules"
+    ]
+  },
+  "lint-staged": {
+    "*": [
+      "lfs-auto-track 'image,video,audio:100kb;*:1024kb'"
+    ],
+    "*.{ts,tsx,mts}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{md,css,js,mjs}": [
+      "prettier --write"
+    ]
+  },
+  "files": [
+    "lib",
+    "!lib/tests",
+    "dist"
+  ],
+  "keywords": [
+    "fetch",
+    "http",
+    "https",
+    "network",
+    "axios",
+    "axios alternatives",
+    "url",
+    "uri",
+    "promise",
+    "request",
+    "error retry",
+    "request cache",
+    "repeat requests filter"
+  ],
+  "author": "suhaotian",
+  "license": "MIT"
+}
