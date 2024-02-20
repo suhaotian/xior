@@ -1,6 +1,10 @@
 # CHANGELOG 📝
 
-## v0.0.4 2024-02-20
+## v0.0.5 2024-02-20
+
+- fix: github actions release
+
+## v0.0.4
 
 - feat: support url as first paramter in xiorInstance.request('/url')
 - feat: mark `headers` and `params` types as `Record<string, any>` and not undefined in interceptors
