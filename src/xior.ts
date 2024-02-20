@@ -68,8 +68,11 @@ export class xior {
       },
     };
   }
-  async request<T>(options?: XiorRequestConfig) {
-    let requestObj: XiorRequestConfig = merge(this.config || {}, options || {});
+  async request<T>(options?: XiorRequestConfig | string) {
+    let requestObj: XiorRequestConfig = merge(
+      this.config || {},
+      typeof options === 'string' ? { url: options } : options || {}
+    );
 
     for (const item of this.requestInterceptors) {
       requestObj = await item(requestObj);

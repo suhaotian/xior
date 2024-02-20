@@ -212,6 +212,18 @@ describe('axios compatible tests', () => {
     assert.equal(Object.keys(data).sort().join(','), Object.keys(xiorData).sort().join(','));
   });
 
+  it('should work same with request object', async () => {
+    const axiosInstance = axios.create({
+      baseURL,
+    });
+    const xiorInstance = xior.create({
+      baseURL,
+    });
+    const { data } = await axiosInstance('/get');
+    const { data: xiorData } = await xiorInstance.request('/get');
+    assert.strictEqual(JSON.stringify(data), JSON.stringify(xiorData));
+  });
+
   it('should work same with request error', async () => {
     const axiosInstance = axios.create({
       baseURL,
