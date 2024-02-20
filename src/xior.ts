@@ -1,5 +1,5 @@
 import { defaultRequestInterceptor } from './interceptors';
-import { XiorRequestConfig } from './types';
+import { XiorInterceptorRequestConfig, XiorRequestConfig } from './types';
 import {
   ClearableSignal,
   XiorTimeoutError,
@@ -20,18 +20,20 @@ export class xior {
   }
 
   private requestInterceptors: ((
-    config: XiorRequestConfig
-  ) => Promise<XiorRequestConfig> | XiorRequestConfig)[] = [defaultRequestInterceptor];
+    config: XiorInterceptorRequestConfig
+  ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig)[] = [
+    defaultRequestInterceptor,
+  ];
   private responseInterceptors: {
-    fn: (config: { data: any; request: XiorRequestConfig; response: Response }) =>
+    fn: (config: { data: any; request: XiorInterceptorRequestConfig; response: Response }) =>
       | Promise<{
           data: any;
-          request: XiorRequestConfig;
+          request: XiorInterceptorRequestConfig;
           response: Response;
         }>
       | {
           data: any;
-          request: XiorRequestConfig;
+          request: XiorInterceptorRequestConfig;
           response: Response;
         };
     onRejected?: (error: any) => any;
@@ -41,7 +43,9 @@ export class xior {
     return {
       request: {
         use: (
-          fn: (config: XiorRequestConfig) => Promise<XiorRequestConfig> | XiorRequestConfig,
+          fn: (
+            config: XiorInterceptorRequestConfig
+          ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig,
           /** @deprecated no need */
           onRejected?: (error: any) => any
         ) => {
@@ -50,15 +54,15 @@ export class xior {
       },
       response: {
         use: (
-          fn: (config: { data: any; request: XiorRequestConfig; response: Response }) =>
+          fn: (config: { data: any; request: XiorInterceptorRequestConfig; response: Response }) =>
             | Promise<{
                 data: any;
-                request: XiorRequestConfig;
+                request: XiorInterceptorRequestConfig;
                 response: Response;
               }>
             | {
                 data: any;
-                request: XiorRequestConfig;
+                request: XiorInterceptorRequestConfig;
                 response: Response;
               },
           onRejected?: (error: any) => any
@@ -71,11 +75,12 @@ export class xior {
   async request<T>(options?: XiorRequestConfig | string) {
     let requestObj: XiorRequestConfig = merge(
       this.config || {},
-      typeof options === 'string' ? { url: options } : options || {}
+      typeof options === 'string' ? { url: options } : options || {},
+      { headers: {}, params: {} }
     );
 
     for (const item of this.requestInterceptors) {
-      requestObj = await item(requestObj);
+      requestObj = await item(requestObj as XiorInterceptorRequestConfig);
     }
 
     const { url: _url, method, headers, timeout, signal: reqSignal, data, ...rest } = requestObj;
@@ -133,7 +138,7 @@ export class xior {
         {
           response,
           data,
-          config: requestObj,
+          config: requestObj as XiorInterceptorRequestConfig,
           status: response.status,
           statusText: response.statusText,
           headers: response.headers,
@@ -187,7 +192,7 @@ export class xior {
       }
       let responseObj = {
         data: data.data,
-        request: requestObj,
+        request: requestObj as XiorInterceptorRequestConfig,
         response,
       };
 

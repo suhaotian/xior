@@ -1,4 +1,4 @@
-import { XiorRequestConfig } from './types';
+import { XiorInterceptorRequestConfig } from './types';
 import { encode as liteEncode, merge } from './utils';
 
 const encodeUrlType = 'application/x-www-form-urlencoded';
@@ -6,8 +6,8 @@ const jsonType = 'application/json';
 // const formType = 'multipart/form-data';
 
 export async function defaultRequestInterceptor(
-  req: XiorRequestConfig
-): Promise<XiorRequestConfig> {
+  req: XiorInterceptorRequestConfig
+): Promise<XiorInterceptorRequestConfig> {
   const encode = req.encode || liteEncode;
   const encodeURI = req.encodeURI !== false;
 

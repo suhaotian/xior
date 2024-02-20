@@ -1,4 +1,4 @@
-export interface XiorRequestConfig extends Omit<RequestInit, 'body'> {
+export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
   url?: string;
   headers?: Record<string, any>;
   baseURL?: string;
@@ -17,12 +17,16 @@ export interface XiorRequestConfig extends Omit<RequestInit, 'body'> {
   _url?: string;
 }
 
+export type XiorInterceptorRequestConfig<T = any> = XiorRequestConfig & {
+  headers: Record<string, any>;
+  params: Record<string, any>;
+};
 export interface XiorResponse<T = any> {
   data: T;
   status: number;
   statusText: string;
   headers: Headers;
   response: Response;
-  config: XiorRequestConfig;
+  config: XiorInterceptorRequestConfig;
   request?: any;
 }

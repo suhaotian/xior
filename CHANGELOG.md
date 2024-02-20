@@ -1,6 +1,12 @@
 # CHANGELOG 📝
 
-## v0.0.3 2024-02-20
+## v0.0.4 2024-02-20
+
+- feat: support url as first paramter in xiorInstance.request('/url')
+- feat: mark `headers` and `params` types as `Record<string, any>` and not undefined in interceptors
+- feat: add generic type to `XiorRequestConfig`
+
+## v0.0.3
 
 - Chore: improve README and add more tests
 - Feat: `xiorInstance.request` remove first parameter `url`
