@@ -19,6 +19,12 @@ Features:
 - 💪 100% Write in TypeScript
 - [ ] **❗️❗️❗️WIP** 🥷 Plugins support: error retry, cache, repeat requests filter plugins 😎
 
+## Install
+
+```bash
+npm i xior
+```
+
 ## Getting Started
 
 ```ts

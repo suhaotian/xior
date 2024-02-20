@@ -19,7 +19,8 @@
     "build:lib": "rm -rf lib && tsc --project tsconfig.json",
     "test": "pnpm build:lib && node --test",
     "prepare": "is-ci || pnpm build && husky",
-    "start-publish": "pnpm test && npm publish --registry=https://registry.npmjs.org"
+    "start-publish": "pnpm test && npm publish --registry=https://registry.npmjs.org",
+    "push": "git lfs push --all origin"
   },
   "dependencies": {
     "ts-deepmerge": "^7.0.0"
