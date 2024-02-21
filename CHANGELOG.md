@@ -1,5 +1,7 @@
 # CHANGELOG 📝
 
+- feat: work with polyfill in old enviroment
+
 ## v0.0.5 2024-02-20
 
 - fix: github actions release

@@ -9,6 +9,8 @@ import {
   merge,
 } from './utils';
 
+const supportAbortController = typeof AbortController !== 'undefined';
+
 export class xior {
   static create(options?: XiorRequestConfig) {
     return new xior(options);
@@ -86,9 +88,10 @@ export class xior {
     const { url: _url, method, headers, timeout, signal: reqSignal, data, ...rest } = requestObj;
 
     /** timeout */
+    let signal: AbortSignal;
     const signals: AbortSignal[] = [];
     let timer: ReturnType<typeof setTimeout> | undefined = undefined;
-    if (timeout) {
+    if (timeout && supportAbortController) {
       const controller = new AbortController();
       timer = setTimeout(() => {
         controller.abort(new XiorTimeoutError(`timeout of ${timeout}ms exceeded`));
@@ -98,7 +101,7 @@ export class xior {
     if (reqSignal) {
       signals.push(reqSignal);
     }
-    let signal = signals[0];
+    signal = signals[0];
     if (signals.length > 1) {
       signal = anySignal(signals, () => {
         clearTimeout(timer);
