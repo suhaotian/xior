@@ -1,4 +1,4 @@
-import { XiorRequestConfig, XiorResponse } from './types';
+import type { XiorRequestConfig, XiorResponse } from './types';
 
 export * from './any-signals';
 export * from './merge';

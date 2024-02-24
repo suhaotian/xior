@@ -13,20 +13,22 @@ An axios similar API request library but use fetch, and more.
 Features:
 
 - 🫡 Similiar `axios.create` / `axios.interceptors.request.use` / `axios.interceptors.response.use` / `.get/post/put/patch/delete/head/options`
-- 🔥 Use fetch
+- 🔥 Use fetch [why `fetch` instead of `axios`?](#why-use-xior)
 - 🚀 Lightweight ~6KB, Gzip ~2.6KB
 - 🤙 Support timeout and cancel request
 - 👊 Unit tests
 - 💪 100% Write in TypeScript
 - [ ] **❗️❗️❗️WIP** 🥷 Plugins support: error retry, cache, repeat requests filter plugins 😎
 
-## Install
+## Getting Started
+
+Install
 
 ```bash
 npm i xior
 ```
 
-## Getting Started
+Quick start
 
 ```ts
 import xior from 'xior';
@@ -101,7 +103,7 @@ instance.get('http://httpbin.org', {
 });
 ```
 
-The url will be like: `http://httpbin.org?a=1&b=[object object]`, to support nested objects url encoded, use `qs`'s `stringify` module:
+The final request url will be like: `http://httpbin.org?a=1&b=[object object]`, so we need use `qs`'s `stringify` module to support nested objects url encoded:
 
 ```ts
 import xior from 'xior';
@@ -109,7 +111,7 @@ import xior from 'xior';
 import stringify from 'qs/lib/stringify';
 
 const instance = xior.create({
-  encode: (params: Record<string, any>) => stringify(params, {}),
+  encode: (params: Record<string, any>) => stringify(params),
 });
 instance.get('http://httpbin.org', {
   params: {
@@ -123,7 +125,7 @@ instance.get('http://httpbin.org', {
 // http://httpbin.org?a=1&b[c]=2
 ```
 
-### Upload data
+### Upload file
 
 > Not like axios, xior doesn't support upload progess or download progress.
 
@@ -226,7 +228,8 @@ const instance = xior.create({
 });
 
 instance.get('/stream', { responseType: 'stream' }).then(({ response }) => {
-  // `response` is the original response, like fetch('/stream').then(response => { console.log(response)})
+  // `response` is the original response,
+  // like fetch('/stream').then(response => { console.log(response)})
 });
 ```
 
@@ -249,25 +252,19 @@ instance.plugins.use(xiorAvoidRepeatRequestsPlugin());
 
 ## Custom plugin
 
-**❗️❗️❗️ WIP (Work in Progress) ❗️❗️❗️**
+Let's implement a simple custom logs plugin:
 
 ```ts
 import xior from 'xior';
 
 const instance = xior.create();
-instance.plugins.use(async (request, response, error) => {
-  const inRequestPhase = !response;
-  const inResponsePhase = Boolean(response);
-  const isError = Boolean(error);
-
-  if (isError) {
-    //
-  }
-  if (inRequestPhase) {
-    //
-  } else if (inResponsePhase) {
-    //
-  }
+instance.plugins.use(function logPlugin(adapter) {
+  return async (config) => {
+    const start = Date.now();
+    const res = await adapter(config);
+    console.log('%s %s take %sms', config.method, config.url, Date.now() - start);
+    return res;
+  };
 });
 ```
 
@@ -277,4 +274,17 @@ instance.plugins.use(async (request, response, error) => {
 - How to upload files? Use `FormData`
 - How to show upload progress like axios? Doesn't support.
 - What about response of `'stream' | 'document' | 'arraybuffer' | 'blob'` ? Use `responseType: 'stream' | 'document' | 'arraybuffer' | 'blob'`, will return original `{ response }`
+- How to support old browser? use polyfill, check `src/tests/polyfill.test.ts`
 - More: Anything else? create new issues let me know!
+
+### Why use xior?
+
+Xior based on `fetch`, and here are some reasons **why `fetch` instead of `axios`**:
+
+- Built in to node and the browser
+- Edge compatible
+- Next.js extends the native fetch to [support caching and revalidating](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating)
+
+Why don't just use `fetch`?
+
+Yeah, you can. But xior's API similiar with axios, it's more make sense than the original `fetch`.

@@ -352,4 +352,38 @@ describe('xior tests', () => {
       assert.strictEqual(timeoutError, true);
     });
   });
+
+  describe('custom plugins should work', () => {
+    it('should work with custom plugin', async () => {
+      const xiorInstance = xior.create({ baseURL });
+
+      xiorInstance.plugins.use(function plugin1(adapter) {
+        return async (config) => {
+          const res = await adapter(config);
+          return res;
+        };
+      });
+
+      xiorInstance.plugins.use(function plugin2(adapter) {
+        return async (config) => {
+          const res = await adapter(config);
+          return res;
+        };
+      });
+
+      xiorInstance.plugins.use(function logPlugin(adapter) {
+        return async (config) => {
+          const start = Date.now();
+          const res = await adapter(config);
+          console.log('%s %s take %sms', config.method, config.url, Date.now() - start);
+          return res;
+        };
+      });
+      const { data: getData } = await xiorInstance.get<{ method: string }>('/get');
+      assert.strictEqual(getData.method, 'get');
+
+      const { data: postData } = await xiorInstance.post<{ method: string }>('/post');
+      assert.strictEqual(postData.method, 'post');
+    });
+  });
 });

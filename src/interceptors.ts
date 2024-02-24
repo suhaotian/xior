@@ -1,4 +1,4 @@
-import { XiorInterceptorRequestConfig } from './types';
+import type { XiorInterceptorRequestConfig } from './types';
 import { encode as liteEncode, merge } from './utils';
 
 const encodeUrlType = 'application/x-www-form-urlencoded';

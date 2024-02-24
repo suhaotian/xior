@@ -1,5 +1,10 @@
 import { defaultRequestInterceptor } from './interceptors';
-import { XiorInterceptorRequestConfig, XiorRequestConfig } from './types';
+import type {
+  XiorInterceptorRequestConfig,
+  XiorPlugin,
+  XiorRequestConfig,
+  XiorResponse,
+} from './types';
 import {
   ClearableSignal,
   XiorTimeoutError,
@@ -74,18 +79,35 @@ export class xior {
       },
     };
   }
+
+  private _plugins: XiorPlugin[] = [];
+  get plugins() {
+    return {
+      use: (plugin: XiorPlugin) => {
+        this._plugins.push(plugin);
+      },
+    };
+  }
+
   async request<T>(options?: XiorRequestConfig | string) {
-    let requestObj: XiorRequestConfig = merge(
+    let requestConfig: XiorRequestConfig = merge(
       this.config || {},
       typeof options === 'string' ? { url: options } : options || {},
       { headers: {}, params: {} }
     );
-
     for (const item of this.requestInterceptors) {
-      requestObj = await item(requestObj as XiorInterceptorRequestConfig);
+      requestConfig = await item(requestConfig as XiorInterceptorRequestConfig);
     }
 
-    const { url: _url, method, headers, timeout, signal: reqSignal, data, ...rest } = requestObj;
+    let finalPlugin = this.handlerFetch.bind(this);
+    this._plugins.forEach((plugin) => {
+      finalPlugin = plugin(finalPlugin);
+    });
+    return finalPlugin<T>(requestConfig);
+  }
+
+  private async handlerFetch<T>(requestConfig: XiorRequestConfig): Promise<XiorResponse<T>> {
+    const { url, method, headers, timeout, signal: reqSignal, data, ...rest } = requestConfig;
 
     /** timeout */
     let signal: AbortSignal;
@@ -108,15 +130,16 @@ export class xior {
       });
     }
 
-    let finalURL = requestObj._url || _url || '';
-    if (requestObj.baseURL && !isAbsoluteURL(finalURL)) {
-      const baseURL = requestObj.baseURL.endsWith('/')
-        ? requestObj.baseURL
-        : requestObj.baseURL + '/';
+    let finalURL = requestConfig._url || url || '';
+    if (requestConfig.baseURL && !isAbsoluteURL(finalURL)) {
+      const baseURL = requestConfig.baseURL.endsWith('/')
+        ? requestConfig.baseURL
+        : requestConfig.baseURL + '/';
       finalURL = baseURL + (finalURL.startsWith('/') ? finalURL.slice(1) : finalURL);
     }
+
     const response = await fetch(finalURL, {
-      body: ['HEAD', 'GET'].includes(requestObj.method || 'GET') ? undefined : data,
+      body: ['HEAD', 'GET'].includes(requestConfig.method || 'GET') ? undefined : data,
       ...rest,
       signal,
       method,
@@ -137,11 +160,11 @@ export class xior {
       } catch (e) {}
       const error = new XiorError(
         !response.status ? `Network error` : `Request failed with status code ${response.status}`,
-        requestObj,
+        requestConfig,
         {
           response,
           data,
-          config: requestObj as XiorInterceptorRequestConfig,
+          config: requestConfig as XiorInterceptorRequestConfig,
           status: response.status,
           statusText: response.statusText,
           headers: response.headers,
@@ -155,11 +178,11 @@ export class xior {
       throw error;
     }
 
-    if (requestObj.method === 'HEAD') {
+    if (requestConfig.method === 'HEAD') {
       return {
         data: undefined as T,
-        request: requestObj,
-        config: requestObj,
+        request: requestConfig,
+        config: requestConfig as XiorInterceptorRequestConfig,
         response,
         headers: response.headers,
         status: response.status,
@@ -168,9 +191,9 @@ export class xior {
     }
 
     if (
-      !requestObj.responseType ||
-      requestObj.responseType === 'json' ||
-      requestObj.responseType === 'text'
+      !requestConfig.responseType ||
+      requestConfig.responseType === 'json' ||
+      requestConfig.responseType === 'text'
     ) {
       let data: {
         data: T;
@@ -180,7 +203,7 @@ export class xior {
           data: (await response.text()) as T,
         };
         try {
-          if (data.data && requestObj.responseType !== 'text') {
+          if (data.data && requestConfig.responseType !== 'text') {
             data.data = JSON.parse(data.data as string);
           }
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -195,7 +218,7 @@ export class xior {
       }
       let responseObj = {
         data: data.data,
-        request: requestObj as XiorInterceptorRequestConfig,
+        request: requestConfig as XiorInterceptorRequestConfig,
         response,
       };
 
@@ -204,8 +227,8 @@ export class xior {
       }
       return {
         data: responseObj.data,
-        request: requestObj,
-        config: requestObj,
+        request: requestConfig,
+        config: requestConfig as XiorInterceptorRequestConfig,
         response,
         headers: response.headers,
         status: response.status,
@@ -215,8 +238,8 @@ export class xior {
 
     return {
       data: undefined as T,
-      request: requestObj,
-      config: requestObj,
+      request: requestConfig,
+      config: requestConfig as XiorInterceptorRequestConfig,
       response,
       headers: response.headers,
       status: response.status,
@@ -229,6 +252,7 @@ export class xior {
       return this.request<T>(options ? { ...options, method, url } : { method, url });
     };
   }
+
   private createPostHandler<T>(method: string) {
     return (url: string, data?: any, options?: XiorRequestConfig) => {
       return this.request<T>(options ? { ...options, method, url, data } : { method, url, data });

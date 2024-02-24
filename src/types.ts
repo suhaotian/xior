@@ -30,3 +30,7 @@ export interface XiorResponse<T = any> {
   config: XiorInterceptorRequestConfig;
   request?: any;
 }
+
+export type XiorPlugin = (
+  adapter: (request: XiorRequestConfig) => Promise<XiorResponse>
+) => (request: XiorRequestConfig) => Promise<XiorResponse<any>>;
