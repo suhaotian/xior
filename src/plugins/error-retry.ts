@@ -1,4 +1,4 @@
-import { sleep } from './utils';
+import { delay } from './utils';
 import { XiorPlugin } from '../types';
 import { XiorError, XiorTimeoutError } from '../utils';
 
@@ -7,7 +7,7 @@ export type ErrorRetryOptions = {
   retryTimes?: number;
   /**
    * Retry after milliseconds, default: 3000
-   * after first time error retry have interval
+   * after first time error retry, retry interval
    */
   retryInterval?: number;
   /**
@@ -52,7 +52,7 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
             }
 
             if (retryInterval && retryInterval > 0 && count > 0) {
-              await sleep(retryInterval);
+              await delay(retryInterval);
             }
 
             count++;
