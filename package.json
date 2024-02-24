@@ -1,6 +1,6 @@
 {
   "name": "xior",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Axios similiar API request library but based on fetch",
   "repository": "suhaotian/xior",
   "bugs": "https://github.com/suhaotian/xior/issues",
@@ -24,7 +24,8 @@
     "prepare": "is-ci || pnpm build && husky"
   },
   "dependencies": {
-    "ts-deepmerge": "^7.0.0"
+    "ts-deepmerge": "^7.0.0",
+    "tiny-lru": "^11.2.5"
   },
   "devDependencies": {
     "husky": "^9.0.7",

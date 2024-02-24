@@ -18,7 +18,7 @@ Features:
 - 🤙 Support timeout and cancel request
 - 👊 Unit tests
 - 💪 100% Write in TypeScript
-- [ ] **❗️❗️❗️WIP** 🥷 Plugins support: error retry, cache, repeat requests filter plugins 😎
+- [ ] **❗️❗️❗️WIP** 🥷 Plugins support: error retry, cache, repeat requests filter and easy custom your own plugins 😎
 
 ## Getting Started
 
