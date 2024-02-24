@@ -153,7 +153,7 @@ instance.post('/upload', formData).then((res) => {
 import xior from 'xior';
 
 const instance = xior.create({
-  timeout: 120 * 1000,
+  timeout: 120 * 1000, // default timeout
 });
 
 await instance.post(

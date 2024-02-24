@@ -1,6 +1,6 @@
 import { sleep } from './utils';
 import { XiorPlugin } from '../types';
-import { XiorError } from '../utils';
+import { XiorError, XiorTimeoutError } from '../utils';
 
 export type ErrorRetryOptions = {
   /** retry times, default: 0 */
@@ -44,7 +44,7 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
         try {
           return await adapter(config);
         } catch (error) {
-          if (error instanceof XiorError) {
+          if (error instanceof XiorError || error instanceof XiorTimeoutError) {
             const shouldRetry = shouldRetryOnError ? shouldRetryOnError(error) : true;
             timeUp = retryTimes === count;
             if (timeUp || !shouldRetry) {
