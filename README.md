@@ -1,5 +1,4 @@
 [![Build](https://github.com/suhaotian/xior/actions/workflows/check.yml/badge.svg)](https://github.com/suhaotian/xior/actions/workflows/check.yml)
-[![codecov](https://codecov.io/gh/suhaotian/xior/graph/badge.svg?token=MQBCJQ1AU8)](https://codecov.io/gh/suhaotian/xior)
 [![minzipped size](https://badgen.net/badge/gzip/2.6kb/green)](https://bundlephobia.com/package/xior)
 [![npm version](https://badgen.net/npm/v/xior?color=green)](https://www.npmjs.com/package/xior)
 ![Downloads](https://img.shields.io/npm/dm/xior.svg?style=flat)
