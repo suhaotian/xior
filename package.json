@@ -48,7 +48,7 @@
     "start-publish": "pnpm build && pnpm test && npm publish --registry=https://registry.npmjs.org",
     "push": "git push && git lfs push --all origin",
     "prepare": "is-ci || pnpm build && husky",
-    "checksize": "pnpm --filter=example-app build"
+    "checksize": "pnpm --filter=vite-example build"
   },
   "dependencies": {
     "ts-deepmerge": "^7.0.0",

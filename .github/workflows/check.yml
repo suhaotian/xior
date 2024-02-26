@@ -31,8 +31,11 @@ jobs:
       - name: Run build
         run: pnpm build
 
-      - name: Run example build
-        run: pnpm --filter=example-app build
+      - name: Run vite example build
+        run: pnpm --filter=vite-example build
+
+      - name: Run next example build
+        run: pnpm --filter=next-example build
 
       - uses: oven-sh/setup-bun@v1
       - name: Run bun example
