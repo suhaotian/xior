@@ -97,10 +97,10 @@ yarn add xior
 ### Create instance
 
 ```ts
-import Xior from 'xior';
+import xior from 'xior';
 import { stringify } from 'qs';
 
-export const http = Xior.create({
+export const xiorInstance = xior.create({
   baseURL: 'https://apiexampledomian.com/api',
   headers: {
     // put your common custom headers here
@@ -118,13 +118,13 @@ GET
 
 ```ts
 async function run() {
-  const { data } = await http.get('/');
+  const { data } = await xiorInstance.get('/');
 
   // with params
-  const { data: data2 } = await http.get('/', { params: { a: 1, b: 2 } });
+  const { data: data2 } = await xiorInstance.get('/', { params: { a: 1, b: 2 } });
 
   // with headers
-  const { data: data3 } = await http.get('/', {
+  const { data: data3 } = await xiorInstance.get('/', {
     params: { a: 1, b: 2 },
     headers: {
       'content-type': 'application/x-www-form-urlencoded',
@@ -132,7 +132,7 @@ async function run() {
   });
 
   // types
-  const { data: data4 } = await http.get<{ field1: string; field2: number }>('/');
+  const { data: data4 } = await xiorInstance.get<{ field1: string; field2: number }>('/');
 }
 ```
 
@@ -142,7 +142,7 @@ POST
 
 ```ts
 async function run() {
-  const { data: data3 } = await http.post<{ field1: string; field2: number }>(
+  const { data: data3 } = await xiorInstance.post<{ field1: string; field2: number }>(
     '/',
     { a: 1, b: '2' },
     {
