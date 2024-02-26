@@ -1,0 +1,10 @@
+packages:
+  - './**'
+
+  # exclude dist projects
+  - '!**/dist*/**'
+  # exclude .next projects
+  - '!**/.next/**'
+  # Fix turbo error: error preparing engine: Invalid turbo.json
+  # No "extends" key found
+  - '!./package.json'

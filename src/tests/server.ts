@@ -8,10 +8,19 @@ export async function startServer(port: number) {
 
   (['get', 'post', 'patch', 'put', 'delete', 'head', 'options'] as const).forEach((method) => {
     app[method](`/${method}`, (req, res) => {
+      if (req.headers['x-custom-value'] === 'error') {
+        return res.status(500).send({
+          method,
+          query: req.query,
+          body: req.body,
+          value: req.headers['x-custom-value'],
+        });
+      }
       res.send({
         method,
         query: req.query,
         body: req.body,
+        value: req.headers['x-custom-value'],
       });
     });
   });
@@ -23,14 +32,20 @@ export async function startServer(port: number) {
   });
 
   app.get('/timeout', (req, res) => {
-    setTimeout(() => {
-      res.end('hi');
-    }, 2000);
+    setTimeout(
+      () => {
+        res.end('hi');
+      },
+      +(req.query.timeout || 2000)
+    );
   });
   app.post('/timeout', (req, res) => {
-    setTimeout(() => {
-      res.end('hi');
-    }, 2000);
+    setTimeout(
+      () => {
+        res.end('hi');
+      },
+      +(req.body.timeout || 2000)
+    );
   });
 
   app.get('/headers', (req, res) => {
@@ -54,6 +69,30 @@ export async function startServer(port: number) {
       query: req.query,
       body: req.body,
     });
+  });
+
+  let errorCount = 0;
+  app.get('/reset-error', (req, res) => {
+    errorCount = 0;
+    res.end('ok');
+  });
+  app.get('/retry-error', (req, res) => {
+    if (errorCount < +(req.query.count || 2)) {
+      errorCount += 1;
+      return res.status(400).send({ errorCount: errorCount - 1, count: +(req.query.count || '2') });
+    }
+    res.status(200).send({ errorCount, count: +(req.query.count || '2') });
+  });
+  app.post('/reset-error', (req, res) => {
+    errorCount = 0;
+    res.end('ok');
+  });
+  app.post('/retry-error', (req, res) => {
+    if (errorCount < +(req.body.count || 2)) {
+      errorCount += 1;
+      return res.status(400).send({ errorCount: errorCount - 1, count: +(req.body.count || '2') });
+    }
+    res.status(200).send({ errorCount, count: +(req.body.count || '2') });
   });
 
   app.all('/stream/:chunks', function (req, res, next) {

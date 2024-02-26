@@ -14,6 +14,7 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
    */
   responseType?: 'json' | 'text' | 'stream' | 'document' | 'arraybuffer' | 'blob' | 'original';
   data?: any;
+  /** encoded url with params */
   _url?: string;
 }
 

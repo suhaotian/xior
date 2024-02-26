@@ -1,5 +1,5 @@
 name: Build
-on: push
+on: [push, pull_request]
 
 jobs:
   check:
@@ -30,3 +30,12 @@ jobs:
 
       - name: Run build
         run: pnpm build
+
+      - name: Run example build
+        run: pnpm --filter=example-app build
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: suhaotian/xior

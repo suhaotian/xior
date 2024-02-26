@@ -2,6 +2,7 @@ import type { XiorRequestConfig, XiorResponse } from './types';
 
 export * from './any-signals';
 export * from './merge';
+export * from './plugins/utils';
 
 export function encode(obj: Record<string, any>, encodeURI = true) {
   const list: string[] = [];
@@ -15,9 +16,8 @@ function it(obj: Record<string, any>, key: string, list: string[], encodeURI: bo
   const val = obj[key];
   if (val === null) return;
   if (val instanceof Function) return;
-  const pair = encodeURI
-    ? encodeURIComponent(key) + '=' + encodeURIComponent(val)
-    : key + '=' + val;
+  const en = encodeURIComponent;
+  const pair = encodeURI ? en(key) + '=' + en(val) : key + '=' + val;
   list.push(pair);
 }
 

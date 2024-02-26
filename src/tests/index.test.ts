@@ -1,5 +1,7 @@
 import assert from 'node:assert';
-import { readFile } from 'node:fs/promises';
+import fs from 'node:fs';
+import { readFile, writeFile } from 'node:fs/promises';
+import { pipeline } from 'node:stream';
 import { before, after, describe, it } from 'node:test';
 // @ts-ignore
 import stringify from 'qs/lib/stringify';
@@ -287,6 +289,22 @@ describe('xior tests', () => {
       }
       assert.strictEqual(chunk.length > 0, true);
     });
+
+    it('stream download image should work', async () => {
+      const xiorInstance = xior.create({ baseURL });
+
+      // GET request for remote image in node.js
+      await xiorInstance
+        .get('https://bit.ly/2mTM3nY', {
+          responseType: 'stream',
+        })
+        .then(async function ({ response, config }) {
+          const buffer = Buffer.from(await response.arrayBuffer());
+          return writeFile('./uploads/ada_lovelace.jpg', buffer);
+        });
+
+      assert.strictEqual(1 > 0, true);
+    });
   });
 
   describe('custom AbortController signal should work', () => {
@@ -384,6 +402,87 @@ describe('xior tests', () => {
 
       const { data: postData } = await xiorInstance.post<{ method: string }>('/post');
       assert.strictEqual(postData.method, 'post');
+    });
+
+    it('custom nested object detect plugin', async () => {
+      const instance = xior.create();
+      instance.plugins.use(function detectNestedParamsPlugin(adapter) {
+        const o = encodeURIComponent('[object Object]');
+        return async (config) => {
+          if (config._url?.includes(o) || config._url?.includes('[object Object]')) {
+            return Promise.reject(
+              new Error('You have nested object params, use `qs.stringify` to support that')
+            );
+          }
+          return adapter(config);
+        };
+      });
+
+      let errorMsg = '';
+      try {
+        await instance.get(baseURL, { params: { a: { b: 1, c: 2, d: [1, 2, 3] } } });
+      } catch (e) {
+        errorMsg = (e as Error).message;
+      }
+      console.log(errorMsg);
+      assert.strictEqual(errorMsg.indexOf('You have nested object params') > -1, true);
+    });
+  });
+
+  describe('interceptors and plugins eject and clear tests', () => {
+    const xiorInstance = xior.create({ baseURL });
+
+    it('xior.interceptors.request.use/eject/clear should work', () => {
+      // xior requestInterceptors always have at least 1 default interceptor
+      assert.strictEqual((xiorInstance as any).requestInterceptors.length, 1);
+      const handler = xiorInstance.interceptors.request.use((config) => {
+        return config;
+      });
+      xiorInstance.interceptors.request.use((config) => {
+        return config;
+      });
+      assert.strictEqual((xiorInstance as any).requestInterceptors.length - 1, 2);
+      xiorInstance.interceptors.request.eject(handler);
+      assert.strictEqual((xiorInstance as any).requestInterceptors.length - 1, 1);
+
+      xiorInstance.interceptors.request.clear();
+      assert.strictEqual((xiorInstance as any).requestInterceptors.length, 1);
+    });
+
+    it('xior.interceptors.response.use/eject/clear should work', () => {
+      assert.strictEqual((xiorInstance as any).responseInterceptors.length, 0);
+      const handler = xiorInstance.interceptors.response.use((config) => {
+        return config;
+      });
+      xiorInstance.interceptors.response.use((config) => {
+        return config;
+      });
+      assert.strictEqual((xiorInstance as any).responseInterceptors.length, 2);
+      xiorInstance.interceptors.response.eject(handler);
+      assert.strictEqual((xiorInstance as any).responseInterceptors.length, 1);
+
+      xiorInstance.interceptors.response.clear();
+      assert.strictEqual((xiorInstance as any).responseInterceptors.length, 0);
+    });
+
+    it('xior.plugins.use/eject/clear should work', () => {
+      assert.strictEqual((xiorInstance as any)._plugins.length, 0);
+      const handler = xiorInstance.plugins.use((plugin) => {
+        return (config) => {
+          return plugin(config);
+        };
+      });
+      xiorInstance.plugins.use((plugin) => {
+        return (config) => {
+          return plugin(config);
+        };
+      });
+      assert.strictEqual((xiorInstance as any)._plugins.length, 2);
+      xiorInstance.plugins.eject(handler);
+      assert.strictEqual((xiorInstance as any)._plugins.length, 1);
+
+      xiorInstance.plugins.clear();
+      assert.strictEqual((xiorInstance as any)._plugins.length, 0);
     });
   });
 });
