@@ -24,12 +24,12 @@ A request lib based on **fetch** with plugins support.
 - [Table of Contents](#table-of-contents)
 - [Why Choose **xior**?](#why-choose-xior)
   - [Why not just use `axios`?](#why-not-just-use-axios)
-  - [Why Choose **xior** over Custom Fetch Wrappers?](#why-choose-xior-over-custom-fetch-wrappers)
+  - [Why choose **xior** over Custom Fetch Wrappers?](#why-choose-xior-over-custom-fetch-wrappers)
 - [Getting Started](#getting-started)
   - [Installing](#installing)
   - [Create instance](#create-instance)
   - [GET / POST / DELETE / PUT / PATCH / OPTIONS / HEAD](#get--post--delete--put--patch--options--head)
-  - [Supporting Nested Object Parameters](#supporting-nested-object-parameters)
+  - [Supporting nested object parameters](#supporting-nested-object-parameters)
   - [Upload file](#upload-file)
   - [Using interceptors](#using-interceptors)
   - [Timeout and Cancel request](#timeout-and-cancel-request)
@@ -75,7 +75,7 @@ A request lib based on **fetch** with plugins support.
 
 While popular and convenient, Axios currently lacks native edge runtime support (see: [https://github.com/axios/axios/issues/5523](https://github.com/axios/axios/issues/5523)). This can be an issue for specific use cases like Next.js serverless functions and middleware files, where fetch offers built-in caching and revalidation mechanisms (see: [https://nextjs.org/docs/app/api-reference/functions/fetch](https://nextjs.org/docs/app/api-reference/functions/fetch)).
 
-### Why Choose **xior** over Custom Fetch Wrappers?
+### Why choose **xior** over Custom Fetch Wrappers?
 
 While you can certainly create your own wrapper library around fetch, **xior** offers a pre-built solution with a familiar API, plugin support for extensibility, and potentially a more streamlined development experience.
 
@@ -155,7 +155,7 @@ async function run() {
 }
 ```
 
-### Supporting Nested Object Parameters
+### Supporting nested object parameters
 
 **xior's** default URI encoding implementation might not handle nested objects or arrays within the `params` option, resulting in unexpected output like `[object object]`.
 To properly support nested object parameters, you can use the `qs` library's `stringify` module:
