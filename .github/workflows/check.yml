@@ -35,5 +35,5 @@ jobs:
         run: pnpm --filter=example-app build
 
       - name: Run bun example
-      - uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v1
         run: cd bun-example && bun install && bun index.ts && bun build index.ts > /tmp/tmp.js
