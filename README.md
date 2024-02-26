@@ -23,15 +23,15 @@ A request lib based on **fetch** with plugins support.
 - [Intro](#intro)
 - [Table of Contents](#table-of-contents)
 - [Why Choose **xior**?](#why-choose-xior)
-  - [Why Not Just Use `axios`?](#why-not-just-use-axios)
-  - [Why Choose **xior** Over Custom Fetch Wrappers?](#why-choose-xior-over-custom-fetch-wrappers)
+  - [Why not just use `axios`?](#why-not-just-use-axios)
+  - [Why Choose **xior** over Custom Fetch Wrappers?](#why-choose-xior-over-custom-fetch-wrappers)
 - [Getting Started](#getting-started)
   - [Installing](#installing)
   - [Create instance](#create-instance)
   - [GET / POST / DELETE / PUT / PATCH / OPTIONS / HEAD](#get--post--delete--put--patch--options--head)
   - [Supporting Nested Object Parameters](#supporting-nested-object-parameters)
-  - [Uploading Files](#uploading-files)
-  - [Using Interceptors](#using-interceptors)
+  - [Upload file](#upload-file)
+  - [Using interceptors](#using-interceptors)
   - [Timeout and Cancel request](#timeout-and-cancel-request)
 - [Plugins](#plugins)
   - [Error retry plugin](#error-retry-plugin)
@@ -41,13 +41,13 @@ A request lib based on **fetch** with plugins support.
   - [Create your own custom plugin](#create-your-own-custom-plugin)
 - [Helper functions](#helper-functions)
 - [FAQ](#faq)
-  - [Is **xior** 100% compatiable with `axios`?](#is-xior-100-compatiable-with-axios)
-  - [Can I use xior in projects like Bun, Expo, React Native, Next.js, Vue, or Nuxt.js?](#can-i-use-xior-in-projects-like-bun-expo-react-native-nextjs-vue-or-nuxtjs)
-  - [How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?](#how-do-i-handle-responses-with-types-like-stream-document-arraybuffer-or-blob)
-  - [How do I handle nested object parameters in URL encoding?](#how-do-i-handle-nested-object-parameters-in-url-encoding)
-  - [How do I support older browsers?](#how-do-i-support-older-browsers)
-  - [Why is xior named "xior"?](#why-is-xior-named-xior)
-  - [Where can I ask additional questions?](#where-can-i-ask-additional-questions)
+  - [1. Is **xior** 100% compatiable with `axios`?](#1-is-xior-100-compatiable-with-axios)
+  - [2. Can I use xior in projects like Bun, Expo, React Native, Next.js, Vue, or Nuxt.js?](#2-can-i-use-xior-in-projects-like-bun-expo-react-native-nextjs-vue-or-nuxtjs)
+  - [3. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?](#3-how-do-i-handle-responses-with-types-like-stream-document-arraybuffer-or-blob)
+  - [4. How do I handle nested object parameters in URL encoding?](#4-how-do-i-handle-nested-object-parameters-in-url-encoding)
+  - [5. How do I support older browsers?](#5-how-do-i-support-older-browsers)
+  - [6. Why is xior named "xior"?](#6-why-is-xior-named-xior)
+  - [7. Where can I ask additional questions?](#7-where-can-i-ask-additional-questions)
 - [Migrate from `axios` to **xior**](#migrate-from-axios-to-xior)
   - [GET](#get)
   - [POST](#post)
@@ -60,7 +60,7 @@ A request lib based on **fetch** with plugins support.
   - [Sending a request with credentials included](#sending-a-request-with-credentials-included)
   - [Uploading a file](#uploading-a-file)
   - [Processing a text file line by line](#processing-a-text-file-line-by-line)
-- [Thanks and Inspirations](#thanks-and-inspirations)
+- [Thanks](#thanks)
 
 ## Why Choose **xior**?
 
@@ -71,11 +71,11 @@ A request lib based on **fetch** with plugins support.
 - **Edge Compatibility:** Unlike Axios, xior works seamlessly in edge runtimes, making it suitable for serverless functions and Next.js middleware.
 - **Convenient API and Plugin Support:** xior provides a familiar API similar to Axios, while also offering plugin support for customization and extending functionalities.
 
-### Why Not Just Use `axios`?
+### Why not just use `axios`?
 
 While popular and convenient, Axios currently lacks native edge runtime support (see: [https://github.com/axios/axios/issues/5523](https://github.com/axios/axios/issues/5523)). This can be an issue for specific use cases like Next.js serverless functions and middleware files, where fetch offers built-in caching and revalidation mechanisms (see: [https://nextjs.org/docs/app/api-reference/functions/fetch](https://nextjs.org/docs/app/api-reference/functions/fetch)).
 
-### Why Choose **xior** Over Custom Fetch Wrappers?
+### Why Choose **xior** over Custom Fetch Wrappers?
 
 While you can certainly create your own wrapper library around fetch, **xior** offers a pre-built solution with a familiar API, plugin support for extensibility, and potentially a more streamlined development experience.
 
@@ -180,7 +180,7 @@ http.get('[http://httpbin.org](http://httpbin.org)', {
 // Expected URL: [http://httpbin.org?a=1&b](http://httpbin.org?a=1&b)[c]=2
 ```
 
-### Uploading Files
+### Upload file
 
 **xior** supports file uploads using the `FormData` API and provides an optional `'xior/plugins/progress'` plugin for simulating upload progress, usage similar to Axios.
 
@@ -209,7 +209,7 @@ http.post('/upload', formData, {
 });
 ```
 
-### Using Interceptors
+### Using interceptors
 
 **xior** supports interceptors similar to Axios, allowing you to modify requests and handle responses programmatically.
 
@@ -605,16 +605,16 @@ import {
 
 **xior** frequently asked questions.
 
-### Is **xior** 100% compatiable with `axios`?
+### 1. Is **xior** 100% compatiable with `axios`?
 
 **No**, but **xior** offers a similar API like axios: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`.
 
-### Can I use xior in projects like Bun, Expo, React Native, Next.js, Vue, or Nuxt.js?
+### 2. Can I use xior in projects like Bun, Expo, React Native, Next.js, Vue, or Nuxt.js?
 
 **Yes**, **xior** works anywhere where the native `fetch` API is supported.
 Even if the environment doesn't support `fetch`, you can use a `fetch` polyfill like for older browsers.
 
-### How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?
+### 3. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?
 
 To handle such responses, use the `responseType: 'stream'` option in your request:
 
@@ -635,19 +635,19 @@ for await (chunk of readChunks(reader)) {
 }
 ```
 
-### How do I handle nested object parameters in URL encoding?
+### 4. How do I handle nested object parameters in URL encoding?
 
 Refer to the section [Supporting Nested Object Parameters](#supporting-nested-object-parameters).
 
-### How do I support older browsers?
+### 5. How do I support older browsers?
 
 You can use a polyfill for the `fetch` API. Check the file `src/tests/polyfill.test.ts` for a potential example.
 
-### Why is xior named "xior"?
+### 6. Why is xior named "xior"?
 
 The original name `axior` was unavailable on npm, so when removed the "a": ~~a~~**xior**.
 
-### Where can I ask additional questions?
+### 7. Where can I ask additional questions?
 
 If you have any questions, feel free to create issues.
 
@@ -1172,7 +1172,7 @@ async function run() {
 run();
 ```
 
-## Thanks and Inspirations
+## Thanks
 
 Without the support of these resources, xior wouldn't be possible:
 
