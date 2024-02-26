@@ -8,16 +8,20 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      
 
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
 
+      - uses: oven-sh/setup-bun@v1
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
+
 
       - name: Install dependencies
         run: pnpm install
@@ -33,6 +37,9 @@ jobs:
 
       - name: Run example build
         run: pnpm --filter=example-app build
+
+      - name: Run bun example
+        run: cd bun-example && bun install && bun index.ts && bun build index.ts
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
