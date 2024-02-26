@@ -15,7 +15,7 @@ A request lib based on **fetch** with plugins support.
 - 🔥 Use **fetch**
 - 🫡 **Similar axios API**: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`
 - 🤙 Support timeout and cancel requests
-- 🥷 Plugin support: error retry, cache, throttling, and easily create custom plugins 😎
+- 🥷 Plugin support: error retry, cache, throttling, and easily create custom plugins
 - 🚀 Lightweight (~6KB, Gzip ~2.6KB)
 - 👊 Unit tested and strongly typed 💪
 
@@ -39,16 +39,16 @@ A request lib based on **fetch** with plugins support.
   - [Request throttle plugin](#request-throttle-plugin)
   - [Cache plugin](#cache-plugin)
   - [Upload and download progress plugin](#upload-and-download-progress-plugin)
-  - [Custom your own plugins](#custom-your-own-plugins)
+  - [Create your own custom plugin](#create-your-own-custom-plugin)
 - [Helper functions](#helper-functions)
 - [FAQ](#faq)
   - [Is **xior** 100% compatiable with `axios`?](#is-xior-100-compatiable-with-axios)
-  - [Can I use **xior** inside expo/react-native/next.js/vue/nuxt.js projects?](#can-i-use-xior-inside-exporeact-nativenextjsvuenuxtjs-projects)
-  - [What about response of `'stream' | 'document' | 'arraybuffer' | 'blob'`?](#what-about-response-of-stream--document--arraybuffer--blob)
-  - [How to support nested object params in url encode?](#how-to-support-nested-object-params-in-url-encode)
-  - [How to support old browser?](#how-to-support-old-browser)
-  - [Why named **xior**?](#why-named-xior)
-  - [More questions](#more-questions)
+  - [Can I use xior in projects like Bun, Expo, React Native, Next.js, Vue, or Nuxt.js?](#can-i-use-xior-in-projects-like-bun-expo-react-native-nextjs-vue-or-nuxtjs)
+  - [How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?](#how-do-i-handle-responses-with-types-like-stream-document-arraybuffer-or-blob)
+  - [How do I handle nested object parameters in URL encoding?](#how-do-i-handle-nested-object-parameters-in-url-encoding)
+  - [How do I support older browsers?](#how-do-i-support-older-browsers)
+  - [Why is xior named "xior"?](#why-is-xior-named-xior)
+  - [Where can I ask additional questions?](#where-can-i-ask-additional-questions)
 - [Migrate from `axios` to **xior**](#migrate-from-axios-to-xior)
   - [GET](#get)
   - [POST](#post)
@@ -61,7 +61,7 @@ A request lib based on **fetch** with plugins support.
   - [Sending a request with credentials included](#sending-a-request-with-credentials-included)
   - [Uploading a file](#uploading-a-file)
   - [Processing a text file line by line](#processing-a-text-file-line-by-line)
-- [Thanks 🙌](#thanks-)
+- [Thanks and Inspirations](#thanks-and-inspirations)
 
 ## Why Choose **xior**?
 
@@ -99,12 +99,15 @@ yarn add xior
 
 ```ts
 import Xior from 'xior';
+import { stringify } from 'qs';
 
 export const http = Xior.create({
   baseURL: 'https://apiexampledomian.com/api',
   headers: {
     // put your common custom headers here
   },
+  // use `qs` to support nested object params
+  encode: (params: Record<string, any>) => stringify(params),
 });
 ```
 
@@ -160,7 +163,7 @@ To properly support nested object parameters, you can use the `qs` library's `st
 
 ```ts
 import xior from 'xior';
-import { stringify } from 'qs'; // Assuming proper import path
+import { stringify } from 'qs';
 
 const http = xior.create({
   encode: (params: Record<string, any>) => stringify(params),
@@ -497,7 +500,23 @@ http.get('/users', { enableCache: true, defaultCache: cacheA, forceUpdate: true 
 
 ### Upload and download progress plugin
 
-> Makes fetch support upload and download progress like axios, but it's simulated.
+> Enable upload and download progress like axios, but the progress is simulated,
+> This means it doesn't represent the actual progress but offers a user experience similar to libraries like axios.
+
+API:
+
+```ts
+function progressPlugin(options: {
+  /** default: 5*1000 ms */
+  progressDuration?: number;
+}): XiorPlugin;
+```
+
+The `options` object:
+
+| Param            | Type   | Default value | Description                                          |
+| ---------------- | ------ | ------------- | ---------------------------------------------------- |
+| progressDuration | number | 5000          | The upload or download progress grow to 99% duration |
 
 Basic usage:
 
@@ -514,18 +533,24 @@ formData.append('field1', 'val1');
 formData.append('field2', 'val2');
 
 http.post('/upload', formData, {
+  // simulate upload progress to 99% in 10 seconds, default is 5 seconds
+  progressDuration: 10 * 1000,
   onUploadProgress(e) {
     console.log(`Upload progress: ${e.progress}%`);
   },
-  progressDuration: 10 * 1000, // simulate upload progress to 99% in 10 seconds, default is 5 seconds
+  // onDownloadProgress(e) {
+  //   console.log(`Download progress: ${e.progress}%`);
+  // },
 });
 ```
 
-### Custom your own plugins
+### Create your own custom plugin
 
-**xior** empowers you with the flexibility to create custom plugins for tailored request functionalities. Here are examples:
+**xior** let you easily to create custom plugins.
 
-1. Simple Logging Plugin:
+Here are examples:
+
+1. Simple Logging plugin:
 
 ```ts
 import xior from 'xior';
@@ -541,7 +566,7 @@ instance.plugins.use(function logPlugin(adapter) {
 });
 ```
 
-2. Nested Object Parameter Detection Plugin:
+2. Nested Object Parameter Detection plugin:
 
 ```ts
 import xior from 'xior';
@@ -564,7 +589,7 @@ instance.plugins.use(function detectNestedParamsPlugin(adapter) {
 
 ## Helper functions
 
-**xior** offers built-in helper functions to streamline various tasks:
+**xior** has built-in helper functions, may useful for you:
 
 ```ts
 import lru from 'tiny-lru';
@@ -583,19 +608,22 @@ import {
 
 ### Is **xior** 100% compatiable with `axios`?
 
-No. But similiar axios API: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`.
+**No**, but **xior** offers a similar API like axios: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`.
 
-### Can I use **xior** inside expo/react-native/next.js/vue/nuxt.js projects?
+### Can I use xior in projects like Bun, Expo, React Native, Next.js, Vue, or Nuxt.js?
 
-**xior** just built on top of `fetch`, you can use **xior** where fetch was supported, or use fetch polyfill for old browsers.
+**Yes**, **xior** works anywhere where the native `fetch` API is supported.
+Even if the environment doesn't support `fetch`, you can use a `fetch` polyfill like for older browsers.
 
-### What about response of `'stream' | 'document' | 'arraybuffer' | 'blob'`?
+### How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?
 
-Use `{responseType: 'stream'}`, **xior** will just the original response, for example:
+To handle such responses, use the `responseType: 'stream'` option in your request:
 
 ```ts
 import xior from 'xior';
+
 const http = xior.create({ baseURL });
+
 const { response } = await http.post<{ file: any; body: Record<string, string> }>(
   '/stream/10',
   null,
@@ -608,21 +636,21 @@ for await (chunk of readChunks(reader)) {
 }
 ```
 
-### How to support nested object params in url encode?
+### How do I handle nested object parameters in URL encoding?
 
-Check [Support nested object params](#support-nested-object-params)
+Refer to the section [Supporting Nested Object Parameters](#supporting-nested-object-parameters).
 
-### How to support old browser?
+### How do I support older browsers?
 
-Use polyfill, check `src/tests/polyfill.test.ts`.
+You can use a polyfill for the `fetch` API. Check the file `src/tests/polyfill.test.ts` for a potential example.
 
-### Why named **xior**?
+### Why is xior named "xior"?
 
-The original name would be `axior`, but npm not allowed that, so I try removed `a`: ~~a~~**xior**.
+The original name `axior` was unavailable on npm, so when removed the "a": ~~a~~**xior**.
 
-### More questions
+### Where can I ask additional questions?
 
-Create issues to let me know, Thank you :)
+If you have any questions, feel free to create issues.
 
 ## Migrate from `axios` to **xior**
 
@@ -1145,9 +1173,9 @@ async function run() {
 run();
 ```
 
-## Thanks 🙌
+## Thanks and Inspirations
 
-Without these stuff's inspiration and help, **xior** will not exist:
+Without the support of these resources, xior wouldn't be possible:
 
 - [axios](https://github.com/axios/axios)
 - [axios-extensions](https://github.com/kuitos/axios-extensions)
