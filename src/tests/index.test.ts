@@ -1,7 +1,5 @@
 import assert from 'node:assert';
-import fs from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
-import { pipeline } from 'node:stream';
 import { before, after, describe, it } from 'node:test';
 // @ts-ignore
 import stringify from 'qs/lib/stringify';
@@ -132,7 +130,7 @@ describe('xior tests', () => {
       }>('/get', { params: { a: 1, b: '2/', c: {} } });
       assert.strictEqual(data.query.a, '1');
       assert.strictEqual(data.query.b, '2/');
-      assert.strictEqual(request._url, '/get?a=1&b=2%2F&c=%5Bobject%20Object%5D');
+      assert.strictEqual(request._url, '/get?a=1&b=2%2F');
     });
 
     it('default encode with `encodeURI: false` should work', async () => {
@@ -144,8 +142,7 @@ describe('xior tests', () => {
       assert.strictEqual(data.method, 'get');
       assert.strictEqual(data.query.a, '1');
       assert.strictEqual(data.query.b, '2/');
-      assert.strictEqual(data.query.c, '[object Object]');
-      assert.strictEqual(request._url, '/get?a=1&b=2/&c=[object Object]');
+      assert.strictEqual(request._url, '/get?a=1&b=2/');
     });
 
     it('Use `qs.stringify` as custom encode function should work', async () => {
@@ -402,30 +399,6 @@ describe('xior tests', () => {
 
       const { data: postData } = await xiorInstance.post<{ method: string }>('/post');
       assert.strictEqual(postData.method, 'post');
-    });
-
-    it('custom nested object detect plugin', async () => {
-      const instance = xior.create();
-      instance.plugins.use(function detectNestedParamsPlugin(adapter) {
-        const o = encodeURIComponent('[object Object]');
-        return async (config) => {
-          if (config._url?.includes(o) || config._url?.includes('[object Object]')) {
-            return Promise.reject(
-              new Error('You have nested object params, use `qs.stringify` to support that')
-            );
-          }
-          return adapter(config);
-        };
-      });
-
-      let errorMsg = '';
-      try {
-        await instance.get(baseURL, { params: { a: { b: 1, c: 2, d: [1, 2, 3] } } });
-      } catch (e) {
-        errorMsg = (e as Error).message;
-      }
-      console.log(errorMsg);
-      assert.strictEqual(errorMsg.indexOf('You have nested object params') > -1, true);
     });
   });
 

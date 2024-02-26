@@ -29,7 +29,6 @@ A request lib based on **fetch** with plugins support.
   - [Installing](#installing)
   - [Create instance](#create-instance)
   - [GET / POST / DELETE / PUT / PATCH / OPTIONS / HEAD](#get--post--delete--put--patch--options--head)
-  - [Supporting nested object parameters](#supporting-nested-object-parameters)
   - [Upload file](#upload-file)
   - [Using interceptors](#using-interceptors)
   - [Timeout and Cancel request](#timeout-and-cancel-request)
@@ -44,7 +43,6 @@ A request lib based on **fetch** with plugins support.
   - [1. Is **xior** 100% compatiable with `axios`?](#1-is-xior-100-compatiable-with-axios)
   - [2. Can I use xior in projects like Bun, Expo, React Native, Next.js, Vue, or Nuxt.js?](#2-can-i-use-xior-in-projects-like-bun-expo-react-native-nextjs-vue-or-nuxtjs)
   - [3. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?](#3-how-do-i-handle-responses-with-types-like-stream-document-arraybuffer-or-blob)
-  - [4. How do I handle nested object parameters in URL encoding?](#4-how-do-i-handle-nested-object-parameters-in-url-encoding)
   - [5. How do I support older browsers?](#5-how-do-i-support-older-browsers)
   - [6. Why is xior named "xior"?](#6-why-is-xior-named-xior)
   - [7. Where can I ask additional questions?](#7-where-can-i-ask-additional-questions)
@@ -90,6 +88,9 @@ npm install xior
 # pnpm
 pnpm add xior
 
+# bun
+bun add xior
+
 # yarn
 yarn add xior
 ```
@@ -98,15 +99,12 @@ yarn add xior
 
 ```ts
 import xior from 'xior';
-import { stringify } from 'qs';
 
 export const xiorInstance = xior.create({
   baseURL: 'https://apiexampledomian.com/api',
   headers: {
     // put your common custom headers here
   },
-  // use `qs` to support nested object params
-  encode: (params: Record<string, any>) => stringify(params),
 });
 ```
 
@@ -153,31 +151,6 @@ async function run() {
     }
   );
 }
-```
-
-### Supporting nested object parameters
-
-**xior's** default URI encoding implementation might not handle nested objects or arrays within the `params` option, resulting in unexpected output like `[object object]`.
-To properly support nested object parameters, you can use the `qs` library's `stringify` module:
-
-```ts
-import xior from 'xior';
-import { stringify } from 'qs';
-
-const http = xior.create({
-  encode: (params: Record<string, any>) => stringify(params),
-});
-
-http.get('[http://httpbin.org](http://httpbin.org)', {
-  params: {
-    a: 1,
-    b: {
-      c: 2,
-    },
-  },
-});
-
-// Expected URL: [http://httpbin.org?a=1&b](http://httpbin.org?a=1&b)[c]=2
 ```
 
 ### Upload file
@@ -565,26 +538,9 @@ instance.plugins.use(function logPlugin(adapter) {
 });
 ```
 
-2. Nested Object Parameter Detection plugin:
+2. Check built-in plugins get more inspiration:
 
-```ts
-import xior from 'xior';
-
-const instance = xior.create();
-instance.plugins.use(function detectNestedParamsPlugin(adapter) {
-  instance.plugins.use(function detectNestedParamsPlugin(adapter) {
-    const o = encodeURIComponent('[object Object]');
-    return async (config) => {
-      if (config._url?.includes(o) || config._url?.includes('[object Object]')) {
-        return Promise.reject(
-          new Error('You have nested object params, use `qs.stringify` to support that')
-        );
-      }
-      return adapter(config);
-    };
-  });
-});
-```
+Check [src/plugins](./src/plugins)
 
 ## Helper functions
 
@@ -593,7 +549,7 @@ instance.plugins.use(function detectNestedParamsPlugin(adapter) {
 ```ts
 import lru from 'tiny-lru';
 import {
-  encode as liteParamsEncode,
+  encodeParams,
   merge as deepMerge,
   delay as sleep,
   buildSortedURL,
@@ -634,10 +590,6 @@ for await (chunk of readChunks(reader)) {
   console.log(`received chunk of size ${chunk.length}`);
 }
 ```
-
-### 4. How do I handle nested object parameters in URL encoding?
-
-Refer to the section [Supporting Nested Object Parameters](#supporting-nested-object-parameters).
 
 ### 5. How do I support older browsers?
 

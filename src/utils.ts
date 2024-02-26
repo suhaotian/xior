@@ -4,12 +4,38 @@ export * from './any-signals';
 export * from './merge';
 export * from './plugins/utils';
 
-export function encode(obj: Record<string, any>, encodeURI = true) {
-  const list: string[] = [];
-  if (typeof obj === 'object' && obj !== null) {
-    Object.keys(obj).map((key) => it(obj, key, list, encodeURI));
+export function encodeParams<T = any>(
+  params: T,
+  encodeURI = true,
+  parentKey: string | null = null
+): string {
+  if (typeof params === 'undefined' || params === null) return '';
+  const encodedParams = [];
+  const encodeURIFunc = encodeURI ? encodeURIComponent : (v: string) => v;
+
+  for (const key in params) {
+    if (Object.prototype.hasOwnProperty.call(params, key)) {
+      const value = (params as any)[key];
+      const encodedKey = parentKey ? `${parentKey}[${encodeURIFunc(key)}]` : encodeURIFunc(key);
+
+      if (typeof value === 'object') {
+        // If the value is an object or array, recursively encode its contents
+        const result = encodeParams(value, encodeURI, encodedKey);
+        if (result !== '') encodedParams.push(result);
+      } else if (Array.isArray(value)) {
+        // If the value is an array, encode each element individually
+        value.forEach((element, index) => {
+          const arrayKey = `${encodedKey}[${index}]`;
+          encodedParams.push(`${encodeURIFunc(arrayKey)}=${encodeURIFunc(element)}`);
+        });
+      } else {
+        // Otherwise, encode the key-value pair
+        encodedParams.push(`${encodeURIFunc(encodedKey)}=${encodeURIFunc(value)}`);
+      }
+    }
   }
-  return list.join('&');
+
+  return encodedParams.join('&');
 }
 
 function it(obj: Record<string, any>, key: string, list: string[], encodeURI: boolean) {
