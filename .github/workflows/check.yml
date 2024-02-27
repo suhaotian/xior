@@ -43,4 +43,7 @@ jobs:
 
       - uses: denoland/setup-deno@v1
       - name: Run deno example
-        run: deno run --allow-net deno-example/index.ts
+        run: deno run --allow-net deno-example/index.ts && deno run --allow-net deno-example/npm-index.ts
+
+      - name: Run deno example check
+        run: deno check deno-example/*.ts
