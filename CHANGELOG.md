@@ -1,11 +1,12 @@
 # CHANGELOG 📝
 
-## v0.0.7 2024-02-26
+## v0.0.7 2024-02-27
 
 - feat(core): suport nested object paramaters in default
 - feat(plugin): implemented **error retry**, **cache**, **throttle**, and upload/download **progress** plugins
 - fix(build): resolved Bunchee build output error with Vite projects.
 - chore(doc): updated README.md
+- chore(examples): add bun, vite, and next build example for make sure it's working in these projects
 
 ## v0.0.6 2024-02-24
 
