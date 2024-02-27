@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { before, after, describe, it } from 'node:test';
 // @ts-ignore
 import stringify from 'qs/lib/stringify';
@@ -130,7 +130,7 @@ describe('xior tests', () => {
       }>('/get', { params: { a: 1, b: '2/', c: {} } });
       assert.strictEqual(data.query.a, '1');
       assert.strictEqual(data.query.b, '2/');
-      assert.strictEqual(request._url, '/get?a=1&b=2%2F&c=%5Bobject%20Object%5D');
+      assert.strictEqual(request._url, '/get?a=1&b=2%2F');
     });
 
     it('default encode with `encodeURI: false` should work', async () => {
@@ -142,8 +142,7 @@ describe('xior tests', () => {
       assert.strictEqual(data.method, 'get');
       assert.strictEqual(data.query.a, '1');
       assert.strictEqual(data.query.b, '2/');
-      assert.strictEqual(data.query.c, '[object Object]');
-      assert.strictEqual(request._url, '/get?a=1&b=2/&c=[object Object]');
+      assert.strictEqual(request._url, '/get?a=1&b=2/');
     });
 
     it('Use `qs.stringify` as custom encode function should work', async () => {
@@ -287,6 +286,22 @@ describe('xior tests', () => {
       }
       assert.strictEqual(chunk.length > 0, true);
     });
+
+    it('stream download image should work', async () => {
+      const xiorInstance = xior.create({ baseURL });
+
+      // GET request for remote image in node.js
+      await xiorInstance
+        .get('https://bit.ly/2mTM3nY', {
+          responseType: 'stream',
+        })
+        .then(async function ({ response, config }) {
+          const buffer = Buffer.from(await response.arrayBuffer());
+          return writeFile('./uploads/ada_lovelace.jpg', buffer);
+        });
+
+      assert.strictEqual(1 > 0, true);
+    });
   });
 
   describe('custom AbortController signal should work', () => {
@@ -384,6 +399,63 @@ describe('xior tests', () => {
 
       const { data: postData } = await xiorInstance.post<{ method: string }>('/post');
       assert.strictEqual(postData.method, 'post');
+    });
+  });
+
+  describe('interceptors and plugins eject and clear tests', () => {
+    const xiorInstance = xior.create({ baseURL });
+
+    it('xior.interceptors.request.use/eject/clear should work', () => {
+      // xior requestInterceptors always have at least 1 default interceptor
+      assert.strictEqual((xiorInstance as any).requestInterceptors.length, 1);
+      const handler = xiorInstance.interceptors.request.use((config) => {
+        return config;
+      });
+      xiorInstance.interceptors.request.use((config) => {
+        return config;
+      });
+      assert.strictEqual((xiorInstance as any).requestInterceptors.length - 1, 2);
+      xiorInstance.interceptors.request.eject(handler);
+      assert.strictEqual((xiorInstance as any).requestInterceptors.length - 1, 1);
+
+      xiorInstance.interceptors.request.clear();
+      assert.strictEqual((xiorInstance as any).requestInterceptors.length, 1);
+    });
+
+    it('xior.interceptors.response.use/eject/clear should work', () => {
+      assert.strictEqual((xiorInstance as any).responseInterceptors.length, 0);
+      const handler = xiorInstance.interceptors.response.use((config) => {
+        return config;
+      });
+      xiorInstance.interceptors.response.use((config) => {
+        return config;
+      });
+      assert.strictEqual((xiorInstance as any).responseInterceptors.length, 2);
+      xiorInstance.interceptors.response.eject(handler);
+      assert.strictEqual((xiorInstance as any).responseInterceptors.length, 1);
+
+      xiorInstance.interceptors.response.clear();
+      assert.strictEqual((xiorInstance as any).responseInterceptors.length, 0);
+    });
+
+    it('xior.plugins.use/eject/clear should work', () => {
+      assert.strictEqual((xiorInstance as any)._plugins.length, 0);
+      const handler = xiorInstance.plugins.use((plugin) => {
+        return (config) => {
+          return plugin(config);
+        };
+      });
+      xiorInstance.plugins.use((plugin) => {
+        return (config) => {
+          return plugin(config);
+        };
+      });
+      assert.strictEqual((xiorInstance as any)._plugins.length, 2);
+      xiorInstance.plugins.eject(handler);
+      assert.strictEqual((xiorInstance as any)._plugins.length, 1);
+
+      xiorInstance.plugins.clear();
+      assert.strictEqual((xiorInstance as any)._plugins.length, 0);
     });
   });
 });

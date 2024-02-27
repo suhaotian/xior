@@ -193,14 +193,16 @@ describe('axios compatible tests', () => {
       baseURL,
     });
     axiosInstance.interceptors.response.use(
-      (config) => config,
-      () => {
+      (config) => {
+        return config;
+      },
+      (error) => {
         //
       }
     );
     xiorInstance.interceptors.response.use(
       (config) => config,
-      () => {
+      (error) => {
         //
       }
     );

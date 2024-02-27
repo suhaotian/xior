@@ -133,7 +133,7 @@ describe('xior polyfill tests', () => {
       }>('/get', { params: { a: 1, b: '2/', c: {} } });
       assert.strictEqual(data.query.a, '1');
       assert.strictEqual(data.query.b, '2/');
-      assert.strictEqual(request._url, '/get?a=1&b=2%2F&c=%5Bobject%20Object%5D');
+      assert.strictEqual(request._url, '/get?a=1&b=2%2F');
     });
 
     it('default encode with `encodeURI: false` should work', async () => {
@@ -145,8 +145,7 @@ describe('xior polyfill tests', () => {
       assert.strictEqual(data.method, 'get');
       assert.strictEqual(data.query.a, '1');
       assert.strictEqual(data.query.b, '2/');
-      assert.strictEqual(data.query.c, '[object Object]');
-      assert.strictEqual(request._url, '/get?a=1&b=2/&c=[object Object]');
+      assert.strictEqual(request._url, '/get?a=1&b=2/');
     });
 
     it('Use `qs.stringify` as custom encode function should work', async () => {

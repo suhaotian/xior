@@ -43,7 +43,7 @@ export class xior {
           request: XiorInterceptorRequestConfig;
           response: Response;
         };
-    onRejected?: (error: any) => any;
+    onRejected?: (error: XiorError) => any;
   }[] = [];
 
   get interceptors() {
@@ -53,10 +53,21 @@ export class xior {
           fn: (
             config: XiorInterceptorRequestConfig
           ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig,
-          /** @deprecated no need */
+          /** @deprecated useless here */
           onRejected?: (error: any) => any
         ) => {
           this.requestInterceptors.push(fn);
+          return fn;
+        },
+        eject: (
+          fn: (
+            config: XiorInterceptorRequestConfig
+          ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig
+        ) => {
+          this.requestInterceptors = this.requestInterceptors.filter((item) => item !== fn);
+        },
+        clear: () => {
+          this.requestInterceptors = [this.requestInterceptors[0]];
         },
       },
       response: {
@@ -72,9 +83,28 @@ export class xior {
                 request: XiorInterceptorRequestConfig;
                 response: Response;
               },
-          onRejected?: (error: any) => any
+          onRejected?: (error: XiorError) => any
         ) => {
           this.responseInterceptors.push({ fn, onRejected });
+          return fn;
+        },
+        eject: (
+          fn: (config: { data: any; request: XiorInterceptorRequestConfig; response: Response }) =>
+            | Promise<{
+                data: any;
+                request: XiorInterceptorRequestConfig;
+                response: Response;
+              }>
+            | {
+                data: any;
+                request: XiorInterceptorRequestConfig;
+                response: Response;
+              }
+        ) => {
+          this.responseInterceptors = this.responseInterceptors.filter((item) => item.fn !== fn);
+        },
+        clear: () => {
+          this.responseInterceptors = [];
         },
       },
     };
@@ -85,6 +115,13 @@ export class xior {
     return {
       use: (plugin: XiorPlugin) => {
         this._plugins.push(plugin);
+        return plugin;
+      },
+      eject: (plugin: XiorPlugin) => {
+        this._plugins = this._plugins.filter((item) => item !== plugin);
+      },
+      clear: () => {
+        this._plugins = [];
       },
     };
   }

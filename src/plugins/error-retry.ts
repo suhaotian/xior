@@ -1,9 +1,9 @@
 import { delay } from './utils';
-import { XiorPlugin } from '../types';
+import { XiorPlugin, XiorRequestConfig } from '../types';
 import { XiorError, XiorTimeoutError } from '../utils';
 
 export type ErrorRetryOptions = {
-  /** retry times, default: 0 */
+  /** retry times, default: 2 */
   retryTimes?: number;
   /**
    * Retry after milliseconds, default: 3000
@@ -14,28 +14,31 @@ export type ErrorRetryOptions = {
    * default: true,
    * it's useful because we don't want retry when the error  because of token expired
    */
-  shouldRetryOnError?: (error: XiorError) => boolean;
+  enableRetry?: boolean | ((config: XiorRequestConfig, error: XiorError) => boolean);
 };
 
 /** @ts-ignore */
 declare module 'xior' {
-  interface XiorRequestConfig extends Omit<ErrorRetryOptions, 'shouldRetryOnError'> {}
+  interface XiorRequestConfig extends ErrorRetryOptions {}
 }
 
 export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): XiorPlugin {
   const {
     retryTimes: _retryTimes,
     retryInterval: _retryInterval,
-    shouldRetryOnError,
+    enableRetry: _enableRetry,
   } = options || {
-    retryTimes: 0,
+    retryTimes: 2,
     retryInterval: 3000,
   };
 
   return function (adapter) {
     return async (config) => {
-      const { retryTimes = _retryTimes, retryInterval = _retryInterval } =
-        config as ErrorRetryOptions;
+      const {
+        retryTimes = _retryTimes,
+        retryInterval = _retryInterval,
+        enableRetry = _enableRetry,
+      } = config as ErrorRetryOptions;
 
       let timeUp = false;
       let count = 0;
@@ -45,9 +48,20 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
           return await adapter(config);
         } catch (error) {
           if (error instanceof XiorError || error instanceof XiorTimeoutError) {
-            const shouldRetry = shouldRetryOnError ? shouldRetryOnError(error) : true;
+            const isGet = config.method === 'GET';
+            const t = typeof enableRetry;
+            const enabled =
+              t === 'undefined'
+                ? isGet
+                : t === 'function'
+                  ? (enableRetry as (config: XiorRequestConfig, error: XiorError) => boolean)(
+                      config,
+                      error
+                    )
+                  : Boolean(enableRetry);
+
             timeUp = retryTimes === count;
-            if (timeUp || !shouldRetry) {
+            if (timeUp || !enabled) {
               throw error;
             }
 

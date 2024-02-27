@@ -1,7 +1,7 @@
 {
   "name": "xior",
-  "version": "0.0.6",
-  "description": "Axios similiar API request library but based on fetch",
+  "version": "0.0.7",
+  "description": "Axios similiar API request library based on fetch and support plugins",
   "repository": "suhaotian/xior",
   "bugs": "https://github.com/suhaotian/xior/issues",
   "homepage": "https://github.com/suhaotian/xior",
@@ -9,19 +9,46 @@
   "module": "./dist/index.esm.js",
   "types": "./dist/types/index.d.ts",
   "exports": {
-    "types": "./dist/types/index.d.ts",
-    "require": "./dist/index.cjs",
-    "import": "./dist/index.mjs",
-    "module": "./dist/index.esm.js"
+    "./plugins/error-retry": {
+      "types": "./dist/plugins/error-retry/index.d.ts",
+      "require": "./dist/plugins/error-retry/index.cjs",
+      "import": "./dist/plugins/error-retry/index.mjs",
+      "module": "./dist/plugins/error-retry/index.esm.js"
+    },
+    "./plugins/throttle": {
+      "types": "./dist/plugins/throttle/index.d.ts",
+      "require": "./dist/plugins/throttle/index.cjs",
+      "import": "./dist/plugins/throttle/index.mjs",
+      "module": "./dist/plugins/throttle/index.esm.js"
+    },
+    "./plugins/cache": {
+      "types": "./dist/plugins/cache/index.d.ts",
+      "require": "./dist/plugins/cache/index.cjs",
+      "import": "./dist/plugins/cache/index.mjs",
+      "module": "./dist/plugins/cache/index.esm.js"
+    },
+    "./plugins/progress": {
+      "types": "./dist/plugins/progress/index.d.ts",
+      "require": "./dist/plugins/progress/index.cjs",
+      "import": "./dist/plugins/progress/index.mjs",
+      "module": "./dist/plugins/progress/index.esm.js"
+    },
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "module": "./dist/index.esm.js"
+    }
   },
   "scripts": {
-    "build": "npm run build:lib && bunchee ./src/index.ts -m",
+    "build": "bunchee -m",
     "build:lib": "rm -rf lib && tsc --project tsconfig.json",
     "test": "pnpm build:lib && node --test",
     "checktype": "tsc --noEmit",
     "start-publish": "pnpm build && pnpm test && npm publish --registry=https://registry.npmjs.org",
     "push": "git push && git lfs push --all origin",
-    "prepare": "is-ci || pnpm build && husky"
+    "prepare": "is-ci || pnpm build && husky",
+    "checksize": "pnpm --filter=vite-example build"
   },
   "dependencies": {
     "ts-deepmerge": "^7.0.0",
@@ -44,7 +71,7 @@
     "@types/multer": "^1.4.11",
     "qs": "^6.11.2",
     "@types/qs": "^6.9.11",
-    "bunchee": "^4.4.6",
+    "bunchee": "^4.4.8",
     "lfs-auto-track": "^1.1.0",
     "isomorphic-unfetch": "^4.0.2",
     "promise-polyfill": "^8.3.0"
@@ -75,24 +102,26 @@
     ]
   },
   "files": [
-    "lib",
-    "!lib/tests",
     "dist"
   ],
   "keywords": [
     "fetch",
+    "axios",
+    "axios fetch",
+    "axios alternatives",
+    "adapter",
+    "plugins",
     "http",
+    "edge runtime",
     "https",
     "network",
-    "axios",
-    "axios alternatives",
     "url",
     "uri",
     "promise",
     "request",
     "error retry",
     "request cache",
-    "repeat requests filter"
+    "request throttle"
   ],
   "author": "suhaotian",
   "license": "MIT"
