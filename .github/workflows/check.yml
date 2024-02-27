@@ -40,3 +40,7 @@ jobs:
       - uses: oven-sh/setup-bun@v1
       - name: Run bun example
         run: cd bun-example && bun install && bun index.ts && bun build index.ts > /tmp/tmp.js
+
+      - uses: denoland/setup-deno@v1
+      - name: Run deno example
+        run: deno run --allow-net deno-example/index.ts
