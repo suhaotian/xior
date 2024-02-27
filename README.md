@@ -41,7 +41,7 @@ A request lib based on **fetch** with plugins support.
 - [Helper functions](#helper-functions)
 - [FAQ](#faq)
   - [1. Is **xior** 100% compatiable with `axios`?](#1-is-xior-100-compatiable-with-axios)
-  - [2. Can I use xior in projects like Bun, Expo, React Native, Next.js, Vue, or Nuxt.js?](#2-can-i-use-xior-in-projects-like-bun-expo-react-native-nextjs-vue-or-nuxtjs)
+  - [2. Can I use xior in projects like Deno, Bun, Expo, React Native, Next.js, Vue, or Nuxt.js?](#2-can-i-use-xior-in-projects-like-deno-bun-expo-react-native-nextjs-vue-or-nuxtjs)
   - [3. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?](#3-how-do-i-handle-responses-with-types-like-stream-document-arraybuffer-or-blob)
   - [5. How do I support older browsers?](#5-how-do-i-support-older-browsers)
   - [6. Why is xior named "xior"?](#6-why-is-xior-named-xior)
@@ -565,10 +565,12 @@ import {
 
 **No**, but **xior** offers a similar API like axios: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`.
 
-### 2. Can I use xior in projects like Bun, Expo, React Native, Next.js, Vue, or Nuxt.js?
+### 2. Can I use xior in projects like Deno, Bun, Expo, React Native, Next.js, Vue, or Nuxt.js?
 
 **Yes**, **xior** works anywhere where the native `fetch` API is supported.
 Even if the environment doesn't support `fetch`, you can use a `fetch` polyfill like for older browsers.
+
+> deno: check example `deno-example/index.ts`
 
 ### 3. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?
 
