@@ -88,8 +88,8 @@ importers:
         specifier: ^18
         version: 18.2.0(react@18.2.0)
       xior:
-        specifier: workspace:*
-        version: link:..
+        specifier: ^0.0.7
+        version: 0.0.7
     devDependencies:
       '@types/node':
         specifier: ^20
@@ -4803,6 +4803,13 @@ packages:
   /wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
     dev: true
+
+  /xior@0.0.7:
+    resolution: {integrity: sha512-WO9ZdL2QTqoZHqCtt5AJvAswpYHRpNt5y+62tpVfpiIEa9nASceW+W0m+cr7u9uNyt0UFJ1gRPo3mmD3ebDPog==}
+    dependencies:
+      tiny-lru: 11.2.5
+      ts-deepmerge: 7.0.0
+    dev: false
 
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
