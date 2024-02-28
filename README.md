@@ -570,7 +570,7 @@ import {
 **Yes**, **xior** works anywhere where the native `fetch` API is supported.
 Even if the environment doesn't support `fetch`, you can use a `fetch` polyfill like for older browsers.
 
-> deno: check example `deno-example/index.ts`
+> deno: check example [deno-example/index.ts](./deno-example/index.ts)
 
 ### 3. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?
 
