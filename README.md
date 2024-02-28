@@ -570,6 +570,8 @@ import {
 **Yes**, **xior** works anywhere where the native `fetch` API is supported.
 Even if the environment doesn't support `fetch`, you can use a `fetch` polyfill like for older browsers.
 
+> For cloudflare worker user, if use TypeScript template, change the `moduleResolution` from `'node'` to `'Bundler'`
+
 ### 3. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?
 
 To handle such responses, use the `responseType: 'stream'` option in your request:
