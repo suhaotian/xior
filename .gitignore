@@ -4,3 +4,4 @@ lib
 *.js
 dist
 uploads
+plugins/

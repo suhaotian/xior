@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.0.9 2024-02-29
+
+- fix(plugins): resolve import plugins not found file error in expo(react-native) project
+
 ## v0.0.8 2024-02-29
 
 - feat(core): compatiable axios's options: `paramsSerializer` and `withCredentials`
