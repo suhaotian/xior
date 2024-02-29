@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import { before, after, describe, it } from 'node:test';
 
 import { startServer } from './server';
-import { XiorError, XiorTimeoutError } from '../utils';
+import { XiorError, XiorTimeoutError, encodeParams } from '../utils';
 import { xior } from '../xior';
 
 let close: Function;
@@ -19,8 +19,18 @@ after(async () => {
 
 describe('axios compatible tests', () => {
   it('should work with axios.create', async () => {
-    const axiosInstance = axios.create({});
-    const xiorInstance = xior.create({});
+    const axiosInstance = axios.create({
+      withCredentials: true,
+      paramsSerializer(data) {
+        return JSON.stringify(data);
+      },
+    });
+    const xiorInstance = xior.create({
+      withCredentials: true,
+      paramsSerializer(data) {
+        return JSON.stringify(data);
+      },
+    });
     const { data } = await axiosInstance.get<string>('https://github.com');
     const { data: axiorData } = await xiorInstance.get<string>('https://github.com');
     assert.strictEqual(data.slice(0, 10), axiorData.slice(0, 10));
@@ -121,6 +131,7 @@ describe('axios compatible tests', () => {
         headerName: 'custom-header-1',
         headerValue: '123456',
       },
+      paramsSerializer: encodeParams,
     });
     assert.strictEqual(axiorData, 'ok');
     assert.strictEqual(axiorStatus, 200);
