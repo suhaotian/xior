@@ -1,5 +1,10 @@
 # CHANGELOG 📝
 
+## v0.0.10 2024-03-01
+
+- chore(build): Update build config to ensure consistency of plugin import paths
+- chore(doc): Update README
+
 ## v0.0.9 2024-02-29
 
 - fix(plugins): resolve import plugins not found file error in expo(react-native) project
