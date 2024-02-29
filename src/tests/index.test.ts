@@ -120,7 +120,7 @@ describe('xior tests', () => {
   });
 
   describe('Options `encode` and `encodeURI` tests', () => {
-    const xiorInstance = xior.create({ baseURL });
+    const xiorInstance = xior.create({ baseURL, withCredentials: true });
 
     it('default encode should work', async () => {
       const { data, request } = await xiorInstance.get<{

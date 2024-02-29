@@ -8,7 +8,7 @@ const jsonType = 'application/json';
 export async function defaultRequestInterceptor(
   req: XiorInterceptorRequestConfig
 ): Promise<XiorInterceptorRequestConfig> {
-  const encode = req.encode || encodeParams;
+  const encode = req.encode || req.paramsSerializer || encodeParams;
   const encodeURI = req.encodeURI !== false;
 
   const method = req.method ? req.method.toUpperCase() : 'GET';
@@ -58,5 +58,7 @@ export async function defaultRequestInterceptor(
     _url,
     method,
     headers,
+    encode,
+    paramsSerializer: encode,
   };
 }
