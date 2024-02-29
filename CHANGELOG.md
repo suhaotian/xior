@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.0.8 2024-02-29
+
+- feat(core): compatiable axios's options: `paramsSerializer` and `withCredentials`
+
 ## v0.0.7 2024-02-27
 
 - feat(core): suport nested object paramaters in default
