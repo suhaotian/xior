@@ -7,7 +7,7 @@
 
 ## Intro
 
-A request lib based on **fetch** with plugins support.
+A lite request lib based on **fetch** with plugins support.
 
 **Features:**
 
