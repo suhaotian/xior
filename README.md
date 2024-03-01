@@ -406,7 +406,7 @@ http.post('/', null, {
 
 > Makes xior cacheable
 
-> Good to know: Next.js already support cache for fetch in server side. [More detail](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating#fetching-data-on-the-server-with-fetch)
+> Good to Know: Next.js already support cache for fetch in server side. [More detail](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating#fetching-data-on-the-server-with-fetch)
 
 API:
 
@@ -1003,8 +1003,6 @@ upload(formData);
 
 xior:
 
-> Add `{responseType: 'stream'}` will tell xior no need process response, and return original response in format `{response}`
-
 ```ts
 import xior from 'xior';
 
@@ -1077,7 +1075,7 @@ run();
 
 xior:
 
-> Add `{responseType: 'stream'}` will tell xior no need process response, and return original response in format `{response}`
+> Good to Know: add `{responseType: 'stream'}` options will tell xior no need process response, and return original response in format `{response}`
 
 ```ts
 import xior from 'xior';
