@@ -50,7 +50,7 @@ A lite request lib based on **fetch** with plugins support.
   - [GET](#get)
   - [POST](#post)
   - [Creating an instance](#creating-an-instance)
-  - [Download file with `responseType: 'stream'`](#download-file-with-responsetype-stream)
+  - [Download file with `responseType: 'stream'` (In Node.JS)](#download-file-with-responsetype-stream-in-nodejs)
 - [Migrate from `fetch` to **xior**](#migrate-from-fetch-to-xior)
   - [GET](#get-1)
   - [POST](#post-1)
@@ -771,7 +771,7 @@ const instance = axios.create({
 });
 ```
 
-### Download file with `responseType: 'stream'`
+### Download file with `responseType: 'stream'` (In Node.JS)
 
 axios:
 
