@@ -38,15 +38,6 @@ export function encodeParams<T = any>(
   return encodedParams.join('&');
 }
 
-function it(obj: Record<string, any>, key: string, list: string[], encodeURI: boolean) {
-  const val = obj[key];
-  if (val === null) return;
-  if (val instanceof Function) return;
-  const en = encodeURIComponent;
-  const pair = encodeURI ? en(key) + '=' + en(val) : key + '=' + val;
-  list.push(pair);
-}
-
 /**
  * Determines whether the specified URL is absolute
  *
