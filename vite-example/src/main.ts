@@ -49,3 +49,15 @@ instance
   .then(({ data }) => {
     console.log(data);
   });
+
+fetch('https://github.com')
+  .then((res) => res.text())
+  .catch((e) => {
+    console.log('fetch:', e instanceof TypeError, e);
+  });
+
+const http = xior.create({});
+
+http.get('https://github.com').catch((e) => {
+  console.log('xior:', e instanceof TypeError, e);
+});
