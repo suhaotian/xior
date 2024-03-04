@@ -51,6 +51,7 @@ A lite request lib based on **fetch** with plugins support.
   - [POST](#post)
   - [Creating an instance](#creating-an-instance)
   - [Download file with `responseType: 'stream'` (In Node.JS)](#download-file-with-responsetype-stream-in-nodejs)
+  - [Use stream](#use-stream)
 - [Migrate from `fetch` to **xior**](#migrate-from-fetch-to-xior)
   - [GET](#get-1)
   - [POST](#post-1)
@@ -659,7 +660,6 @@ xior:
 
 ```ts
 import xior from 'xior';
-// or import { xior } from 'xior';
 
 const axios = xior.create();
 
@@ -730,7 +730,6 @@ xior:
 
 ```ts
 import xior from 'xior';
-// or import { xior } from 'xior';
 
 const axios = xior.create();
 
@@ -802,6 +801,57 @@ axios
     const buffer = Buffer.from(await response.arrayBuffer());
     return writeFile('ada_lovelace.jpg', buffer);
   });
+```
+
+### Use stream
+
+axios:
+
+```ts
+import axios from 'axios';
+import { Readable } from 'stream';
+
+const http = axios.create();
+
+async function getStream(url: string, params: Record<string, any>) {
+  const { data } = await http.get(url, {
+    params,
+    responseType: 'stream',
+  });
+  return data;
+}
+```
+
+xior:
+
+```ts
+import axxios from 'xior';
+import { Readable } from 'stream';
+
+const http = axios.create();
+
+async function getStream(url: string, params: Record<string, any>) {
+  const { response } = await http.get(url, {
+    params,
+    responseType: 'stream',
+  });
+  const stream = convertResponseToReadable(response);
+  return stream;
+}
+
+function convertResponseToReadable(response: Response): Readable {
+  const reader = response.body.getReader();
+  return new Readable({
+    async read() {
+      const { done, value } = await reader.read();
+      if (done) {
+        this.push(null);
+      } else {
+        this.push(Buffer.from(value));
+      }
+    },
+  });
+}
 ```
 
 ## Migrate from `fetch` to **xior**

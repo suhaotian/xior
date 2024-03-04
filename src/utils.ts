@@ -55,11 +55,13 @@ export function isAbsoluteURL(url: string) {
 export class XiorTimeoutError extends Error {}
 export class XiorError extends Error {
   request?: XiorRequestConfig;
+  config?: XiorRequestConfig;
   response?: XiorResponse;
 
   constructor(message: string, request?: XiorRequestConfig, response?: XiorResponse) {
     super(message);
     this.request = request;
+    this.config = request;
     this.response = response;
   }
 }
