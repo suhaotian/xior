@@ -315,8 +315,8 @@ export class xior {
     return this.createPostHandler<T>('PATCH')(url, data, options);
   }
 
-  delete<T = any>(url: string, data?: any, options?: XiorRequestConfig) {
-    return this.createPostHandler<T>('DELETE')(url, data, options);
+  delete<T = any>(url: string, options?: XiorRequestConfig) {
+    return this.createGetHandler<T>('DELETE')(url, options);
   }
 
   options<T = any>(url: string, data?: any, options?: XiorRequestConfig) {

@@ -1,5 +1,24 @@
 # CHANGELOG 📝
 
+## v0.1.1 2024-03-04
+
+- Fix: compatiable `delete` method with axios, and `delete` method shouldn't have body
+- Chore: remove unused code in core module
+
+**Breaking change:**
+
+```ts
+import xior from 'xior';
+
+const http = xior.create({ baseURL: 'https://exampled.com' });
+
+// before
+http.delete('/', {}, { params: { a: 1, b: 2 } });
+
+// now
+http.delete('/', { params: { a: 1, b: 2 } });
+```
+
 ## v0.0.10 2024-03-01
 
 - chore(build): Update build config to ensure consistency of plugin import paths

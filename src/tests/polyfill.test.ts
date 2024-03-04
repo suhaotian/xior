@@ -58,11 +58,8 @@ describe('xior polyfill tests', () => {
         method: string;
         body: Record<string, any>;
         query: Record<string, any>;
-      }>('/delete', { a: 1, b: 2 }, { params: { a: 1, b: 2 } });
+      }>('/delete', { params: { a: 1, b: 2 } });
       assert.strictEqual(data.method, 'delete');
-      assert.strictEqual(Object.keys(data.body).length, 2);
-      assert.strictEqual(data.body.a, 1);
-      assert.strictEqual(data.body.b, 2);
       assert.strictEqual(data.query.a, '1');
       assert.strictEqual(data.query.b, '2');
     });
