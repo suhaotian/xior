@@ -177,7 +177,7 @@ describe('axios compatible tests', () => {
       baseURL,
     });
     await axiosInstance.delete('/delete', { params: {} });
-    await xiorInstance.delete('/get', { params: {} });
+    await xiorInstance.delete('/delete', { params: {} });
 
     assert.strictEqual(1, 1);
   });
