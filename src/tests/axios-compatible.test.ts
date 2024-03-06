@@ -168,6 +168,20 @@ describe('axios compatible tests', () => {
     assert.strictEqual(axiorStatusText, statusText);
     assert.strictEqual(axiorHeaders.get('custom-header-1'), '123456');
   });
+
+  it('should work with delete', async () => {
+    const axiosInstance = axios.create({
+      baseURL,
+    });
+    const xiorInstance = xior.create({
+      baseURL,
+    });
+    await axiosInstance.delete('/delete', { params: {} });
+    await xiorInstance.delete('/get', { params: {} });
+
+    assert.strictEqual(1, 1);
+  });
+
   it('should work with axios.interceptors.request.use', async () => {
     const axiosInstance = axios.create({
       baseURL,
