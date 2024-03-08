@@ -20,6 +20,9 @@ declare module 'xior' {
     /** forceUpdate, default: false */
     forceUpdate?: boolean;
   }
+  interface XiorResponse {
+    fromCache?: boolean;
+  }
 }
 
 export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlugin {
@@ -78,7 +81,10 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
           return responsePromise;
         }
 
-        return responsePromise;
+        return responsePromise.then((res) => {
+          (res as any).fromCache = true;
+          return res;
+        });
       }
 
       return adapter(config);

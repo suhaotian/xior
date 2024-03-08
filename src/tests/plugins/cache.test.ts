@@ -46,21 +46,24 @@ describe('xior cache plguins tests', () => {
 
   it('cache size should be 1 get from cache when request same data', async () => {
     const result: string[] = [];
+    const fromCache: boolean[] = [];
     await Promise.all(
       Array(5)
         .fill(5)
         .map(async () => {
-          const { data } = await instance.get('/get', {
+          const res = await instance.get('/get', {
             headers: {
               'x-custom-value': '2',
             },
           });
-          result.push(data.value);
-          return data;
+          result.push(res.data.value);
+          fromCache.push((res as any).fromCache);
+          return res.data;
         })
     );
     assert.strictEqual(cache.size, 1);
     assert.strictEqual(result.join(','), '1,1,1,1,1');
+    assert.strictEqual(fromCache.join(','), 'true,true,true,true,true');
   });
 
   it('delay 5 seconds, should return latest new data', async () => {

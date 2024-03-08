@@ -25,6 +25,9 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
 export type XiorInterceptorRequestConfig<T = any> = XiorRequestConfig & {
   headers: Record<string, any>;
   params: Record<string, any>;
+  url: string;
+  _url: string;
+  method: string;
 };
 export interface XiorResponse<T = any> {
   data: T;
