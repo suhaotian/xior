@@ -58,30 +58,26 @@ describe('axios compatible tests', () => {
   });
 
   it('should work with baseURL', async () => {
-    const axiosInstance = axios.create({ baseURL: 'https://github.com' });
-    const xiorInstance = xior.create({ baseURL: 'https://github.com/' });
-    const { data } = await axiosInstance.get<string>('/');
-    const { data: axiorData } = await xiorInstance.get<string>('/');
-    assert.strictEqual(data.slice(0, 10), axiorData?.slice(0, 10));
-    assert.strictEqual(data.slice(-10), axiorData?.slice(-10));
+    const axiosInstance = axios.create({ baseURL });
+    const xiorInstance = xior.create({ baseURL });
+    const { data } = await axiosInstance.get('/get');
+    const { data: axiorData } = await xiorInstance.get('/get');
+    assert.strictEqual(data.method, axiorData.method);
   });
 
   it('should work with params', async () => {
-    const axiosInstance = axios.create({ baseURL: 'https://api.github.com' });
-    const xiorInstance = xior.create({ baseURL: 'https://api.github.com/' });
-    const { data } = await axiosInstance.get<any[]>('/orgs/tsdk-monorepo/repos', {
+    const axiosInstance = axios.create({ baseURL });
+    const xiorInstance = xior.create({ baseURL });
+    const { data } = await axiosInstance.get('/get', {
       data: { page: 1 },
-      params: { page: 100 },
+      params: { page: 100, size: 100 },
     });
-    const { data: axiorData } = await xiorInstance.get<any[]>('/orgs/tsdk-monorepo/repos', {
+    const { data: axiorData } = await xiorInstance.get('/get', {
       data: { page: 1 },
-      params: { page: 100 },
+      params: { page: 100, size: 100 },
     });
-    assert.strictEqual(data.length, 0);
-    assert.strictEqual(axiorData.length, 0);
-  });
-  it('should work with post/delete/put/patch/head/options', () => {
-    //
+    assert.strictEqual(data.query.page, axiorData.query.page);
+    assert.strictEqual(data.query.size, axiorData.query.size);
   });
   it('should work with timeout', async () => {
     const axiosInstance = axios.create({
