@@ -20,7 +20,7 @@ after(async () => {
 });
 
 describe('xior error retry plguins tests', () => {
-  const instance = xior.create({ baseURL, encode: (params) => stringify(params) });
+  const instance = xior.create({ baseURL });
   instance.plugins.use(
     xiorErrorRetryPlugin({
       retryInterval: 1000,
@@ -73,6 +73,19 @@ describe('xior error retry plguins tests', () => {
     const { data } = await instance.post('/retry-error', { count: 3 }, {
       enableRetry: true,
     } as any);
+    assert.strictEqual(data.count, 3);
+    assert.strictEqual(data.errorCount, 3);
+  });
+
+  it('should retry when `POST` error with `isGet: true` until success', async () => {
+    await instance.get('/reset-error');
+    const { data } = await instance.post(
+      '/retry-error',
+      { count: 3 },
+      {
+        isGet: true,
+      }
+    );
     assert.strictEqual(data.count, 3);
     assert.strictEqual(data.errorCount, 3);
   });

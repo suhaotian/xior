@@ -75,7 +75,7 @@ export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): X
         data,
       } = config as XiorThrottleOptions & XiorRequestConfig;
 
-      const isGet = config.method === 'GET';
+      const isGet = config.method === 'GET' || config.isGet;
 
       const t = typeof enableThrottle;
       const enabled =
