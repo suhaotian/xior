@@ -52,7 +52,6 @@ export function isAbsoluteURL(url: string) {
   return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
 }
 
-export class XiorTimeoutError extends Error {}
 export class XiorError extends Error {
   request?: XiorRequestConfig;
   config?: XiorRequestConfig;
@@ -65,3 +64,4 @@ export class XiorError extends Error {
     this.response = response;
   }
 }
+export class XiorTimeoutError extends XiorError {}

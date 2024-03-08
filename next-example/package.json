@@ -12,7 +12,7 @@
     "react": "^18",
     "react-dom": "^18",
     "next": "14.1.0",
-    "xior": "^0.0.7"
+    "xior": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5",

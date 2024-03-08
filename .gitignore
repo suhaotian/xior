@@ -5,3 +5,4 @@ dist
 uploads
 plugins/
 !src/plugins
+!src/tests/plugins

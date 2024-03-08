@@ -128,6 +128,7 @@ export class xior {
 
   async request<T>(options?: XiorRequestConfig | string) {
     let requestConfig: XiorRequestConfig = merge(
+      {},
       this.config || {},
       typeof options === 'string' ? { url: options } : options || {},
       { headers: {}, params: {} }
@@ -153,7 +154,7 @@ export class xior {
     if (timeout && supportAbortController) {
       const controller = new AbortController();
       timer = setTimeout(() => {
-        controller.abort(new XiorTimeoutError(`timeout of ${timeout}ms exceeded`));
+        controller.abort(new XiorTimeoutError(`timeout of ${timeout}ms exceeded`, requestConfig));
       }, timeout);
       signals.push(controller.signal);
     }
