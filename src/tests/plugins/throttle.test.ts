@@ -93,7 +93,7 @@ describe('xior throttle plguins tests', () => {
     assert.strictEqual(result[9], 9);
   });
 
-  it('should request only once when send multiple but same requests with `POST` method', async () => {
+  it('should request only once when send multiple but same requests with `POST` method when `enableThrottle: true`', async () => {
     const result: number[] = [];
     await Promise.all(
       Array(10)
@@ -107,6 +107,34 @@ describe('xior throttle plguins tests', () => {
               },
               enableThrottle: true,
             } as any)
+            .then((res) => {
+              result.push(+res.data.value);
+            });
+        })
+    );
+    assert.strictEqual(result[0], 0);
+    assert.strictEqual(result[1], 0);
+    assert.strictEqual(result[9], 0);
+  });
+
+  it('should request only once when send multiple but same requests with `POST` method when `isGet: true`', async () => {
+    const result: number[] = [];
+    await Promise.all(
+      Array(10)
+        .fill(1)
+        .map((item, idx) => {
+          return instance
+            .post(
+              '/post',
+              { a: 1, b: 2 },
+              {
+                params: { a: 1 },
+                headers: {
+                  'x-custom-value': idx,
+                },
+                isGet: true,
+              }
+            )
             .then((res) => {
               result.push(+res.data.value);
             });

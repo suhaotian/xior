@@ -42,7 +42,7 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
         forceUpdate?: boolean;
       } & XiorRequestConfig;
 
-      const isGet = config.method === 'GET';
+      const isGet = config.method === 'GET' || config.isGet;
 
       const t = typeof enableCache;
       const enabled =

@@ -25,7 +25,7 @@ describe('xior cache plguins tests', () => {
   const cache = lru(10, 1000 * 4);
   instance.plugins.use(
     xiorCachePlugin({
-      enableCache: (config) => config?.method === 'GET',
+      enableCache: (config) => config?.method === 'GET' || config?.isGet === true,
       defaultCache: cache,
     })
   );
@@ -116,9 +116,14 @@ describe('xior cache plguins tests', () => {
     assert.strictEqual(cache.size, 2);
   });
 
-  it('cache size should still be 3 when request is `POST` and `enableCache: true`', async () => {
+  it('cache size should be 3 when request is `POST` and `enableCache: true`', async () => {
     await instance.post('/post', {}, { params: { a: 1 }, enableCache: true } as any);
     assert.strictEqual(cache.size, 3);
+  });
+
+  it('cache size should be 4 when request is `POST` and `isGet: true`', async () => {
+    await instance.post('/post', {}, { params: { a: 1, b: 4 }, isGet: true });
+    assert.strictEqual(cache.size, 4);
   });
 
   it('cache size should be max 10 after 10 requests', async () => {

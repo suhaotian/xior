@@ -48,7 +48,7 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
           return await adapter(config);
         } catch (error) {
           if (error instanceof XiorError || error instanceof XiorTimeoutError) {
-            const isGet = config.method === 'GET';
+            const isGet = config.method === 'GET' || config.isGet;
             const t = typeof enableRetry;
             const enabled =
               t === 'undefined'

@@ -314,11 +314,11 @@ function errorRetryPlugin(options: {
 
 The `options` object:
 
-| Param         | Type                                                                   | Default value                              | Description                                                                           |
-| ------------- | ---------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------- |
-| retryTimes    | number                                                                 | 2                                          | Set the retry times for failed request                                                |
-| retryInterval | number                                                                 | 3000                                       | After first time retry, the next retries interval time, default interval is 3 seconds |
-| enableRetry   | boolean \| ((config: Xiorconfig, error: XiorRequestConfig) => boolean) | (config, error) => config.method === 'GET' | Default only retry if `GET` request error and `retryTimes > 0`                        |
+| Param         | Type                                                                   | Default value                                                | Description                                                                           |
+| ------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| retryTimes    | number                                                                 | 2                                                            | Set the retry times for failed request                                                |
+| retryInterval | number                                                                 | 3000                                                         | After first time retry, the next retries interval time, default interval is 3 seconds |
+| enableRetry   | boolean \| ((config: Xiorconfig, error: XiorRequestConfig) => boolean) | (config, error) => config.method === 'GET' \|\| config.isGet | Default only retry if `GET` request error and `retryTimes > 0`                        |
 
 Basic usage:
 
@@ -369,11 +369,11 @@ The `options` object:
 
 > You can override default value in each request's own config (Except `throttleCache`)
 
-| Param          | Type                                         | Default value                       | Description                                                                                |
-| -------------- | -------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------ |
-| threshold      | number                                       | 1000                                | The number of milliseconds to throttle request invocations to                              |
-| enableThrottle | boolean \| ((config: Xiorconfig) => boolean) | (config) => config.method === 'GET' | Default only enabled in `GET` request                                                      |
-| throttleCache  | CacheLike                                    | lru(10)                             | CacheLike instance that will be used for storing throttled requests, use `tiny-lru` module |
+| Param          | Type                                         | Default value                                         | Description                                                                                |
+| -------------- | -------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| threshold      | number                                       | 1000                                                  | The number of milliseconds to throttle request invocations to                              |
+| enableThrottle | boolean \| ((config: Xiorconfig) => boolean) | (config) => config.method === 'GET' \|\| config.isGet | Default only enabled in `GET` request                                                      |
+| throttleCache  | CacheLike                                    | lru(10)                                               | CacheLike instance that will be used for storing throttled requests, use `tiny-lru` module |
 
 Basic usage:
 
@@ -401,6 +401,18 @@ http.post('/', null, {
 http.post('/', null, {
   enableThrottle: true,
 }); // response from cache
+
+// make post method as get method use `{isGet: true}`,
+// useful when some API is get data but the method is `post`
+http.post('/get', null, {
+  isGet: true,
+}); // make real http request
+http.post('/get', null, {
+  isGet: true,
+}); // response from cache
+http.post('/get', null, {
+  isGet: true,
+}); // response from cache
 ```
 
 ### Cache plugin
@@ -420,10 +432,10 @@ function cachePlugin(options: {
 
 The `options` object:
 
-| Param        | Type                                         | Default value                       | Description                                                                                                                 |
-| ------------ | -------------------------------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| enableCache  | boolean \| ((config: Xiorconfig) => boolean) | (config) => config.method === 'GET' | Default only enabled in `GET` request                                                                                       |
-| defaultCache | CacheLike                                    | lru(100, 1000\*60\*5)               | will used for storing requests by default, except you define a custom Cache with your request config, use `tiny-lru` module |
+| Param        | Type                                         | Default value                                         | Description                                                                                                                 |
+| ------------ | -------------------------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| enableCache  | boolean \| ((config: Xiorconfig) => boolean) | (config) => config.method === 'GET' \|\| config.isGet | Default only enabled in `GET` request                                                                                       |
+| defaultCache | CacheLike                                    | lru(100, 1000\*60\*5)                                 | will used for storing requests by default, except you define a custom Cache with your request config, use `tiny-lru` module |
 
 Basic usage:
 
@@ -1182,6 +1194,7 @@ Without the support of these resources, xior wouldn't be possible:
 
 - [axios](https://github.com/axios/axios)
 - [axios-extensions](https://github.com/kuitos/axios-extensions)
+- [axios-mock-adapter](https://github.com/ctimmerm/axios-mock-adapter)
 - [ts-deepmerge](https://github.com/voodoocreation/ts-deepmerge)
 - [tiny-lru](https://github.com/avoidwork/tiny-lru)
 - [bunchee](https://github.com/huozhi/bunchee)

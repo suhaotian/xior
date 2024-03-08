@@ -20,6 +20,11 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
   _url?: string;
   /** useless now, compitable axios */
   withCredentials?: boolean;
+  /**
+   * some API is get data, but the method is not 'GET',
+   * add `isGet: true`, can let the plugins know this is also a `GET` API
+   */
+  isGet?: boolean;
 }
 
 export type XiorInterceptorRequestConfig<T = any> = XiorRequestConfig & {

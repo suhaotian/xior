@@ -22,12 +22,18 @@ instance.plugins.use((adapter) => {
 });
 
 setTimeout(() => {
-  instance.get('/main', {
-    progressDuration: 1000,
-    onDownloadProgress(e) {
-      console.log(`Download %s%`, e.progress);
-    },
-  });
+  instance
+    .get('/main', {
+      progressDuration: 1000,
+      onDownloadProgress(e) {
+        console.log(`Download %s%`, e.progress);
+      },
+    })
+    .then((res) => {
+      if (res.fromCache) {
+        console.log('data from cache!');
+      }
+    });
 }, 3000);
 
 instance
