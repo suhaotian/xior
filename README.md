@@ -72,6 +72,8 @@ A lite request lib based on **fetch** with plugins support.
 
 ### Why not just use `axios`?
 
+> If you want proxy support, use `axios`, because `xior` don't support proxy feature yet
+
 While popular and convenient, Axios currently lacks native edge runtime support (see: [https://github.com/axios/axios/issues/5523](https://github.com/axios/axios/issues/5523)). This can be an issue for specific use cases like Next.js serverless functions and middleware files, where fetch offers built-in caching and revalidation mechanisms (see: [https://nextjs.org/docs/app/api-reference/functions/fetch](https://nextjs.org/docs/app/api-reference/functions/fetch)).
 
 ### Why choose **xior** over Custom Fetch Wrappers?
