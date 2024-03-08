@@ -442,7 +442,11 @@ http.post('/users'); // default no cache for post
 
 // enable cache manually in post request
 http.post('/users', { enableCache: true }); // make real http request
-http.post('/users', { enableCache: true }); // get cache from previous request
+const res = await http.post('/users', { enableCache: true }); // get cache from previous request
+if (res.fromCache) {
+  // if fromCache is true, means data from cache!
+  console.log('data from cache!');
+}
 ```
 
 Advanced:
