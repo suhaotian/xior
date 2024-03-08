@@ -144,7 +144,7 @@ export class xior {
     return finalPlugin<T>(requestConfig);
   }
 
-  private async handlerFetch<T>(requestConfig: XiorRequestConfig): Promise<XiorResponse<T>> {
+  async handlerFetch<T>(requestConfig: XiorRequestConfig): Promise<XiorResponse<T>> {
     const { url, method, headers, timeout, signal: reqSignal, data, ...rest } = requestConfig;
 
     /** timeout */

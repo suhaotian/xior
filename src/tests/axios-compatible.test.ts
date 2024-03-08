@@ -24,6 +24,11 @@ describe('axios compatible tests', () => {
       paramsSerializer(data) {
         return JSON.stringify(data);
       },
+      // proxy: {
+      //   protocol: '',
+      //   host: '',
+      //   port: 1,
+      // },
     });
     const xiorInstance = xior.create({
       withCredentials: true,
