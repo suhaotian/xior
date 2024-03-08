@@ -33,6 +33,12 @@
       "import": "./plugins/progress/index.mjs",
       "module": "./plugins/progress/index.esm.js"
     },
+    "./plugins/mock": {
+      "types": "./plugins/mock/index.d.ts",
+      "require": "./plugins/mock/index.cjs",
+      "import": "./plugins/mock/index.mjs",
+      "module": "./plugins/mock/index.esm.js"
+    },
     ".": {
       "types": "./dist/types/index.d.ts",
       "require": "./dist/index.cjs",
