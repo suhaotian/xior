@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.1.2 2024-03-08
+
+- Feat: add `fromCache: boolean` in cache plugin
+
 ## v0.1.1 2024-03-04
 
 - Fix: compatiable `delete` method with axios, and `delete` method shouldn't have body
