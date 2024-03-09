@@ -22,8 +22,14 @@ export class xior {
   }
 
   config?: XiorRequestConfig;
+  defaults: XiorInterceptorRequestConfig;
+
   constructor(options?: XiorRequestConfig) {
     this.config = options;
+    this.defaults = {
+      params: {},
+      headers: {},
+    } as XiorInterceptorRequestConfig;
   }
 
   private requestInterceptors: ((
@@ -130,6 +136,7 @@ export class xior {
     let requestConfig: XiorRequestConfig = merge(
       {},
       this.config || {},
+      this.defaults || {},
       typeof options === 'string' ? { url: options } : options || {},
       { headers: {}, params: {} }
     );
