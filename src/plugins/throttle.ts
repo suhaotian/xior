@@ -15,7 +15,7 @@ export type XiorThrottleOptions = {
   /** threshold in milliseconds, default: 1000ms */
   threshold?: number;
   /**
-   * check if we need enable throttle, default only `GET` method enable
+   * check if we need enable throttle, default only `GET` method or`isGet: true` enable
    */
   enableThrottle?: boolean | ((config?: XiorRequestConfig) => boolean);
   throttleCache?: ICacheLike<RecordedCache>;

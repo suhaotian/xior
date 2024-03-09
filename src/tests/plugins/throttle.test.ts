@@ -19,7 +19,7 @@ after(async () => {
   return close(1);
 });
 
-describe('xior throttle plguins tests', () => {
+describe('xior throttle plugin tests', () => {
   const instance = xior.create({ baseURL, encode: (params) => stringify(params) });
   instance.plugins.use(
     xiorThrottlePlugin({

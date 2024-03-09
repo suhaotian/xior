@@ -39,6 +39,12 @@
       "import": "./plugins/mock/index.mjs",
       "module": "./plugins/mock/index.esm.js"
     },
+    "./plugins/error-cache": {
+      "types": "./plugins/error-cache/index.d.ts",
+      "require": "./plugins/error-cache/index.cjs",
+      "import": "./plugins/error-cache/index.mjs",
+      "module": "./plugins/error-cache/index.esm.js"
+    },
     ".": {
       "types": "./dist/types/index.d.ts",
       "require": "./dist/index.cjs",
