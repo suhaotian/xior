@@ -113,7 +113,7 @@ export const xiorInstance = xior.create({
 
 GET
 
-> `HEAD` method is same usage with `GET`
+> `HEAD` / `DELETE` are same usage with `GET` method
 
 ```ts
 async function run() {
@@ -137,7 +137,7 @@ async function run() {
 
 POST
 
-> `DELETE`/`PUT`/`PATCH`/`OPTIONS` methods are same usage with `POST`
+> `PUT`/`PATCH`/`OPTIONS` methods are same usage with `POST`
 
 ```ts
 async function run() {
@@ -308,17 +308,17 @@ API:
 function errorRetryPlugin(options: {
   retryTimes?: number;
   retryInterval?: number;
-  enableRetry?: boolean | (error: Xiorconfig, error: XiorRequestConfig) => boolean;
+  enableRetry?: boolean | (config: XiorRequestConfig, error: XiorError) => boolean;
 }): XiorPlugin;
 ```
 
 The `options` object:
 
-| Param         | Type                                                                   | Default value                                                | Description                                                                           |
-| ------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
-| retryTimes    | number                                                                 | 2                                                            | Set the retry times for failed request                                                |
-| retryInterval | number                                                                 | 3000                                                         | After first time retry, the next retries interval time, default interval is 3 seconds |
-| enableRetry   | boolean \| ((config: Xiorconfig, error: XiorRequestConfig) => boolean) | (config, error) => config.method === 'GET' \|\| config.isGet | Default only retry if `GET` request error and `retryTimes > 0`                        |
+| Param         | Type                                                                  | Default value                                                | Description                                                                           |
+| ------------- | --------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| retryTimes    | number                                                                | 2                                                            | Set the retry times for failed request                                                |
+| retryInterval | number                                                                | 3000                                                         | After first time retry, the next retries interval time, default interval is 3 seconds |
+| enableRetry   | boolean \| ((config: XiorRequestConfig, error: XiorError) => boolean) | (config, error) => config.method === 'GET' \|\| config.isGet | Default only retry if `GET` request error and `retryTimes > 0`                        |
 
 Basic usage:
 
@@ -358,7 +358,7 @@ function throttleRequestPlugin(options: {
   /** threshold in milliseconds, default: 1000ms */
   threshold?: number;
   /**
-   * check if we need enable throttle, default only `GET` method enable
+   * check if we need enable throttle, default only `GET` method or`isGet: true` enable
    */
   enableThrottle?: boolean | ((config?: XiorRequestConfig) => boolean);
   throttleCache?: ICacheLike<RecordedCache>;
