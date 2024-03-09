@@ -29,6 +29,7 @@ A lite request lib based on **fetch** with plugins support.
   - [Installing](#installing)
   - [Create instance](#create-instance)
   - [GET / POST / DELETE / PUT / PATCH / OPTIONS / HEAD](#get--post--delete--put--patch--options--head)
+  - [Change default headers or params](#change-default-headers-or-params)
   - [Upload file](#upload-file)
   - [Using interceptors](#using-interceptors)
   - [Timeout and Cancel request](#timeout-and-cancel-request)
@@ -153,6 +154,26 @@ async function run() {
       },
     }
   );
+}
+```
+
+### Change default headers or params
+
+```ts
+import xior from 'xior';
+
+export const xiorInstance = xior.create({
+  baseURL: 'https://apiexampledomian.com/api',
+});
+
+function setAccessToken(token: string) {
+  // xiorInstance.defaults.params['x'] = 1;
+  xiorInstance.defaults.headers['Authorization'] = `Bearer ${token}`;
+}
+
+function removeUserToken() {
+  // delete xiorInstance.defaults.params['x'];
+  delete xiorInstance.defaults.headers['Authorization'];
 }
 ```
 
