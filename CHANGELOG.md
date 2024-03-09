@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.1.4 2024-03-09
+
+- Feat(core): support `xiorInstance.defaults.headers['Authorization'] = 'Basic token';`
+
 ## v0.1.3 2024-03-08
 
 - Feat(core): add `isGet?: boolean` option
