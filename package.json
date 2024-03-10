@@ -33,6 +33,12 @@
       "import": "./plugins/progress/index.mjs",
       "module": "./plugins/progress/index.esm.js"
     },
+    "./plugins/proxy": {
+      "types": "./plugins/proxy/index.d.ts",
+      "require": "./plugins/proxy/index.cjs",
+      "import": "./plugins/proxy/index.mjs",
+      "module": "./plugins/proxy/index.esm.js"
+    },
     ".": {
       "types": "./dist/types/index.d.ts",
       "require": "./dist/index.cjs",
@@ -74,7 +80,8 @@
     "bunchee": "^4.4.8",
     "lfs-auto-track": "^1.1.0",
     "isomorphic-unfetch": "^4.0.2",
-    "promise-polyfill": "^8.3.0"
+    "promise-polyfill": "^8.3.0",
+    "express-basic-auth": "^1.2.1"
   },
   "prettier": {
     "printWidth": 100,

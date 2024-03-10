@@ -1,7 +1,5 @@
 import assert from 'node:assert';
 import { after, before, describe, it } from 'node:test';
-// @ts-ignore
-import stringify from 'qs/lib/stringify';
 
 import xiorErrorRetryPlugin from '../../plugins/error-retry';
 import { XiorError } from '../../utils';

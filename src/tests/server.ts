@@ -1,10 +1,26 @@
 import express from 'express';
+import basicAuth from 'express-basic-auth';
 import multer from 'multer';
 
 export async function startServer(port: number) {
   const app = express();
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
+
+  app.get(
+    '/basic-auth',
+    basicAuth({
+      users: { test: '123456', '.(*-?': '.(*-?/' },
+      challenge: true,
+      realm: 'Imb4T3st4pp',
+    }),
+    (req, res) => {
+      res.send({
+        method: 'get',
+        msg: 'ok',
+      });
+    }
+  );
 
   (['get', 'post', 'patch', 'put', 'delete', 'head', 'options'] as const).forEach((method) => {
     app[method](`/${method}`, (req, res) => {

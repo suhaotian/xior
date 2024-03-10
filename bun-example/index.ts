@@ -5,6 +5,7 @@ import xior, { merge, delay, buildSortedURL, encodeParams } from 'xior';
 import cachePlugin from 'xior/plugins/cache';
 import errorRetryPlugin from 'xior/plugins/error-retry';
 import uploadDownloadProgressPlugin from 'xior/plugins/progress';
+import proxyPlugin from 'xior/plugins/proxy';
 import throttlePlugin from 'xior/plugins/throttle';
 
 // console.log(merge, delay, buildSortedURL);
@@ -16,6 +17,7 @@ instance.plugins.use(errorRetryPlugin({}));
 instance.plugins.use(cachePlugin({}));
 instance.plugins.use(throttlePlugin({}));
 instance.plugins.use(uploadDownloadProgressPlugin({}));
+instance.plugins.use(proxyPlugin({}));
 
 instance.plugins.use((adapter) => {
   return async (config) => {
