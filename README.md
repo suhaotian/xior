@@ -675,9 +675,7 @@ async function getUser() {
 xior:
 
 ```ts
-import xior from 'xior';
-
-const axios = xior.create();
+import axios from 'xior';
 
 // Make a request for a user with a given ID
 axios
@@ -745,9 +743,7 @@ axios
 xior:
 
 ```ts
-import xior from 'xior';
-
-const axios = xior.create();
+import axios from 'xior';
 
 axios
   .post('/user', {
