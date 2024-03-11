@@ -1,8 +1,16 @@
 # CHANGELOG 📝
 
-## v0.1.2 2024-03-08
+## v0.1.4 2024-03-09
 
-- Feat: add `fromCache: boolean` in cache plugin
+- Feat(core): support `xiorInstance.defaults.headers['Authorization'] = 'Basic token';`
+
+## v0.1.3 2024-03-08
+
+- Feat(core): add `isGet?: boolean` option
+
+## v0.1.2
+
+- Feat(cache plugin): add `fromCache: boolean` in cache plugin
 
 ## v0.1.1 2024-03-04
 

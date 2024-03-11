@@ -1,6 +1,6 @@
 {
   "name": "xior",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "A lite request lib based on **fetch** with plugins support, and axios similar API",
   "repository": "suhaotian/xior",
   "bugs": "https://github.com/suhaotian/xior/issues",

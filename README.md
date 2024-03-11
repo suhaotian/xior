@@ -29,6 +29,7 @@ A lite request lib based on **fetch** with plugins support.
   - [Installing](#installing)
   - [Create instance](#create-instance)
   - [GET / POST / DELETE / PUT / PATCH / OPTIONS / HEAD](#get--post--delete--put--patch--options--head)
+  - [Change default headers or params](#change-default-headers-or-params)
   - [Upload file](#upload-file)
   - [Using interceptors](#using-interceptors)
   - [Timeout and Cancel request](#timeout-and-cancel-request)
@@ -71,6 +72,8 @@ A lite request lib based on **fetch** with plugins support.
 - **Convenient API and Plugin Support:** xior provides a familiar API similar to Axios, while also offering plugin support for customization and extending functionalities.
 
 ### Why not just use `axios`?
+
+> If you want proxy support, use `axios`, because `xior` doesn't support proxy feature yet
 
 While popular and convenient, Axios currently lacks native edge runtime support (see: [https://github.com/axios/axios/issues/5523](https://github.com/axios/axios/issues/5523)). This can be an issue for specific use cases like Next.js serverless functions and middleware files, where fetch offers built-in caching and revalidation mechanisms (see: [https://nextjs.org/docs/app/api-reference/functions/fetch](https://nextjs.org/docs/app/api-reference/functions/fetch)).
 
@@ -151,6 +154,26 @@ async function run() {
       },
     }
   );
+}
+```
+
+### Change default headers or params
+
+```ts
+import xior from 'xior';
+
+export const xiorInstance = xior.create({
+  baseURL: 'https://apiexampledomian.com/api',
+});
+
+function setAccessToken(token: string) {
+  // xiorInstance.defaults.params['x'] = 1;
+  xiorInstance.defaults.headers['Authorization'] = `Bearer ${token}`;
+}
+
+function removeUserToken() {
+  // delete xiorInstance.defaults.params['x'];
+  delete xiorInstance.defaults.headers['Authorization'];
 }
 ```
 
