@@ -1,8 +1,16 @@
-import { lru } from 'tiny-lru';
-
 import buildSortedURL from './cache/build-sorted-url';
 import { ICacheLike } from './utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../types';
+
+const _cache: Record<string, XiorResponse> = {};
+const cacheObj = {
+  get(key: string) {
+    return _cache[key];
+  },
+  set(key: string, result: XiorResponse) {
+    _cache[key] = result;
+  },
+};
 
 export type XiorErrorCacheOptions = {
   /**
@@ -23,7 +31,7 @@ declare module 'xior' {
 }
 
 export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}): XiorPlugin {
-  const { enableCache: _enableCache, defaultCache: _defaultCache = lru(100, 0) } = options;
+  const { enableCache: _enableCache, defaultCache: _defaultCache = cacheObj } = options;
 
   return function (adapter) {
     return async (config) => {
@@ -47,7 +55,7 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
 
       if (!enabled) return adapter(config);
 
-      const cache: ICacheLike<XiorResponse> = defaultCache;
+      const cache = defaultCache;
 
       const index = buildSortedURL(
         _url as string,
