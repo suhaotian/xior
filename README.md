@@ -27,6 +27,8 @@ A lite request lib based on **fetch** with plugins support.
   - [Why choose **xior** over Custom Fetch Wrappers?](#why-choose-xior-over-custom-fetch-wrappers)
 - [Getting Started](#getting-started)
   - [Installing](#installing)
+    - [Package manager](#package-manager)
+    - [CDN](#cdn)
   - [Create instance](#create-instance)
   - [GET / POST / DELETE / PUT / PATCH / OPTIONS / HEAD](#get--post--delete--put--patch--options--head)
   - [Change default headers or params](#change-default-headers-or-params)
@@ -85,6 +87,8 @@ While you can certainly create your own wrapper library around fetch, **xior** o
 
 ### Installing
 
+#### Package manager
+
 ```sh
 # npm
 npm install xior
@@ -97,6 +101,50 @@ bun add xior
 
 # yarn
 yarn add xior
+```
+
+#### CDN
+
+> Since v0.2.1, xior support umd format now :()
+
+Using jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Load plugin -->
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/progress.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  xior.plugins.use(xiorProgress());
+
+  xior.get('https://exmapledomain.com/api', {
+    onDownloadProgress(e) {
+      console.log(e.progress);
+    },
+  });
+</script>
+```
+
+Using unpkg CDN:
+
+```html
+<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Load plugin -->
+<script src="https://unpkg.com/xior@0.2.1/plugins/progress.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  xior.plugins.use(xiorProgress());
+
+  xior.get('https://exmapledomain.com/api', {
+    onDownloadProgress(e) {
+      console.log(e.progress);
+    },
+  });
+</script>
 ```
 
 ### Create instance

@@ -1,5 +1,34 @@
 # CHANGELOG 📝
 
+## v0.2.1
+
+- feat: support direct call `xior.get/post..` similar to `axios.get/post..` API, no need create instance at first
+- feat: add umd format bundle(now you can directly load xior in browser)
+- feat(plugin): add `error-cache` plugin
+- feat(plugin): add `mock` plugin
+
+---
+
+## Breaking change
+
+before:
+
+```ts
+import xior from 'xior';
+
+let instance: xior;
+instance = xior.create();
+```
+
+Now:
+
+```ts
+import xior, { XiorInstance } from 'xior';
+
+let instance: XiorInstance;
+instance = xior.create();
+```
+
 ## v0.1.4 2024-03-09
 
 - Feat(core): support `xiorInstance.defaults.headers['Authorization'] = 'Basic token';`

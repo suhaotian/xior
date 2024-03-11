@@ -4,6 +4,8 @@ export * from './xior';
 export * from './types';
 export * from './utils';
 
-const xiorInstance = Object.assign(xior.create(), { create: xior.create });
+export type XiorInstance = xior;
 
-export default xiorInstance;
+const xiorObj = Object.assign(xior.create(), { create: xior.create });
+
+export default xiorObj;
