@@ -14,7 +14,7 @@ A lite request lib based on **fetch** with plugins support.
 - 🔥 Use **fetch**
 - 🫡 **Similar axios API**: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`
 - 🤙 Support timeout and cancel requests
-- 🥷 Plugin support: error retry, cache, throttling, and easily create custom plugins
+- 🥷 Plugin support: error retry, cache, throttling, error cache, mock and easily create custom plugins
 - 🚀 Lightweight (~6KB, Gzip ~2.6KB)
 - 👊 Unit tested and strongly typed 💪
 
@@ -38,6 +38,7 @@ A lite request lib based on **fetch** with plugins support.
 - [Plugins](#plugins)
   - [Error retry plugin](#error-retry-plugin)
   - [Request throttle plugin](#request-throttle-plugin)
+  - [Error cache plugin](#error-cache-plugin)
   - [Cache plugin](#cache-plugin)
   - [Upload and download progress plugin](#upload-and-download-progress-plugin)
   - [Create your own custom plugin](#create-your-own-custom-plugin)
@@ -349,6 +350,7 @@ controller.abort(new CancelRequestError()); // abort request with custom error
 
 - [Error retry plugin](#error-retry-plugin)
 - [Request throttle plugin](#request-throttle-plugin)
+- [Error cache plugin](#error-cache-plugin)
 - [Cache plugin](#cache-plugin)
 - [Upload and download progress plugin](#upload-and-download-progress-plugin)
 
@@ -486,11 +488,54 @@ http.post('/get', null, {
 }); // response from cache
 ```
 
+### Error cache plugin
+
+> When request error, if have cache data then use cache data
+
+API:
+
+```ts
+function errorCachePlugin(options: {
+  enableCache?: boolean | ((config?: XiorRequestConfig) => boolean);
+  defaultCache?: ICacheLike<XiorPromise>;
+}): XiorPlugin;
+```
+
+The `options` object:
+
+| Param        | Type                                         | Default value                                         | Description                                                                                                                 |
+| ------------ | -------------------------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| enableCache  | boolean \| ((config: Xiorconfig) => boolean) | (config) => config.method === 'GET' \|\| config.isGet | Default only enabled in `GET` request                                                                                       |
+| defaultCache | CacheLike                                    | lru(Inifinite, 0)                                     | will used for storing requests by default, except you define a custom Cache with your request config, use `tiny-lru` module |
+
+Basic usage:
+
+```ts
+import xior from 'xior';
+import errorCachePlugin from 'xior/plugins/error-cache';
+
+const http = xior.create();
+http.plugins.use(errorCachePlugin({}));
+
+http.get('/users'); // make real http request, and cache the response
+const res = await http.get('/users'); // if request error, use the cache data
+if (res.fromCache) {
+  // if fromCache is true, means data from cache!
+  console.log('data from cache!');
+}
+
+http.post('/users'); // no cache for post
+
+http.post('/users', { isGet: true }); // but with `isGet: true` can let plugins know this is `GET` behavior! then will cache data
+```
+
 ### Cache plugin
 
 > Makes xior cacheable
 
 > Good to Know: Next.js already support cache for fetch in server side. [More detail](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating#fetching-data-on-the-server-with-fetch)
+
+> Different with `error-cache` plugin: if the cache data not expired, then will return cache data, if error, will throw error.
 
 API:
 
@@ -519,7 +564,7 @@ http.plugins.use(cachePlugin());
 
 http.get('/users'); // make real http request
 http.get('/users'); // get cache from previous request
-http.get('/users', { enableCache: false }); // disable cache manually and the the real http request
+http.get('/users', { enableCache: false }); // disable cache manually and the real http request
 
 http.post('/users'); // default no cache for post
 
