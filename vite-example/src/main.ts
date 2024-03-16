@@ -18,6 +18,8 @@ instance.plugins.use(uploadDownloadProgressPlugin({}));
 
 const mock = new MockPlugin(instance, { onNoMatch: 'passthrough' });
 
+console.log(mock);
+
 instance.plugins.use((adapter) => {
   return async (config) => {
     const res = await adapter(config);
