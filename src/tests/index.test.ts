@@ -5,7 +5,6 @@ import { before, after, describe, it } from 'node:test';
 import stringify from 'qs/lib/stringify';
 
 import { readChunks, startServer } from './server';
-import pkg from '../../package.json';
 import { merge } from '../index';
 import { XiorTimeoutError } from '../utils';
 import { xior } from '../xior';
@@ -26,6 +25,8 @@ describe('xior tests', () => {
     const xiorInstance = xior.create({ baseURL });
 
     it('xior.VERSION should be same with package.json', async () => {
+      const content = await readFile('package.json', 'utf-8');
+      const pkg = JSON.parse(content);
       assert.strictEqual(xior.VERSION, pkg.version);
     });
 
