@@ -515,17 +515,29 @@ describe('xior mock plguin basics tests', () => {
         const totalTime = end - start;
 
         assert.equal(response.status, success);
-        assert.equal(totalTime >= requestDelay, true);
+        assert.equal(
+          totalTime >= requestDelay,
+          true,
+          `totalTime${totalTime} >= requestDelay${requestDelay} == true`
+        );
 
         //Ensure global delay is not applied
-        assert.equal(totalTime < globalDelay, true);
+        assert.equal(
+          totalTime < globalDelay,
+          true,
+          `totalTime${totalTime} < globalDelay${globalDelay} == true`
+        );
       }),
       instance.get('/bar').then(function (response) {
         const end = new Date().getTime();
         const totalTime = end - start;
 
         assert.equal(response.status, success);
-        assert.equal(totalTime >= globalDelay, true);
+        assert.equal(
+          totalTime >= globalDelay,
+          true,
+          `totalTime${totalTime} >= globalDelay${globalDelay} == true`
+        );
       }),
     ]);
   });
