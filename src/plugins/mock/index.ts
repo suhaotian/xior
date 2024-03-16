@@ -16,7 +16,7 @@ import {
   joinPath,
   merge,
 } from '../../utils';
-import { xior } from '../../xior';
+import { XiorInstance } from '../../xior';
 
 export interface MockOptions {
   delayResponse?: number;
@@ -41,9 +41,9 @@ export class MockError extends Error {
 
 export default class MockPlugin {
   private options: MockOptions | undefined;
-  private instance: xior | undefined;
+  private instance: XiorInstance | undefined;
   private plugin: XiorPlugin | undefined;
-  constructor(xiorInstance: xior, options?: MockOptions) {
+  constructor(xiorInstance: XiorInstance, options?: MockOptions) {
     this.options = options;
     this.instance = xiorInstance;
     this.plugin = this._mockPlugin.bind(this);

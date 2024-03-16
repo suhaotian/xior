@@ -1,17 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import xior, { merge, delay, buildSortedURL } from 'xior';
+import xior, { merge, delay, buildSortedURL, XiorInstance } from 'xior';
 import cachePlugin from 'xior/plugins/cache';
+import errorCachePlugin from 'xior/plugins/error-cache';
 import errorRetryPlugin from 'xior/plugins/error-retry';
+import MockPlugin from 'xior/plugins/mock';
 import uploadDownloadProgressPlugin from 'xior/plugins/progress';
 import throttlePlugin from 'xior/plugins/throttle';
 
 console.log(merge, delay, buildSortedURL);
 
-const instance = xior.create({});
+const instance: XiorInstance = xior.create({});
 instance.plugins.use(errorRetryPlugin({}));
 instance.plugins.use(cachePlugin({}));
 instance.plugins.use(throttlePlugin({}));
+instance.plugins.use(errorCachePlugin({}));
 instance.plugins.use(uploadDownloadProgressPlugin({}));
+
+const mock = new MockPlugin(instance, { onNoMatch: 'passthrough' });
 
 instance.plugins.use((adapter) => {
   return async (config) => {

@@ -17,8 +17,10 @@ import {
 
 const supportAbortController = typeof AbortController !== 'undefined';
 
+export type XiorInstance = xior;
+
 export class xior {
-  static create(options?: XiorRequestConfig) {
+  static create(options?: XiorRequestConfig): XiorInstance {
     return new xior(options);
   }
   static VERSION = '0.2.1';
@@ -34,12 +36,12 @@ export class xior {
     } as XiorInterceptorRequestConfig;
   }
 
-  private requestInterceptors: ((
+  requestInterceptors: ((
     config: XiorInterceptorRequestConfig
   ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig)[] = [
     defaultRequestInterceptor,
   ];
-  private responseInterceptors: {
+  responseInterceptors: {
     fn: (config: { data: any; request: XiorInterceptorRequestConfig; response: Response }) =>
       | Promise<{
           data: any;
@@ -118,7 +120,7 @@ export class xior {
     };
   }
 
-  private _plugins: XiorPlugin[] = [];
+  _plugins: XiorPlugin[] = [];
   get plugins() {
     return {
       use: (plugin: XiorPlugin) => {
@@ -153,7 +155,7 @@ export class xior {
     return finalPlugin<T>(requestConfig);
   }
 
-  private async handlerFetch<T>(requestConfig: XiorRequestConfig): Promise<XiorResponse<T>> {
+  async handlerFetch<T>(requestConfig: XiorRequestConfig): Promise<XiorResponse<T>> {
     const {
       url,
       method,
@@ -278,13 +280,13 @@ export class xior {
     };
   }
 
-  private createGetHandler<T>(method: string) {
+  createGetHandler<T>(method: string) {
     return (url: string, options?: XiorRequestConfig) => {
       return this.request<T>(options ? { ...options, method, url } : { method, url });
     };
   }
 
-  private createPostHandler<T>(method: string) {
+  createPostHandler<T>(method: string) {
     return (url: string, data?: any, options?: XiorRequestConfig) => {
       return this.request<T>(options ? { ...options, method, url, data } : { method, url, data });
     };
