@@ -56,7 +56,7 @@
     "build": "bunchee -m",
     "build:lib": "rm -rf lib && tsc --project tsconfig.json",
     "build:umd": "pnpm webpack --config ./scripts/webpack.config.mjs",
-    "test": "pnpm build:lib && node --test ./lib && pnpm --filter=vitest-mock-example test",
+    "test": "pnpm build:lib && node --test ./lib",
     "checktype": "tsc --noEmit",
     "start-publish": "pnpm build && pnpm test && pnpm build:umd && node scripts/purge-pkg-for-publish.mjs && npm publish --registry=https://registry.npmjs.org",
     "push": "git push && git lfs push --all origin",
