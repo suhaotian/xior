@@ -32,6 +32,7 @@ A lite request lib based on **fetch** with plugins support.
   - [Create instance](#create-instance)
   - [GET / POST / DELETE / PUT / PATCH / OPTIONS / HEAD](#get--post--delete--put--patch--options--head)
   - [Change default headers or params](#change-default-headers-or-params)
+  - [Get response headers](#get-response-headers)
   - [Upload file](#upload-file)
   - [Using interceptors](#using-interceptors)
   - [Timeout and Cancel request](#timeout-and-cancel-request)
@@ -56,6 +57,7 @@ A lite request lib based on **fetch** with plugins support.
   - [POST](#post)
   - [`axios(requestObj)`: axios({ method: 'get', params: { a: 1 } })](#axiosrequestobj-axios-method-get-params--a-1--)
   - [Creating an instance](#creating-an-instance)
+  - [Get response headers](#get-response-headers-1)
   - [Download file with `responseType: 'stream'` (In Node.JS)](#download-file-with-responsetype-stream-in-nodejs)
   - [Use stream](#use-stream)
 - [Migrate from `fetch` to **xior**](#migrate-from-fetch-to-xior)
@@ -228,6 +230,20 @@ function removeUserToken() {
   // delete xiorInstance.defaults.params['x'];
   delete xiorInstance.defaults.headers['Authorization'];
 }
+```
+
+### Get response headers
+
+```ts
+import xior from 'xior';
+
+const xiorInstance = xior.create({
+  baseURL: 'https://apiexampledomian.com/api',
+});
+
+const { data, headers } = await xiorInstance.get('/');
+
+console.log(headers.get('X-Header-Name'));
 ```
 
 ### Upload file
@@ -929,6 +945,36 @@ const instance = axios.create({
   timeout: 1000,
   headers: { 'X-Custom-Header': 'foobar' },
 });
+```
+
+### Get response headers
+
+axios:
+
+```ts
+import axios from 'axios';
+
+const axiosInstance = axios.create({
+  baseURL: 'https://apiexampledomian.com/api',
+});
+
+const { data, headers } = await axiosInstance.get('/');
+
+console.log(headers['X-Header-Name']);
+```
+
+xior:
+
+```ts
+import xior from 'xior';
+
+const xiorInstance = xior.create({
+  baseURL: 'https://apiexampledomian.com/api',
+});
+
+const { data, headers } = await xiorInstance.get('/');
+
+console.log(headers.get('X-Header-Name'));
 ```
 
 ### Download file with `responseType: 'stream'` (In Node.JS)
