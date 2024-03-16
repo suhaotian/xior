@@ -46,14 +46,19 @@ describe('xior mock plugin tests', () => {
     mock.reset();
     // Mock any GET request to /users
     // arguments for reply are (status, options, headers)
-    mock.onGet('/users').reply(200, {
-      users: [{ id: 1, name: 'John Smith' }],
-    });
-    const { data, status } = await instance.get('/users');
+    mock.onGet('/users').reply(
+      200,
+      {
+        users: [{ id: 1, name: 'John Smith' }],
+      },
+      { 'x-custom-header': 123 }
+    );
+    const { data, status, headers } = await instance.get('/users');
     assert.strictEqual(data.users.length, 1);
     assert.strictEqual(status, 200);
     assert.strictEqual(data.users[0].id, 1);
     assert.strictEqual(data.users[0].name, 'John Smith');
+    assert.strictEqual(headers.get('x-custom-header'), '123');
   });
 
   it("should work with `onGet('/users', {params: { searchText: 'John' }})`", async () => {
