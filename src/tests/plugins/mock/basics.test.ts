@@ -473,7 +473,7 @@ describe('xior mock plguin basics tests', () => {
 
     await Promise.all([
       instance.get('/foo').then(function (response) {
-        const end = new Date().getTime();
+        const end = new Date().getTime() + 1; // fix  github actions
         const totalTime = end - start;
 
         assert.equal(response.status, success);
@@ -484,7 +484,7 @@ describe('xior mock plguin basics tests', () => {
         );
       }),
       instance.get('/bar').then(function (response) {
-        const end = new Date().getTime();
+        const end = new Date().getTime() + 1;
         const totalTime = end - start;
 
         assert.equal(response.status, success);
@@ -511,7 +511,7 @@ describe('xior mock plguin basics tests', () => {
 
     await Promise.all([
       instance.get('/foo').then(function (response) {
-        const end = new Date().getTime();
+        const end = new Date().getTime() + 1;
         const totalTime = end - start;
 
         assert.equal(response.status, success);
@@ -529,7 +529,7 @@ describe('xior mock plguin basics tests', () => {
         );
       }),
       instance.get('/bar').then(function (response) {
-        const end = new Date().getTime();
+        const end = new Date().getTime() + 1;
         const totalTime = end - start;
 
         assert.equal(response.status, success);
