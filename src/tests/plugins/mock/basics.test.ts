@@ -477,14 +477,22 @@ describe('xior mock plguin basics tests', () => {
         const totalTime = end - start;
 
         assert.equal(response.status, success);
-        assert.equal(totalTime >= firstDelay, true);
+        assert.equal(
+          totalTime >= firstDelay,
+          true,
+          `totalTime${totalTime} >= firstDelay${firstDelay} == true`
+        );
       }),
       instance.get('/bar').then(function (response) {
         const end = new Date().getTime();
         const totalTime = end - start;
 
         assert.equal(response.status, success);
-        assert.equal(totalTime >= secondDelay, true);
+        assert.equal(
+          totalTime >= secondDelay,
+          true,
+          `totalTime${totalTime} >= secondDelay${secondDelay} == true`
+        );
       }),
     ]);
   });
