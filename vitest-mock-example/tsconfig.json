@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "module": "ES2015",
+    "moduleResolution": "Bundler",
+    "types": ["vitest/globals", "@testing-library/jest-dom"],
+    "esModuleInterop": true
+  }
+}
