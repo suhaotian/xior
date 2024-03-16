@@ -31,6 +31,10 @@ export async function startServer(port: number) {
     });
   });
 
+  app.get('/xyz*', (req, res) => {
+    res.status(200).send(req.url);
+  });
+
   app.get('/timeout', (req, res) => {
     setTimeout(
       () => {

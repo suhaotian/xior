@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
 
-import { encodeParams, isAbsoluteURL } from '../utils';
+import { encodeParams, isAbsoluteURL, joinPath } from '../utils';
 
 describe('utils tests', () => {
   describe('utils.encodeParams tests', () => {
@@ -23,6 +23,14 @@ describe('utils tests', () => {
     });
     it('should work with `/abc`', () => {
       assert.strictEqual(isAbsoluteURL('/abc'), false);
+    });
+  });
+
+  describe('utils.joinPath tests', () => {
+    it('should work exactly', () => {
+      assert.strictEqual(joinPath('/abc', ''), '/abc');
+      assert.strictEqual(joinPath('/abc', '/def'), '/abc/def');
+      assert.strictEqual(joinPath('/abc/', '/def/'), '/abc/def/');
     });
   });
 });

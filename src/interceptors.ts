@@ -5,7 +5,7 @@ const encodeUrlType = 'application/x-www-form-urlencoded';
 const jsonType = 'application/json';
 // const formType = 'multipart/form-data';
 
-export async function defaultRequestInterceptor(
+export default async function defaultRequestInterceptor(
   req: XiorInterceptorRequestConfig
 ): Promise<XiorInterceptorRequestConfig> {
   const encode = req.encode || req.paramsSerializer || encodeParams;
@@ -14,7 +14,8 @@ export async function defaultRequestInterceptor(
   const method = req.method ? req.method.toUpperCase() : 'GET';
   let _url = req.url || '';
   const url = _url;
-  let data = req.data;
+  const data = req.data;
+  let _data = data;
   let encodedParams = false;
   const headers = req?.headers || {};
 
@@ -29,7 +30,7 @@ export async function defaultRequestInterceptor(
       }
     }
     if (!contentType) {
-      contentType = method === 'GET' || method === 'HEAD' ? encodeUrlType : jsonType;
+      contentType = ['HEAD', 'GET', 'DELETE'].includes(method) ? encodeUrlType : jsonType;
       headers['Content-Type'] = contentType;
     }
 
@@ -39,9 +40,8 @@ export async function defaultRequestInterceptor(
       if (encodeUrlData) {
         _url = _url.includes('?') ? (_url += `&${encodeUrlData}`) : `${_url}?${encodeUrlData}`;
       }
-      data = null;
     } else if (contentType === jsonType) {
-      data = JSON.stringify(data);
+      _data = JSON.stringify(data);
     }
   }
 
@@ -54,6 +54,7 @@ export async function defaultRequestInterceptor(
   return {
     ...req,
     data,
+    _data,
     url,
     _url,
     method,

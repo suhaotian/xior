@@ -4,8 +4,10 @@
 
 - feat: support direct call `xior.get/post..` similar to `axios.get/post..` API, no need create instance at first
 - feat: add umd format bundle(now you can directly load xior in browser)
-- feat(plugin): add `error-cache` plugin
-- feat(plugin): add `mock` plugin
+- feat: add VERSION to `xior`, now you can get current version of xior by: `import xior from 'xior'; console.log(xior.VERSION)`
+- feat(new plugin): add `error-cache` plugin
+- feat(new plugin): add `mock` plugin
+- fix(delete method): `DELETE` method's data option should be url encoded format like `GET` / `HEAD`
 
 ---
 

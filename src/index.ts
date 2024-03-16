@@ -6,6 +6,6 @@ export * from './utils';
 
 export type XiorInstance = xior;
 
-const xiorObj = Object.assign(xior.create(), { create: xior.create });
+const xiorObj = Object.assign(xior.create(), { create: xior.create, VERSION: xior.VERSION });
 
 export default xiorObj;

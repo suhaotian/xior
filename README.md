@@ -41,6 +41,7 @@ A lite request lib based on **fetch** with plugins support.
   - [Error cache plugin](#error-cache-plugin)
   - [Cache plugin](#cache-plugin)
   - [Upload and download progress plugin](#upload-and-download-progress-plugin)
+  - [Mock plugin](#mock-plugin)
   - [Create your own custom plugin](#create-your-own-custom-plugin)
 - [Helper functions](#helper-functions)
 - [FAQ](#faq)
@@ -53,6 +54,7 @@ A lite request lib based on **fetch** with plugins support.
 - [Migrate from `axios` to **xior**](#migrate-from-axios-to-xior)
   - [GET](#get)
   - [POST](#post)
+  - [`axios(requestObj)`: axios({ method: 'get', params: { a: 1 } })](#axiosrequestobj-axios-method-get-params--a-1--)
   - [Creating an instance](#creating-an-instance)
   - [Download file with `responseType: 'stream'` (In Node.JS)](#download-file-with-responsetype-stream-in-nodejs)
   - [Use stream](#use-stream)
@@ -118,6 +120,8 @@ Using jsDelivr CDN:
 
 <!-- Usage -->
 <script>
+  console.log(xior.VERSION);
+
   xior.plugins.use(xiorProgress());
 
   xior.get('https://exmapledomain.com/api', {
@@ -520,8 +524,10 @@ http.plugins.use(errorCachePlugin({}));
 http.get('/users'); // make real http request, and cache the response
 const res = await http.get('/users'); // if request error, use the cache data
 if (res.fromCache) {
-  // if fromCache is true, means data from cache!
+  // if `fromCache` is true, means data from cache!
   console.log('data from cache!');
+  // and get what's the error
+  console.log('error', res.error);
 }
 
 http.post('/users'); // no cache for post
@@ -572,7 +578,7 @@ http.post('/users'); // default no cache for post
 http.post('/users', { enableCache: true }); // make real http request
 const res = await http.post('/users', { enableCache: true }); // get cache from previous request
 if (res.fromCache) {
-  // if fromCache is true, means data from cache!
+  // if `fromCache` is true, means data from cache!
   console.log('data from cache!');
 }
 ```
@@ -649,6 +655,12 @@ http.post('/upload', formData, {
 });
 ```
 
+### Mock plugin
+
+> Let you eaisly mock requests, good for unit test and less dependence with backend.
+
+**TODO**
+
 ### Create your own custom plugin
 
 **xior** let you easily to create custom plugins.
@@ -687,6 +699,7 @@ import {
   delay as sleep,
   buildSortedURL,
   isAbsoluteURL,
+  joinPath,
 } from 'xior';
 ```
 
@@ -872,6 +885,26 @@ axios
   .catch(function (error) {
     console.log(error);
   });
+```
+
+### `axios(requestObj)`: axios({ method: 'get', params: { a: 1 } })
+
+axios:
+
+```ts
+import axios from 'axios';
+
+await axios({ method: 'get', params: { a: 1 } });
+```
+
+xior:
+
+```ts
+import xior from 'xior';
+
+const axios = xior.create();
+
+await axios.request({ method: 'get', params: { a: 1 } });
 ```
 
 ### Creating an instance

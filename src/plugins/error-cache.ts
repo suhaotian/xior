@@ -1,6 +1,7 @@
 import buildSortedURL from './cache/build-sorted-url';
 import { ICacheLike } from './utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../types';
+import { XiorError } from '../utils';
 
 const _cache: Record<string, XiorResponse> = {};
 const cacheObj = {
@@ -27,6 +28,7 @@ declare module 'xior' {
   }
   interface XiorResponse {
     fromCache?: boolean;
+    error?: XiorError;
   }
 }
 
@@ -71,6 +73,7 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
         const res = cache.get(index);
         if (res) {
           (res as any).fromCache = true;
+          (res as any).error = e;
           return res;
         }
         throw e;

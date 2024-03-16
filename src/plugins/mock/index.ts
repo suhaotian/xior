@@ -1,11 +1,19 @@
-import { MockHeaders, StatusOrCallback, VERBS } from './types';
-import type { XiorInterceptorRequestConfig, XiorPlugin, XiorRequestConfig } from '../../types';
+import { MockHeaders, StatusOrCallback, RequestOptions, RequestData, VERBS } from './types';
+import type {
+  XiorInterceptorRequestConfig,
+  XiorPlugin,
+  XiorRequestConfig,
+  XiorResponse,
+} from '../../types';
 import {
+  ClearableSignal,
   XiorError,
   XiorTimeoutError,
+  anySignal,
   buildSortedURL,
   delay,
   encodeParams,
+  joinPath,
   merge,
 } from '../../utils';
 import { xior } from '../../xior';
@@ -18,6 +26,7 @@ export interface MockOptions {
 const ReplyOnceLength = 6;
 const PassThroughLength = 2;
 const ReplyDelayLength = 7;
+const supportAbortController = typeof AbortController !== 'undefined';
 
 export class MockError extends Error {
   request?: XiorRequestConfig;
@@ -33,17 +42,16 @@ export class MockError extends Error {
 export default class MockPlugin {
   private options: MockOptions | undefined;
   private instance: xior | undefined;
+  private plugin: XiorPlugin | undefined;
   constructor(xiorInstance: xior, options?: MockOptions) {
     this.options = options;
     this.instance = xiorInstance;
-
-    xiorInstance.plugins.use(this._mockPlugin.bind(this));
+    this.plugin = this._mockPlugin.bind(this);
+    xiorInstance.plugins.use(this.plugin);
   }
 
-  // TODO remove any
-  history = {} as { [method: string]: any[] };
-  // TODO remove any
-  handlers = {} as { [method: string]: any[] };
+  handlers: { [method: string]: undefined | any[] } = {};
+  history: { [method: string]: undefined | XiorRequestConfig<any>[] } = {};
 
   private _mockPlugin(adapter: Parameters<XiorPlugin>[0]) {
     return async (config: Parameters<ReturnType<XiorPlugin>>[0]) => {
@@ -54,59 +62,113 @@ export default class MockPlugin {
       if (!this.handlers[method]) {
         this.handlers[method] = [];
       }
-      this.history[method].push(config);
+      this.history[method]?.push(config);
 
       const handler = this.findHandler(config);
       if (handler) {
         const delayTime = handler[ReplyDelayLength - 1] || this.options?.delayResponse;
+
+        if (handler.length === ReplyOnceLength) {
+          Object.keys(this.handlers).forEach((method) => {
+            let index = this.handlers[method]?.indexOf(handler);
+            index = index === undefined ? -1 : index;
+            if (index > -1) {
+              this.handlers[method]?.splice(index, 1);
+            }
+          });
+        }
+
+        const signals: AbortSignal[] = [];
+        let cleanTimerAndSignal: Function | undefined;
+        if (handler.length !== PassThroughLength) {
+          /** timeout */
+          let signal: AbortSignal;
+          let timer: ReturnType<typeof setTimeout> | undefined = undefined;
+          if (config.timeout && supportAbortController) {
+            const controller = new AbortController();
+            timer = setTimeout(() => {
+              controller.abort(
+                new XiorTimeoutError(`timeout of ${config.timeout}ms exceeded`, config)
+              );
+            }, config.timeout);
+            signals.push(controller.signal);
+          }
+          if (config.signal) {
+            signals.push(config.signal);
+          }
+          signal = signals[0];
+          if (signals.length > 1) {
+            signal = anySignal(signals, () => {
+              timer && clearTimeout(timer);
+            });
+          }
+
+          cleanTimerAndSignal = () => {
+            if (timer) clearTimeout(timer);
+            (signal as ClearableSignal)?.clear?.();
+          };
+        }
+
         if (delayTime && delayTime > 0) {
           await delay(delayTime);
         }
 
-        if (handler.length === ReplyOnceLength) {
-          Object.keys(this.handlers).forEach((method) => {
-            const index = this.handlers[method].indexOf(handler);
-            if (index > -1) {
-              this.handlers[method].splice(index, 1);
-            }
-          });
+        const abortedSignal = signals.find((item) => item.aborted);
+        if (abortedSignal) {
+          cleanTimerAndSignal?.();
+          return Promise.reject(abortedSignal.reason);
         }
+
         if (handler.length === PassThroughLength) {
           return adapter(config);
         } else if (typeof handler[2] !== 'function') {
           const result = handler.slice(2);
-          return {
-            data: result[1],
-            status: result[0],
-            statusText: 'ok',
-            headers: result[2],
-            request: config,
-            config,
-          } as any;
+          const res = checkOk(
+            {
+              data: result[1],
+              status: result[0],
+              statusText: 'ok',
+              headers: result[2],
+              request: config,
+              config,
+            } as XiorResponse,
+            config
+          );
+          cleanTimerAndSignal?.();
+          return res;
         }
         const result = handler[2](config);
         if (typeof result?.then !== 'function') {
-          return {
-            data: result[1],
-            status: result[0],
-            statusText: 'ok',
-            headers: result[2],
-            request: config,
-            config,
-          } as any;
+          const res = checkOk(
+            {
+              data: result[1],
+              status: result[0],
+              statusText: 'ok',
+              headers: turnObjToHeaders(result[2]),
+              request: config,
+              config,
+            } as XiorResponse,
+            config
+          );
+          cleanTimerAndSignal?.();
+          return res;
         } else {
           const res = await result;
+          cleanTimerAndSignal?.();
           if (res.config && res.status) {
             return res;
           } else {
-            return {
-              data: res[1],
-              status: res[0],
-              statusText: 'ok',
-              headers: res[2],
-              request: config,
-              config,
-            } as any;
+            return checkOk(
+              {
+                data: res[1],
+                status: res[0],
+                statusText: 'ok',
+                headers: turnObjToHeaders(res[2]),
+                request: config,
+                config,
+              } as XiorResponse,
+              config
+            );
           }
         }
       } else {
@@ -121,6 +183,7 @@ export default class MockPlugin {
           throw new XiorError(message, config, {
             status: 404,
             statusText: message,
+            config,
           } as any);
         }
       }
@@ -137,59 +200,70 @@ export default class MockPlugin {
     this.resetHandlers();
     this.resetHistory();
   }
+  restore() {
+    this.reset();
+    this.instance?.plugins.eject(this.plugin as XiorPlugin);
+  }
 
   onGet<T extends any>(
     matcher?: string | RegExp,
-    options?: XiorRequestConfig<T>
+    options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
     const handler = this.createHandler('get');
     return handler(matcher, options);
   }
   onDelete<T extends any>(
     matcher?: string | RegExp,
-    options?: XiorRequestConfig<T>
+    options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
     const handler = this.createHandler('delete');
     return handler(matcher, options);
   }
   onHead<T extends any>(
     matcher?: string | RegExp,
-    options?: XiorRequestConfig<T>
+    options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
     const handler = this.createHandler('head');
     return handler(matcher, options);
   }
+  onAny<T extends any>(
+    matcher?: string | RegExp,
+    options?: RequestOptions
+  ): ReturnType<ReturnType<typeof this.createHandler>> {
+    const handler = this.createHandler('any');
+    return handler(matcher, options);
+  }
   onPost<T extends any>(
     matcher?: string | RegExp,
-    data?: T,
-    options?: XiorRequestConfig<T>
+    data?: RequestData<T>,
+    options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
     const handler = this.createHandler('post');
-    return handler(matcher, data && options ? merge({}, options || {}, { data }) : options);
+    return handler(matcher, merge({}, options || {}, { data: data || {} }));
   }
   onPut<T extends any>(
     matcher?: string | RegExp,
-    data?: T,
-    options?: XiorRequestConfig<T>
+    data?: RequestData<T>,
+    options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
     const handler = this.createHandler('put');
-    return handler(matcher, data && options ? merge({}, options || {}, { data }) : options);
+    return handler(matcher, merge({}, options || {}, { data: data || {} }));
   }
   onPatch<T extends any>(
     matcher?: string | RegExp,
-    data?: T,
-    options?: XiorRequestConfig<T>
+    data?: RequestData<T>,
+    options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
     const handler = this.createHandler('patch');
-    return handler(matcher, data && options ? merge({}, options || {}, { data }) : options);
+    return handler(matcher, merge({}, options || {}, { data: data || {} }));
   }
   onOptions<T extends any>(
     matcher?: string | RegExp,
-    data?: T,
-    options?: XiorRequestConfig<T>
+    data?: RequestData<T>,
+    options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
     const handler = this.createHandler('options');
-    return handler(matcher, data && options ? merge({}, options || {}, { data }) : options);
+    return handler(matcher, merge({}, options || {}, { data: data || {} }));
   }
 
   private createHandler(method: string) {
@@ -213,14 +287,23 @@ export default class MockPlugin {
         return _this;
       }
 
-      function replyOnce(code: StatusOrCallback, responseData?: any, responseHeaders?: any) {
+      function replyOnce(
+        code: StatusOrCallback,
+        responseData?: any,
+        responseHeaders?: MockHeaders
+      ) {
         // replyOnce: handle.length === 6
         const handler = [matcher, options, code, responseData, responseHeaders, true];
         _this.addHandler(method, handler);
         return _this;
       }
 
-      function replyWithDelay(delay: number, code: any, responseData: any, responseHeaders?: any) {
+      function replyWithDelay(
+        delay: number,
+        code: StatusOrCallback,
+        responseData: any,
+        responseHeaders?: MockHeaders
+      ) {
         // replyDelay: handle.length === 7
         const handler = [matcher, options, code, responseData, responseHeaders, false, delay];
         _this.addHandler(method, handler);
@@ -228,8 +311,12 @@ export default class MockPlugin {
       }
 
       function withDelayInMs(delay: number) {
-        return function (code: any, responseData?: any, responseHeaders?: any) {
-          replyWithDelay(delay, code, responseData, responseHeaders);
+        return function (
+          code: StatusOrCallback,
+          responseData?: any,
+          responseHeaders?: MockHeaders
+        ) {
+          return replyWithDelay(delay, code, responseData, responseHeaders);
         };
       }
 
@@ -239,27 +326,27 @@ export default class MockPlugin {
         withDelayInMs,
         passThrough: () => {
           const handler = [matcher, options];
-          this.addHandler(method, handler);
-          return this;
+          _this.addHandler(method, handler);
+          return _this;
         },
         abortRequest() {
           return reply((config) => {
-            return Promise.reject(new XiorError(`Request abort error`, config));
+            return Promise.reject(new XiorError(`Request aborted`, config));
           });
         },
         abortRequestOnce() {
           return replyOnce((config) => {
-            return Promise.reject(new XiorError(`Request abort error`, config));
+            return Promise.reject(new XiorError(`Request aborted`, config, {} as XiorResponse));
           });
         },
         networkError() {
           return reply((config) => {
-            return Promise.reject(new XiorError(`Network error`, config));
+            return Promise.reject(new XiorError(`Network Error`, config, {} as XiorResponse));
           });
         },
         networkErrorOnce() {
           return replyOnce((config) => {
-            return Promise.reject(new XiorError(`Network error`, config));
+            return Promise.reject(new XiorError(`Network Error`, config, {} as XiorResponse));
           });
         },
         timeout() {
@@ -278,8 +365,28 @@ export default class MockPlugin {
 
   addHandler(method: string, _handler: any[]) {
     const handler = [..._handler];
+    if (handler[3]) {
+      try {
+        handler[3] = JSON.parse(JSON.stringify(handler[3]));
+      } catch (e) {
+        //
+      }
+    }
     if (handler[4]) {
-      const headers = new Headers();
+      const headers =
+        typeof Headers === 'undefined'
+          ? (() => {
+              const obj: Record<string, string | null> = {};
+              return {
+                append(key: string, value: any) {
+                  obj[key] = value + '';
+                },
+                get(key: string) {
+                  return obj[key] || null;
+                },
+              };
+            })()
+          : new Headers();
       Object.keys(handler[4]).forEach((key) => {
         headers.append(key, handler[4][key]);
       });
@@ -288,22 +395,23 @@ export default class MockPlugin {
     if (method === 'any') {
       VERBS.forEach((verb: string) => {
         if (!this.handlers[verb]) this.handlers[verb] = [];
-        this.handlers[verb].push(handler);
+        this.handlers[verb]?.push(handler);
       });
     } else {
       if (!this.handlers[method]) this.handlers[method] = [];
 
-      const indexOfExistingHandler = this.handlers[method]?.findIndex((item: any[]) => {
+      let indexOfExistingHandler = this.handlers[method]?.findIndex((item: any[]) => {
         const isReplyOnce = item.length === ReplyOnceLength;
         if (isReplyOnce) return false;
         const key1 = buildSortedURL(String(item[0]), item[1], encodeParams);
         const key2 = buildSortedURL(String(handler[0]), handler[1], encodeParams);
         return key1 === key2;
       });
+      indexOfExistingHandler = indexOfExistingHandler === undefined ? -1 : indexOfExistingHandler;
       if (indexOfExistingHandler > -1 && handler.length < ReplyOnceLength) {
         this.handlers[method]?.splice(indexOfExistingHandler, 1, handler);
       } else {
-        this.handlers[method].push(handler);
+        this.handlers[method]?.push(handler);
       }
     }
   }
@@ -316,9 +424,10 @@ export default class MockPlugin {
       headers,
       params,
       data = {},
+      baseURL,
     } = config as XiorInterceptorRequestConfig;
     const method = _method?.toLowerCase();
-    return this.handlers[method].find((handler) => {
+    return this.handlers[method]?.find((handler) => {
       const handlerHeaders = { ...(handler[1].headers || {}) };
 
       if (config.headers?.['Content-Type']) {
@@ -330,32 +439,96 @@ export default class MockPlugin {
         }
       }
       if (typeof handler[0] === 'string') {
-        const key1 = buildSortedURL(url, { params, data, headers }, encodeParams);
+        const isAbsoluteUrl = baseURL && handler[0].startsWith(baseURL);
+        // a,b,c for sort
+        const key1 = buildSortedURL(
+          isAbsoluteUrl ? joinPath(baseURL, url) : joinPath('/', url),
+          { b: params, c: data, a: headers },
+          encodeParams
+        );
         const key2 = buildSortedURL(
-          handler[0],
+          isAbsoluteUrl ? handler[0] : joinPath('/', handler[0]),
           {
-            params: handler[1].params || {},
-            data: handler[1].data || {},
-            headers: handlerHeaders,
+            b: handler[1].params || {},
+            c: handler[1].data || {},
+            a: handlerHeaders,
           },
           encodeParams
         );
-        return key1 === key2;
+        return (
+          key1 === key2 ||
+          key1.startsWith(key2) ||
+          getAsymmetricMatchResult([
+            [params, handler[1].params],
+            [data, handler[1].data],
+            [headers, handlerHeaders],
+          ])
+        );
       } else if (handler[0] instanceof RegExp) {
         return (
-          (handler[0].test(url) || handler[0].test(_url)) &&
-          buildSortedURL(method, { params, data, headers }, encodeParams) ===
+          (handler[0].test(url) ||
+            handler[0].test(joinPath(baseURL || '', url)) ||
+            handler[0].test(_url)) &&
+          (buildSortedURL(method, { b: params, c: data, a: headers }, encodeParams) ===
             buildSortedURL(
               method,
               {
-                params: handler[1].params || {},
-                data: handler[1].data || {},
-                headers: handlerHeaders,
+                b: handler[1].params || {},
+                c: handler[1].data || {},
+                a: handlerHeaders,
               },
               encodeParams
-            )
+            ) ||
+            getAsymmetricMatchResult([
+              [params, handler[1].params],
+              [data, handler[1].data],
+              [headers, handlerHeaders],
+            ]))
         );
       }
     });
   }
+}
+
+function getAsymmetricMatchResult(arr: any[]) {
+  const asymmetricMatchList = arr.filter((item) => {
+    const [, expected] = item;
+    return typeof expected?.asymmetricMatch === 'function';
+  });
+  const result = asymmetricMatchList.filter((item) => {
+    const [actual, expected] = item;
+    return expected.asymmetricMatch(actual);
+  });
+  return result.length > 0 && result.length === asymmetricMatchList.length;
+}
+
+function turnObjToHeaders(objHeaders: Record<string, string>) {
+  if (!objHeaders) {
+    objHeaders = {};
+  }
+  const obj: Record<string, string | null> = {};
+  const headers =
+    typeof Headers === 'undefined'
+      ? (() => {
+          return {
+            append(key: string, value: any) {
+              obj[key] = value + '';
+            },
+            get(key: string) {
+              return obj[key] || null;
+            },
+          };
+        })()
+      : new Headers();
+  Object.keys(objHeaders).forEach((key) => {
+    headers.append(key, objHeaders[key]);
+  });
+  return headers;
+}
+
+function checkOk(res: XiorResponse, config?: XiorRequestConfig) {
+  if (res.status >= 300) {
+    throw new XiorError(`Request failed with status code ${res.status}`, config, res);
+  }
+  return res;
 }

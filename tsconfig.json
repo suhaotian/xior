@@ -6,6 +6,7 @@
     "declaration": true,
     "skipLibCheck": true,
     "outDir": "./lib",
+    "resolveJsonModule": true
   },
   "include": ["./src"],
   "exclude": ["node_modules"],
