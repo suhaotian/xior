@@ -41,7 +41,6 @@ describe('xior mock plguin onNoMatch=throwException option tests', () => {
       error = err;
     });
 
-    console.log(error);
     assert.equal(error.message.indexOf('Could not find mock for') > -1, true);
     assert.equal(error.message.indexOf(expectedMethod.toUpperCase()) > -1, true);
     assert.equal(error.message.indexOf(expectedUrl) > -1, true);
