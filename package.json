@@ -119,7 +119,8 @@
   },
   "files": [
     "dist",
-    "plugins"
+    "plugins",
+    "Mock-plugin.md"
   ],
   "keywords": [
     "fetch",

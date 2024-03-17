@@ -127,8 +127,65 @@ describe('axios compatible tests', () => {
     assert.strictEqual(data.length, 0);
     assert.strictEqual(axiorData.length, 0);
   });
-  it('should work with post/delete/put/patch/head/options', () => {
-    //
+  it('should work with get/options/delete', async () => {
+    const axiosInstance = axios.create({
+      baseURL,
+      timeout: 1000,
+    });
+    const xiorInstance = xior.create({
+      baseURL,
+      timeout: 1000,
+    });
+    for (const method of 'get/delete/options'.split('/')) {
+      const { data: axiosData } = await axiosInstance[method as 'options']('/' + method, {
+        params: { b: 2 },
+      });
+      const { data: xiorData } = await xiorInstance[method as 'options']('/' + method, {
+        params: { b: 2 },
+      });
+      assert.strictEqual(
+        xiorData.query?.b,
+        axiosData.query?.b,
+        `query ${method}: ${xiorData.query?.b} === ${axiosData.query?.b}`
+      );
+    }
+  });
+  it('should work with post/put/patch', async () => {
+    const axiosInstance = axios.create({
+      baseURL,
+      timeout: 1000,
+    });
+    const xiorInstance = xior.create({
+      baseURL,
+      timeout: 1000,
+    });
+    for (const method of 'post/put/patch'.split('/')) {
+      const { data: axiosData } = await axiosInstance[method as 'post'](
+        '/' + method,
+        { a: 1 },
+        {
+          params: { b: 2 },
+        }
+      );
+      const { data: xiorData } = await xiorInstance[method as 'post'](
+        '/' + method,
+        { a: 1 },
+        {
+          params: { b: 2 },
+        }
+      );
+
+      assert.strictEqual(
+        xiorData.body?.a,
+        axiosData.body?.a,
+        `body ${method}: ${xiorData.body?.a} === ${axiosData.body?.a}`
+      );
+      assert.strictEqual(
+        xiorData.query?.b,
+        axiosData.query?.b,
+        `query ${method}: ${xiorData.query?.b} === ${axiosData.query?.b}`
+      );
+    }
   });
   it('should work with timeout', async () => {
     const axiosInstance = axios.create({

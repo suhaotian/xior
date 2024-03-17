@@ -1,4 +1,4 @@
-import defaultRequestInterceptor from './interceptors';
+import defaultRequestInterceptor, { likeGET } from './interceptors';
 import type {
   XiorInterceptorRequestConfig,
   XiorPlugin,
@@ -194,7 +194,7 @@ export class xior {
     }
 
     const response = await fetch(finalURL, {
-      body: ['HEAD', 'GET', 'DELETE'].includes(requestConfig.method || 'GET') ? undefined : _data,
+      body: likeGET(requestConfig.method) ? undefined : _data,
       ...rest,
       signal,
       method,
@@ -315,7 +315,7 @@ export class xior {
     return this.createGetHandler<T>('DELETE')(url, options);
   }
 
-  options<T = any>(url: string, data?: any, options?: XiorRequestConfig) {
-    return this.createPostHandler<T>('OPTIONS')(url, data, options);
+  options<T = any>(url: string, options?: XiorRequestConfig) {
+    return this.createGetHandler<T>('OPTIONS')(url, options);
   }
 }

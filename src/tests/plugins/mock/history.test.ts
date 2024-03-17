@@ -24,7 +24,7 @@ describe('xior mock plguin history tests', () => {
     assert.equal(mock.history['put'], undefined);
   });
 
-  it('records the axios config each time the handler is invoked', function () {
+  it('records the xior config each time the handler is invoked', function () {
     mock.onAny('/foo').reply(200);
 
     return instance.get('/foo').then(function (response) {

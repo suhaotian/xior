@@ -5,6 +5,10 @@ const encodeUrlType = 'application/x-www-form-urlencoded';
 const jsonType = 'application/json';
 // const formType = 'multipart/form-data';
 
+export function likeGET(method = 'GET') {
+  return ['HEAD', 'GET', 'DELETE', 'OPTIONS'].includes(method);
+}
+
 export default async function defaultRequestInterceptor(
   req: XiorInterceptorRequestConfig
 ): Promise<XiorInterceptorRequestConfig> {
@@ -30,7 +34,7 @@ export default async function defaultRequestInterceptor(
       }
     }
     if (!contentType) {
-      contentType = ['HEAD', 'GET', 'DELETE'].includes(method) ? encodeUrlType : jsonType;
+      contentType = likeGET(method) ? encodeUrlType : jsonType;
       headers['Content-Type'] = contentType;
     }
 

@@ -259,11 +259,10 @@ export default class MockPlugin {
   }
   onOptions<T extends any>(
     matcher?: string | RegExp,
-    data?: RequestData<T>,
     options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
     const handler = this.createHandler('options');
-    return handler(matcher, merge({}, options || {}, { data: data || {} }));
+    return handler(matcher, options);
   }
 
   private createHandler(method: string) {

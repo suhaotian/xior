@@ -171,7 +171,7 @@ export const xiorInstance = xior.create({
 
 GET
 
-> `HEAD` / `DELETE` are same usage with `GET` method
+> `HEAD` / `DELETE` / `OPTIONS` are same usage with `GET` method
 
 ```ts
 async function run() {
@@ -195,7 +195,7 @@ async function run() {
 
 POST
 
-> `PUT`/`PATCH`/`OPTIONS` methods are same usage with `POST`
+> `PUT`/`PATCH` methods are same usage with `POST`
 
 ```ts
 async function run() {
@@ -510,7 +510,7 @@ http.post('/get', null, {
 
 ### Error cache plugin
 
-> When request error, if have cache data then use cache data
+> When request error, if have cached data then use the cached data
 
 API:
 
@@ -673,9 +673,95 @@ http.post('/upload', formData, {
 
 ### Mock plugin
 
-> Let you eaisly mock requests, good for unit test and less dependence with backend.
+> This plugin let you eaisly mock requests
 
-**TODO**
+Usage:
+
+with `GET`:
+
+```ts
+import xior from 'xior';
+import MockPlugin from 'xior/plugins/mock';
+
+const instance = xior.create();
+const mock = new MockPlugin(instance);
+
+// Mock any GET request to /users
+// arguments for reply are (status, data, headers)
+mock.onGet('/users').reply(
+  200,
+  {
+    users: [{ id: 1, name: 'John Smith' }],
+  },
+  {
+    'X-Custom-Response-Header': '123',
+  }
+);
+
+instance.get('/users').then(function (response) {
+  console.log(response.data);
+  console.log(response.headers.get('X-Custom-Response-Header')); // 123
+});
+
+// Mock GET request to /users when param `searchText` is 'John'
+// arguments for reply are (status, data, headers)
+mock.onGet('/users', { params: { searchText: 'John' } }).reply(200, {
+  users: [{ id: 1, name: 'John Smith' }],
+});
+
+instance.get('/users', { params: { searchText: 'John' } }).then(function (response) {
+  console.log(response.data);
+});
+```
+
+with `POST`:
+
+```ts
+import xior from 'xior';
+import MockPlugin from 'xior/plugins/mock';
+
+const instance = xior.create();
+const mock = new MockPlugin(instance);
+
+// Mock any POST request to /users
+// arguments for reply are (status, data, headers)
+mock.onPost('/users').reply(
+  200,
+  {
+    users: [{ id: 1, name: 'John Smith' }],
+  },
+  {
+    'X-Custom-Response-Header': '123',
+  }
+);
+
+instance.post('/users').then(function (response) {
+  console.log(response.data);
+  console.log(response.headers.get('X-Custom-Response-Header')); // 123
+});
+
+// Mock POST request to /users when param `searchText` is 'John'
+// arguments for reply are (status, data, headers)
+mock.onPost('/users', null, { params: { searchText: 'John' } }).reply(200, {
+  users: [{ id: 1, name: 'John Smith' }],
+});
+
+instance.get('/users', null, { params: { searchText: 'John' } }).then(function (response) {
+  console.log(response.data);
+});
+
+// Mock POST request to /users when body `searchText` is 'John'
+// arguments for reply are (status, data, headers)
+mock.onPost('/users', { searchText: 'John' }).reply(200, {
+  users: [{ id: 1, name: 'John Smith' }],
+});
+
+instance.get('/users', { searchText: 'John' }).then(function (response) {
+  console.log(response.data);
+});
+```
+
+Check more details about mock plugin, [click here](./Mock-plugin.md).
 
 ### Create your own custom plugin
 

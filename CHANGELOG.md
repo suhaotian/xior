@@ -7,9 +7,7 @@
 - feat: add VERSION to `xior`, now you can get current version of xior by: `import xior from 'xior'; console.log(xior.VERSION)`
 - feat(new plugin): add `error-cache` plugin
 - feat(new plugin): add `mock` plugin
-- fix(delete method): `DELETE` method's data option should be url encoded format like `GET` / `HEAD`
-
----
+- fix(`delete`/`options` method): `DELETE` and `OPTIONS` method's data option should be url encoded format like `GET` / `HEAD`
 
 ## Breaking change
 
