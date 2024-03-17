@@ -2,17 +2,17 @@
 
 ## v0.2.1
 
-- feat: support direct call `xior.get/post..` similar to `axios.get/post..` API, no need create instance at first
-- feat: add UMD(Universal Module Definition) format bundle(now you can directly load xior in browser)
-- feat: add VERSION to `xior`, now you can get current version of xior by: `import xior from 'xior'; console.log(xior.VERSION)`
+- feat(core): support direct call `xior.get/post..` similar to `axios.get/post..` API, no need create instance at first
+- fix(core): `DELETE` and `OPTIONS` method's data option should be url encoded format like `GET` / `HEAD`
+- feat: add `UMD`(Universal Module Definition) format bundle(now you can directly load xior in browser)
+- feat: add `VERSION` to `xior`, now you can get current version of xior by: `import xior from 'xior'; console.log(xior.VERSION)`
 - feat(new plugin): add `error-cache` plugin
 - feat(new plugin): add `dedupe` plugin
 - feat(new plugin): add `mock` plugin
-- fix(`delete`/`options` method): `DELETE` and `OPTIONS` method's data option should be url encoded format like `GET` / `HEAD`
 
-## Breaking change
+**Breaking Change:**
 
-1. **Type** change
+1. **Type**
 
 before:
 
@@ -32,7 +32,7 @@ let instance: XiorInstance;
 instance = xior.create();
 ```
 
-2. **OPTIONS** method change
+2. **OPTIONS** method
 
 before:
 
