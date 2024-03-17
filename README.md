@@ -14,7 +14,7 @@ A lite request lib based on **fetch** with plugins support.
 - 🔥 Use **fetch**
 - 🫡 **Similar axios API**: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`
 - 🤙 Support timeout and cancel requests
-- 🥷 Plugin support: error retry, cache, throttling, error cache, mock and easily create custom plugins
+- 🥷 Plugin support: error retry, cache, throttling, dedupe, error cache, mock and easily create custom plugins
 - 🚀 Lightweight (~6KB, Gzip ~2.6KB)
 - 👊 Unit tested and strongly typed 💪
 
@@ -38,11 +38,18 @@ A lite request lib based on **fetch** with plugins support.
   - [Timeout and Cancel request](#timeout-and-cancel-request)
 - [Plugins](#plugins)
   - [Error retry plugin](#error-retry-plugin)
+    - [CDN](#cdn-1)
   - [Request throttle plugin](#request-throttle-plugin)
+    - [CDN](#cdn-2)
+  - [Request dedupe plugin](#request-dedupe-plugin)
+    - [CDN](#cdn-3)
   - [Error cache plugin](#error-cache-plugin)
+    - [CDN](#cdn-4)
   - [Cache plugin](#cache-plugin)
   - [Upload and download progress plugin](#upload-and-download-progress-plugin)
+    - [CDN](#cdn-5)
   - [Mock plugin](#mock-plugin)
+    - [CDN](#cdn-6)
   - [Create your own custom plugin](#create-your-own-custom-plugin)
 - [Helper functions](#helper-functions)
 - [FAQ](#faq)
@@ -110,7 +117,7 @@ yarn add xior
 
 #### CDN
 
-> Since v0.2.1, xior support umd format now :()
+> Since v0.2.1, xior support UMD format now :()
 
 Using jsDelivr CDN:
 
@@ -369,10 +376,12 @@ controller.abort(new CancelRequestError()); // abort request with custom error
 **xior** offers a variety of built-in plugins to enhance its functionality:
 
 - [Error retry plugin](#error-retry-plugin)
+- [Request dedupe plugin](#request-dedupe-plugin)
 - [Request throttle plugin](#request-throttle-plugin)
 - [Error cache plugin](#error-cache-plugin)
 - [Cache plugin](#cache-plugin)
 - [Upload and download progress plugin](#upload-and-download-progress-plugin)
+- [Mock plugin](#Mock-plugin)
 
 Usage:
 
@@ -438,6 +447,39 @@ http.post('/api1');
 
 // Use `enableRetry: true` to support post method, max retry 5 times until success
 http.post('/api1', null, { retryTimes: 5, enableRetry: true });
+```
+
+#### CDN
+
+Using jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<!-- Load plugin -->
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/error-retry.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorErrorRetry());
+</script>
+```
+
+Using unpkg CDN:
+
+```html
+<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Load plugin -->
+<script src="https://unpkg.com/xior@0.2.1/plugins/error-retry.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorErrorRetry());
+</script>
 ```
 
 ### Request throttle plugin
@@ -508,6 +550,105 @@ http.post('/get', null, {
 }); // response from cache
 ```
 
+#### CDN
+
+Using jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<!-- Load plugin -->
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/throttle.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorThrottle());
+</script>
+```
+
+Using unpkg CDN:
+
+```html
+<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Load plugin -->
+<script src="https://unpkg.com/xior@0.2.1/plugins/throttle.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorThrottle());
+</script>
+```
+
+### Request dedupe plugin
+
+> Prevents having multiple identical requests on the fly at the same time.
+
+API:
+
+```ts
+function dedupeRequestPlugin(options: {
+  /**
+   * check if we need enable dedupe, default only `GET` method or`isGet: true` enable
+   */
+  enableDedupe?: boolean | ((config?: XiorRequestConfig) => boolean);
+}): XiorPlugin;
+```
+
+Basic usage:
+
+```ts
+import xior from 'xior';
+import dedupePlugin from 'xior/plugins/dedupe';
+
+const http = xior.create();
+http.plugins.use(dedupePlugin());
+
+http.get('/'); // make real http request
+http.get('/'); // response from previous if previous request return response
+http.get('/'); // response from previous if previous request return response
+
+http.post('/'); // make real http request
+http.post('/'); // make real http request
+http.post('/'); // make real http request
+```
+
+#### CDN
+
+Using jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<!-- Load plugin -->
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/dedupe.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorDedupe());
+</script>
+```
+
+Using unpkg CDN:
+
+```html
+<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Load plugin -->
+<script src="https://unpkg.com/xior@0.2.1/plugins/dedupe.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorDedupe());
+</script>
+```
+
 ### Error cache plugin
 
 > When request error, if have cached data then use the cached data
@@ -551,13 +692,46 @@ http.post('/users'); // no cache for post
 http.post('/users', { isGet: true }); // but with `isGet: true` can let plugins know this is `GET` behavior! then will cache data
 ```
 
+#### CDN
+
+Using jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<!-- Load plugin -->
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/error-cache.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorErrorCache());
+</script>
+```
+
+Using unpkg CDN:
+
+```html
+<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Load plugin -->
+<script src="https://unpkg.com/xior@0.2.1/plugins/error-cache.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorErrorCache());
+</script>
+```
+
 ### Cache plugin
 
 > Makes xior cacheable
 
 > Good to Know: Next.js already support cache for fetch in server side. [More detail](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating#fetching-data-on-the-server-with-fetch)
 
-> Different with `error-cache` plugin: if the cache data not expired, then will return cache data, if error, will throw error.
+> Different with `error-cache` plugin: this plugin will use the data in cache if the cache data not expired.
 
 API:
 
@@ -671,6 +845,39 @@ http.post('/upload', formData, {
 });
 ```
 
+#### CDN
+
+Using jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<!-- Load plugin -->
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/progress.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorProgress());
+</script>
+```
+
+Using unpkg CDN:
+
+```html
+<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Load plugin -->
+<script src="https://unpkg.com/xior@0.2.1/plugins/progress.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorProgress());
+</script>
+```
+
 ### Mock plugin
 
 > This plugin let you eaisly mock requests
@@ -762,6 +969,39 @@ instance.get('/users', { searchText: 'John' }).then(function (response) {
 ```
 
 Check more details about mock plugin, [click here](./Mock-plugin.md).
+
+#### CDN
+
+Using jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<!-- Load plugin -->
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/mock.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  const mock = new xiorMock(xior);
+</script>
+```
+
+Using unpkg CDN:
+
+```html
+<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Load plugin -->
+<script src="https://unpkg.com/xior@0.2.1/plugins/mock.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  const mock = new xiorMock(xior);
+</script>
+```
 
 ### Create your own custom plugin
 

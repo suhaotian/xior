@@ -21,6 +21,12 @@
       "import": "./plugins/throttle/index.mjs",
       "module": "./plugins/throttle/index.esm.js"
     },
+    "./plugins/dedupe": {
+      "types": "./plugins/dedupe/index.d.ts",
+      "require": "./plugins/dedupe/index.cjs",
+      "import": "./plugins/dedupe/index.mjs",
+      "module": "./plugins/dedupe/index.esm.js"
+    },
     "./plugins/cache": {
       "types": "./plugins/cache/index.d.ts",
       "require": "./plugins/cache/index.cjs",
