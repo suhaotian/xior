@@ -97,23 +97,16 @@ describe('xior polyfill tests', () => {
       assert.strictEqual(data, undefined);
       assert.strictEqual(await response.text(), '');
     });
-
     it('OPTIONS should work', async () => {
       const { data } = await xiorInstance.options<{
         method: string;
         body: Record<string, any>;
         query: Record<string, any>;
-      }>(
-        '/options',
-        { a: 3, b: 4 },
-        {
-          params: { a: 1, b: 2 },
-        }
-      );
+      }>('/options', {
+        params: { a: 1, b: 2 },
+      });
       assert.strictEqual(data.method, 'options');
-      assert.strictEqual(Object.keys(data.body).length, 2);
-      assert.strictEqual(data.body.a, 3);
-      assert.strictEqual(data.body.b, 4);
+      assert.strictEqual(Object.keys(data.query).length, 2);
       assert.strictEqual(data.query.a, '1');
       assert.strictEqual(data.query.b, '2');
     });

@@ -1,5 +1,57 @@
 # CHANGELOG 📝
 
+## v0.2.1
+
+- feat: support direct call `xior.get/post..` similar to `axios.get/post..` API, no need create instance at first
+- feat: add UMD(Universal Module Definition) format bundle(now you can directly load xior in browser)
+- feat: add VERSION to `xior`, now you can get current version of xior by: `import xior from 'xior'; console.log(xior.VERSION)`
+- feat(new plugin): add `error-cache` plugin
+- feat(new plugin): add `dedupe` plugin
+- feat(new plugin): add `mock` plugin
+- fix(`delete`/`options` method): `DELETE` and `OPTIONS` method's data option should be url encoded format like `GET` / `HEAD`
+
+## Breaking change
+
+1. **Type** change
+
+before:
+
+```ts
+import xior from 'xior';
+
+let instance: xior;
+instance = xior.create();
+```
+
+Now:
+
+```ts
+import xior, { XiorInstance } from 'xior';
+
+let instance: XiorInstance;
+instance = xior.create();
+```
+
+2. **OPTIONS** method change
+
+before:
+
+```ts
+import xior, { XiorInstance } from 'xior';
+
+const instance = xior.create();
+instance.options('/options_api_path', { text: 'this is data' }, { params: { a: 1 } });
+```
+
+now:
+
+```ts
+import xior, { XiorInstance } from 'xior';
+
+const instance = xior.create();
+instance.options('/options_api_path', { params: { a: 1, text: 'this is data' } });
+```
+
 ## v0.1.4 2024-03-09
 
 - Feat(core): support `xiorInstance.defaults.headers['Authorization'] = 'Basic token';`

@@ -3,8 +3,8 @@ import assert from 'node:assert';
 import { before, after, describe, it } from 'node:test';
 
 import { startServer } from './server';
+import xior, { XiorInstance } from '../index';
 import { XiorError, XiorTimeoutError, encodeParams } from '../utils';
-import { xior } from '../xior';
 
 let close: Function;
 const port = 7865;
@@ -18,6 +18,38 @@ after(async () => {
 });
 
 describe('axios compatible tests', () => {
+  it('should work with axios.get/axios.post', async () => {
+    const res = await axios.get('/get', { baseURL });
+    const xiorRes = await xior.get('/get', { baseURL });
+    assert.strictEqual(res.data.method, xiorRes.data.method);
+
+    const res1 = await axios.post('/post', null, { baseURL });
+    const xiorRes1 = await xior.post('/post', null, { baseURL });
+    assert.strictEqual(res1.data.method, xiorRes1.data.method);
+
+    const { data } = await xior.post(
+      '/post',
+      {
+        firstName: 'Fred',
+        lastName: 'Flintstone',
+      },
+      { baseURL }
+    );
+    assert.strictEqual(data.body.firstName, 'Fred');
+    assert.strictEqual(data.body.lastName, 'Flintstone');
+
+    const { data: axiosData } = await axios.post(
+      '/post',
+      {
+        firstName: 'Fred',
+        lastName: 'Flintstone',
+      },
+      { baseURL }
+    );
+    assert.strictEqual(axiosData.body.firstName, 'Fred');
+    assert.strictEqual(axiosData.body.lastName, 'Flintstone');
+  });
+
   it('should work with axios.create', async () => {
     const axiosInstance = axios.create({
       withCredentials: true,
@@ -25,7 +57,7 @@ describe('axios compatible tests', () => {
         return JSON.stringify(data);
       },
     });
-    const xiorInstance = xior.create({
+    const xiorInstance: XiorInstance = xior.create({
       withCredentials: true,
       paramsSerializer(data) {
         return JSON.stringify(data);
@@ -95,8 +127,65 @@ describe('axios compatible tests', () => {
     assert.strictEqual(data.length, 0);
     assert.strictEqual(axiorData.length, 0);
   });
-  it('should work with post/delete/put/patch/head/options', () => {
-    //
+  it('should work with get/options/delete', async () => {
+    const axiosInstance = axios.create({
+      baseURL,
+      timeout: 1000,
+    });
+    const xiorInstance = xior.create({
+      baseURL,
+      timeout: 1000,
+    });
+    for (const method of 'get/delete/options'.split('/')) {
+      const { data: axiosData } = await axiosInstance[method as 'options']('/' + method, {
+        params: { b: 2 },
+      });
+      const { data: xiorData } = await xiorInstance[method as 'options']('/' + method, {
+        params: { b: 2 },
+      });
+      assert.strictEqual(
+        xiorData.query?.b,
+        axiosData.query?.b,
+        `query ${method}: ${xiorData.query?.b} === ${axiosData.query?.b}`
+      );
+    }
+  });
+  it('should work with post/put/patch', async () => {
+    const axiosInstance = axios.create({
+      baseURL,
+      timeout: 1000,
+    });
+    const xiorInstance = xior.create({
+      baseURL,
+      timeout: 1000,
+    });
+    for (const method of 'post/put/patch'.split('/')) {
+      const { data: axiosData } = await axiosInstance[method as 'post'](
+        '/' + method,
+        { a: 1 },
+        {
+          params: { b: 2 },
+        }
+      );
+      const { data: xiorData } = await xiorInstance[method as 'post'](
+        '/' + method,
+        { a: 1 },
+        {
+          params: { b: 2 },
+        }
+      );
+
+      assert.strictEqual(
+        xiorData.body?.a,
+        axiosData.body?.a,
+        `body ${method}: ${xiorData.body?.a} === ${axiosData.body?.a}`
+      );
+      assert.strictEqual(
+        xiorData.query?.b,
+        axiosData.query?.b,
+        `query ${method}: ${xiorData.query?.b} === ${axiosData.query?.b}`
+      );
+    }
   });
   it('should work with timeout', async () => {
     const axiosInstance = axios.create({
@@ -242,13 +331,13 @@ describe('axios compatible tests', () => {
         return config;
       },
       (error) => {
-        //
+        return Promise.reject(error);
       }
     );
     xiorInstance.interceptors.response.use(
       (config) => config,
       (error) => {
-        //
+        return Promise.reject(error);
       }
     );
     const { data, config } = await axiosInstance.get('/get', { params: { a: 1, b: 2 } });

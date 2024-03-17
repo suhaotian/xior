@@ -14,7 +14,7 @@ A lite request lib based on **fetch** with plugins support.
 - 🔥 Use **fetch**
 - 🫡 **Similar axios API**: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`
 - 🤙 Support timeout and cancel requests
-- 🥷 Plugin support: error retry, cache, throttling, and easily create custom plugins
+- 🥷 Plugin support: error retry, cache, throttling, dedupe, error cache, mock and easily create custom plugins
 - 🚀 Lightweight (~6KB, Gzip ~2.6KB)
 - 👊 Unit tested and strongly typed 💪
 
@@ -27,17 +27,23 @@ A lite request lib based on **fetch** with plugins support.
   - [Why choose **xior** over Custom Fetch Wrappers?](#why-choose-xior-over-custom-fetch-wrappers)
 - [Getting Started](#getting-started)
   - [Installing](#installing)
+    - [Package manager](#package-manager)
+    - [Use CDN](#use-cdn)
   - [Create instance](#create-instance)
   - [GET / POST / DELETE / PUT / PATCH / OPTIONS / HEAD](#get--post--delete--put--patch--options--head)
   - [Change default headers or params](#change-default-headers-or-params)
+  - [Get response headers](#get-response-headers)
   - [Upload file](#upload-file)
   - [Using interceptors](#using-interceptors)
   - [Timeout and Cancel request](#timeout-and-cancel-request)
 - [Plugins](#plugins)
   - [Error retry plugin](#error-retry-plugin)
   - [Request throttle plugin](#request-throttle-plugin)
+  - [Request dedupe plugin](#request-dedupe-plugin)
+  - [Error cache plugin](#error-cache-plugin)
   - [Cache plugin](#cache-plugin)
   - [Upload and download progress plugin](#upload-and-download-progress-plugin)
+  - [Mock plugin](#mock-plugin)
   - [Create your own custom plugin](#create-your-own-custom-plugin)
 - [Helper functions](#helper-functions)
 - [FAQ](#faq)
@@ -50,7 +56,9 @@ A lite request lib based on **fetch** with plugins support.
 - [Migrate from `axios` to **xior**](#migrate-from-axios-to-xior)
   - [GET](#get)
   - [POST](#post)
+  - [`axios(requestObj)`: axios({ method: 'get', params: { a: 1 } })](#axiosrequestobj-axios-method-get-params--a-1--)
   - [Creating an instance](#creating-an-instance)
+  - [Get response headers](#get-response-headers-1)
   - [Download file with `responseType: 'stream'` (In Node.JS)](#download-file-with-responsetype-stream-in-nodejs)
   - [Use stream](#use-stream)
 - [Migrate from `fetch` to **xior**](#migrate-from-fetch-to-xior)
@@ -85,6 +93,8 @@ While you can certainly create your own wrapper library around fetch, **xior** o
 
 ### Installing
 
+#### Package manager
+
 ```sh
 # npm
 npm install xior
@@ -97,6 +107,40 @@ bun add xior
 
 # yarn
 yarn add xior
+```
+
+#### Use CDN
+
+> Since v0.2.1, xior support UMD format now :()
+
+Use jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.get('https://exmapledomain.com/api').then((res) => {
+    console.log(res.data);
+  });
+</script>
+```
+
+Use unpkg CDN:
+
+```html
+<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  xior.plugins.use(xiorProgress());
+
+  xior.get('https://exmapledomain.com/api').then((res) => {
+    console.log(res.data);
+  });
+</script>
 ```
 
 ### Create instance
@@ -116,7 +160,7 @@ export const xiorInstance = xior.create({
 
 GET
 
-> `HEAD` / `DELETE` are same usage with `GET` method
+> `HEAD` / `DELETE` / `OPTIONS` are same usage with `GET` method
 
 ```ts
 async function run() {
@@ -140,7 +184,7 @@ async function run() {
 
 POST
 
-> `PUT`/`PATCH`/`OPTIONS` methods are same usage with `POST`
+> `PUT`/`PATCH` methods are same usage with `POST`
 
 ```ts
 async function run() {
@@ -175,6 +219,20 @@ function removeUserToken() {
   // delete xiorInstance.defaults.params['x'];
   delete xiorInstance.defaults.headers['Authorization'];
 }
+```
+
+### Get response headers
+
+```ts
+import xior from 'xior';
+
+const xiorInstance = xior.create({
+  baseURL: 'https://apiexampledomian.com/api',
+});
+
+const { data, headers } = await xiorInstance.get('/');
+
+console.log(headers.get('X-Header-Name'));
 ```
 
 ### Upload file
@@ -300,9 +358,12 @@ controller.abort(new CancelRequestError()); // abort request with custom error
 **xior** offers a variety of built-in plugins to enhance its functionality:
 
 - [Error retry plugin](#error-retry-plugin)
+- [Request dedupe plugin](#request-dedupe-plugin)
 - [Request throttle plugin](#request-throttle-plugin)
+- [Error cache plugin](#error-cache-plugin)
 - [Cache plugin](#cache-plugin)
 - [Upload and download progress plugin](#upload-and-download-progress-plugin)
+- [Mock plugin](#Mock-plugin)
 
 Usage:
 
@@ -368,6 +429,39 @@ http.post('/api1');
 
 // Use `enableRetry: true` to support post method, max retry 5 times until success
 http.post('/api1', null, { retryTimes: 5, enableRetry: true });
+```
+
+Use CDN:
+
+Using jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<!-- Load plugin -->
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/error-retry.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorErrorRetry());
+</script>
+```
+
+Using unpkg CDN:
+
+```html
+<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Load plugin -->
+<script src="https://unpkg.com/xior@0.2.1/plugins/error-retry.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorErrorRetry());
+</script>
 ```
 
 ### Request throttle plugin
@@ -438,11 +532,188 @@ http.post('/get', null, {
 }); // response from cache
 ```
 
+Use CDN:
+
+Using jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<!-- Load plugin -->
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/throttle.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorThrottle());
+</script>
+```
+
+Using unpkg CDN:
+
+```html
+<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Load plugin -->
+<script src="https://unpkg.com/xior@0.2.1/plugins/throttle.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorThrottle());
+</script>
+```
+
+### Request dedupe plugin
+
+> Prevents having multiple identical requests on the fly at the same time.
+
+API:
+
+```ts
+function dedupeRequestPlugin(options: {
+  /**
+   * check if we need enable dedupe, default only `GET` method or`isGet: true` enable
+   */
+  enableDedupe?: boolean | ((config?: XiorRequestConfig) => boolean);
+}): XiorPlugin;
+```
+
+Basic usage:
+
+```ts
+import xior from 'xior';
+import dedupePlugin from 'xior/plugins/dedupe';
+
+const http = xior.create();
+http.plugins.use(dedupePlugin());
+
+http.get('/'); // make real http request
+http.get('/'); // response from previous if previous request return response
+http.get('/'); // response from previous if previous request return response
+
+http.post('/'); // make real http request
+http.post('/'); // make real http request
+http.post('/'); // make real http request
+```
+
+Use CDN:
+
+Using jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<!-- Load plugin -->
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/dedupe.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorDedupe());
+</script>
+```
+
+Using unpkg CDN:
+
+```html
+<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Load plugin -->
+<script src="https://unpkg.com/xior@0.2.1/plugins/dedupe.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorDedupe());
+</script>
+```
+
+### Error cache plugin
+
+> When request error, if have cached data then use the cached data
+
+API:
+
+```ts
+function errorCachePlugin(options: {
+  enableCache?: boolean | ((config?: XiorRequestConfig) => boolean);
+  defaultCache?: ICacheLike<XiorPromise>;
+}): XiorPlugin;
+```
+
+The `options` object:
+
+| Param        | Type                                         | Default value                                         | Description                                                                                                                 |
+| ------------ | -------------------------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| enableCache  | boolean \| ((config: Xiorconfig) => boolean) | (config) => config.method === 'GET' \|\| config.isGet | Default only enabled in `GET` request                                                                                       |
+| defaultCache | CacheLike                                    | lru(Inifinite, 0)                                     | will used for storing requests by default, except you define a custom Cache with your request config, use `tiny-lru` module |
+
+Basic usage:
+
+```ts
+import xior from 'xior';
+import errorCachePlugin from 'xior/plugins/error-cache';
+
+const http = xior.create();
+http.plugins.use(errorCachePlugin({}));
+
+http.get('/users'); // make real http request, and cache the response
+const res = await http.get('/users'); // if request error, use the cache data
+if (res.fromCache) {
+  // if `fromCache` is true, means data from cache!
+  console.log('data from cache!');
+  // and get what's the error
+  console.log('error', res.error);
+}
+
+http.post('/users'); // no cache for post
+
+http.post('/users', { isGet: true }); // but with `isGet: true` can let plugins know this is `GET` behavior! then will cache data
+```
+
+Use CDN:
+
+Using jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<!-- Load plugin -->
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/error-cache.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorErrorCache());
+</script>
+```
+
+Using unpkg CDN:
+
+```html
+<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Load plugin -->
+<script src="https://unpkg.com/xior@0.2.1/plugins/error-cache.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorErrorCache());
+</script>
+```
+
 ### Cache plugin
 
 > Makes xior cacheable
 
 > Good to Know: Next.js already support cache for fetch in server side. [More detail](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating#fetching-data-on-the-server-with-fetch)
+
+> Different with `error-cache` plugin: this plugin will use the data in cache if the cache data not expired.
 
 API:
 
@@ -471,7 +742,7 @@ http.plugins.use(cachePlugin());
 
 http.get('/users'); // make real http request
 http.get('/users'); // get cache from previous request
-http.get('/users', { enableCache: false }); // disable cache manually and the the real http request
+http.get('/users', { enableCache: false }); // disable cache manually and the real http request
 
 http.post('/users'); // default no cache for post
 
@@ -479,7 +750,7 @@ http.post('/users'); // default no cache for post
 http.post('/users', { enableCache: true }); // make real http request
 const res = await http.post('/users', { enableCache: true }); // get cache from previous request
 if (res.fromCache) {
-  // if fromCache is true, means data from cache!
+  // if `fromCache` is true, means data from cache!
   console.log('data from cache!');
 }
 ```
@@ -556,6 +827,164 @@ http.post('/upload', formData, {
 });
 ```
 
+Use CDN:
+
+Using jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<!-- Load plugin -->
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/progress.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorProgress());
+</script>
+```
+
+Using unpkg CDN:
+
+```html
+<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Load plugin -->
+<script src="https://unpkg.com/xior@0.2.1/plugins/progress.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  xior.plugins.use(xiorProgress());
+</script>
+```
+
+### Mock plugin
+
+> This plugin let you eaisly mock requests
+
+Usage:
+
+with `GET`:
+
+```ts
+import xior from 'xior';
+import MockPlugin from 'xior/plugins/mock';
+
+const instance = xior.create();
+const mock = new MockPlugin(instance);
+
+// Mock any GET request to /users
+// arguments for reply are (status, data, headers)
+mock.onGet('/users').reply(
+  200,
+  {
+    users: [{ id: 1, name: 'John Smith' }],
+  },
+  {
+    'X-Custom-Response-Header': '123',
+  }
+);
+
+instance.get('/users').then(function (response) {
+  console.log(response.data);
+  console.log(response.headers.get('X-Custom-Response-Header')); // 123
+});
+
+// Mock GET request to /users when param `searchText` is 'John'
+// arguments for reply are (status, data, headers)
+mock.onGet('/users', { params: { searchText: 'John' } }).reply(200, {
+  users: [{ id: 1, name: 'John Smith' }],
+});
+
+instance.get('/users', { params: { searchText: 'John' } }).then(function (response) {
+  console.log(response.data);
+});
+```
+
+with `POST`:
+
+```ts
+import xior from 'xior';
+import MockPlugin from 'xior/plugins/mock';
+
+const instance = xior.create();
+const mock = new MockPlugin(instance);
+
+// Mock any POST request to /users
+// arguments for reply are (status, data, headers)
+mock.onPost('/users').reply(
+  200,
+  {
+    users: [{ id: 1, name: 'John Smith' }],
+  },
+  {
+    'X-Custom-Response-Header': '123',
+  }
+);
+
+instance.post('/users').then(function (response) {
+  console.log(response.data);
+  console.log(response.headers.get('X-Custom-Response-Header')); // 123
+});
+
+// Mock POST request to /users when param `searchText` is 'John'
+// arguments for reply are (status, data, headers)
+mock.onPost('/users', null, { params: { searchText: 'John' } }).reply(200, {
+  users: [{ id: 1, name: 'John Smith' }],
+});
+
+instance.get('/users', null, { params: { searchText: 'John' } }).then(function (response) {
+  console.log(response.data);
+});
+
+// Mock POST request to /users when body `searchText` is 'John'
+// arguments for reply are (status, data, headers)
+mock.onPost('/users', { searchText: 'John' }).reply(200, {
+  users: [{ id: 1, name: 'John Smith' }],
+});
+
+instance.get('/users', { searchText: 'John' }).then(function (response) {
+  console.log(response.data);
+});
+```
+
+**More details**, [check here](./Mock-plugin.md).
+
+Use CDN:
+
+Using jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<!-- Load plugin -->
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/mock.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  const mock = new xiorMock(xior);
+</script>
+```
+
+Using unpkg CDN:
+
+```html
+<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+
+<!-- Load plugin -->
+<script src="https://unpkg.com/xior@0.2.1/plugins/mock.umd.js"></script>
+
+<!-- Usage -->
+<script>
+  console.log(xior.VERSION);
+
+  const mock = new xiorMock(xior);
+</script>
+```
+
 ### Create your own custom plugin
 
 **xior** let you easily to create custom plugins.
@@ -594,6 +1023,7 @@ import {
   delay as sleep,
   buildSortedURL,
   isAbsoluteURL,
+  joinPath,
 } from 'xior';
 ```
 
@@ -698,9 +1128,7 @@ async function getUser() {
 xior:
 
 ```ts
-import xior from 'xior';
-
-const axios = xior.create();
+import axios from 'xior';
 
 // Make a request for a user with a given ID
 axios
@@ -768,9 +1196,7 @@ axios
 xior:
 
 ```ts
-import xior from 'xior';
-
-const axios = xior.create();
+import axios from 'xior';
 
 axios
   .post('/user', {
@@ -783,6 +1209,26 @@ axios
   .catch(function (error) {
     console.log(error);
   });
+```
+
+### `axios(requestObj)`: axios({ method: 'get', params: { a: 1 } })
+
+axios:
+
+```ts
+import axios from 'axios';
+
+await axios({ method: 'get', params: { a: 1 } });
+```
+
+xior:
+
+```ts
+import xior from 'xior';
+
+const axios = xior.create();
+
+await axios.request({ method: 'get', params: { a: 1 } });
 ```
 
 ### Creating an instance
@@ -807,6 +1253,36 @@ const instance = axios.create({
   timeout: 1000,
   headers: { 'X-Custom-Header': 'foobar' },
 });
+```
+
+### Get response headers
+
+axios:
+
+```ts
+import axios from 'axios';
+
+const axiosInstance = axios.create({
+  baseURL: 'https://apiexampledomian.com/api',
+});
+
+const { data, headers } = await axiosInstance.get('/');
+
+console.log(headers['X-Header-Name']);
+```
+
+xior:
+
+```ts
+import xior from 'xior';
+
+const xiorInstance = xior.create({
+  baseURL: 'https://apiexampledomian.com/api',
+});
+
+const { data, headers } = await xiorInstance.get('/');
+
+console.log(headers.get('X-Header-Name'));
 ```
 
 ### Download file with `responseType: 'stream'` (In Node.JS)

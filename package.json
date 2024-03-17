@@ -1,7 +1,7 @@
 {
   "name": "xior",
-  "version": "0.1.4",
-  "description": "A lite request lib based on **fetch** with plugins support, and axios similar API",
+  "version": "0.2.1",
+  "description": "A lite request lib based on fetch with plugins support, and axios similar API",
   "repository": "suhaotian/xior",
   "bugs": "https://github.com/suhaotian/xior/issues",
   "homepage": "https://github.com/suhaotian/xior",
@@ -21,6 +21,12 @@
       "import": "./plugins/throttle/index.mjs",
       "module": "./plugins/throttle/index.esm.js"
     },
+    "./plugins/dedupe": {
+      "types": "./plugins/dedupe/index.d.ts",
+      "require": "./plugins/dedupe/index.cjs",
+      "import": "./plugins/dedupe/index.mjs",
+      "module": "./plugins/dedupe/index.esm.js"
+    },
     "./plugins/cache": {
       "types": "./plugins/cache/index.d.ts",
       "require": "./plugins/cache/index.cjs",
@@ -33,6 +39,18 @@
       "import": "./plugins/progress/index.mjs",
       "module": "./plugins/progress/index.esm.js"
     },
+    "./plugins/mock": {
+      "types": "./plugins/mock/index.d.ts",
+      "require": "./plugins/mock/index.cjs",
+      "import": "./plugins/mock/index.mjs",
+      "module": "./plugins/mock/index.esm.js"
+    },
+    "./plugins/error-cache": {
+      "types": "./plugins/error-cache/index.d.ts",
+      "require": "./plugins/error-cache/index.cjs",
+      "import": "./plugins/error-cache/index.mjs",
+      "module": "./plugins/error-cache/index.esm.js"
+    },
     ".": {
       "types": "./dist/types/index.d.ts",
       "require": "./dist/index.cjs",
@@ -43,9 +61,10 @@
   "scripts": {
     "build": "bunchee -m",
     "build:lib": "rm -rf lib && tsc --project tsconfig.json",
-    "test": "pnpm build:lib && node --test",
+    "build:umd": "pnpm webpack --config ./scripts/webpack.config.mjs",
+    "test": "pnpm build:lib && node --test ./lib",
     "checktype": "tsc --noEmit",
-    "start-publish": "pnpm build && pnpm test && npm publish --registry=https://registry.npmjs.org",
+    "start-publish": "pnpm build && pnpm test && pnpm build:umd && node scripts/purge-pkg-for-publish.mjs && npm publish --registry=https://registry.npmjs.org",
     "push": "git push && git lfs push --all origin",
     "prepare": "is-ci || pnpm build && husky",
     "checksize": "pnpm --filter=vite-example build"
@@ -74,7 +93,10 @@
     "bunchee": "^4.4.8",
     "lfs-auto-track": "^1.1.0",
     "isomorphic-unfetch": "^4.0.2",
-    "promise-polyfill": "^8.3.0"
+    "promise-polyfill": "^8.3.0",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4",
+    "change-case": "^5.4.3"
   },
   "prettier": {
     "printWidth": 100,
@@ -103,7 +125,8 @@
   },
   "files": [
     "dist",
-    "plugins"
+    "plugins",
+    "Mock-plugin.md"
   ],
   "keywords": [
     "fetch",
@@ -119,6 +142,8 @@
     "network",
     "url",
     "uri",
+    "mock",
+    "dedupe",
     "promise",
     "request",
     "error retry",

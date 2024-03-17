@@ -8,7 +8,7 @@ type XiorPromise = Promise<XiorResponse>;
 
 export type XiorCacheOptions = {
   /**
-   * check if we need enable cache, default only `GET` method enable cache
+   * check if we need enable cache, default only `GET` method or`isGet: true` enable cache
    */
   enableCache?: boolean | ((config?: XiorRequestConfig) => boolean);
   defaultCache?: ICacheLike<XiorPromise>;

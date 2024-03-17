@@ -19,7 +19,7 @@ after(async () => {
   return close(1);
 });
 
-describe('xior progress plguins tests', () => {
+describe('xior progress plugin tests', () => {
   const instance = xior.create({ baseURL, encode: (params) => stringify(params) });
   instance.plugins.use(
     xiorProgressPlugin({

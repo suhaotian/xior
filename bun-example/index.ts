@@ -4,6 +4,7 @@ import stringify from 'qs/lib/stringify';
 import xior, { merge, delay, buildSortedURL, encodeParams } from 'xior';
 import cachePlugin from 'xior/plugins/cache';
 import errorRetryPlugin from 'xior/plugins/error-retry';
+import MockPlugin from 'xior/plugins/mock';
 import uploadDownloadProgressPlugin from 'xior/plugins/progress';
 import throttlePlugin from 'xior/plugins/throttle';
 
@@ -16,6 +17,8 @@ instance.plugins.use(errorRetryPlugin({}));
 instance.plugins.use(cachePlugin({}));
 instance.plugins.use(throttlePlugin({}));
 instance.plugins.use(uploadDownloadProgressPlugin({}));
+
+const mock = new MockPlugin(instance, { onNoMatch: 'passthrough' });
 
 instance.plugins.use((adapter) => {
   return async (config) => {

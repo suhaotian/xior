@@ -1,7 +1,5 @@
 import assert from 'node:assert';
 import { after, before, describe, it } from 'node:test';
-// @ts-ignore
-import stringify from 'qs/lib/stringify';
 
 import xiorErrorRetryPlugin from '../../plugins/error-retry';
 import { XiorError } from '../../utils';
@@ -19,7 +17,7 @@ after(async () => {
   return close(1);
 });
 
-describe('xior error retry plguins tests', () => {
+describe('xior error retry plugin tests', () => {
   const instance = xior.create({ baseURL });
   instance.plugins.use(
     xiorErrorRetryPlugin({

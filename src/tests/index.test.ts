@@ -24,6 +24,12 @@ describe('xior tests', () => {
   describe('should work with methods GET/POST/PUT/PATCH/DELETE/HEAD/OPTIONS', () => {
     const xiorInstance = xior.create({ baseURL });
 
+    it('xior.VERSION should be same with package.json', async () => {
+      const content = await readFile('package.json', 'utf-8');
+      const pkg = JSON.parse(content);
+      assert.strictEqual(xior.VERSION, pkg.version);
+    });
+
     it('GET should work', async () => {
       const { data } = await xiorInstance.get<{
         method: string;
@@ -55,10 +61,12 @@ describe('xior tests', () => {
         method: string;
         body: Record<string, any>;
         query: Record<string, any>;
-      }>('/delete', { params: { a: 1, b: 2 } });
+      }>('/delete', { params: { a: 1, b: 2 }, data: { c: 3 } });
       assert.strictEqual(data.method, 'delete');
       assert.strictEqual(data.query.a, '1');
       assert.strictEqual(data.query.b, '2');
+      assert.strictEqual(data.query.c, '3');
+      assert.strictEqual(Object.keys(data.body).length, 0);
     });
 
     it('PUT should work', async () => {
@@ -100,17 +108,11 @@ describe('xior tests', () => {
         method: string;
         body: Record<string, any>;
         query: Record<string, any>;
-      }>(
-        '/options',
-        { a: 3, b: 4 },
-        {
-          params: { a: 1, b: 2 },
-        }
-      );
+      }>('/options', {
+        params: { a: 1, b: 2 },
+      });
       assert.strictEqual(data.method, 'options');
-      assert.strictEqual(Object.keys(data.body).length, 2);
-      assert.strictEqual(data.body.a, 3);
-      assert.strictEqual(data.body.b, 4);
+      assert.strictEqual(Object.keys(data.query).length, 2);
       assert.strictEqual(data.query.a, '1');
       assert.strictEqual(data.query.b, '2');
     });

@@ -31,6 +31,10 @@ jobs:
       - name: Run build
         run: pnpm build
 
+
+      - name: Run vitest mock tests
+        run: pnpm --filter=vitest-mock-example test
+
       - name: Run vite example build
         run: pnpm --filter=vite-example build
 
