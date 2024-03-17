@@ -142,6 +142,8 @@
     "network",
     "url",
     "uri",
+    "mock",
+    "dedupe",
     "promise",
     "request",
     "error retry",
