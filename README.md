@@ -28,7 +28,7 @@ A lite request lib based on **fetch** with plugins support.
 - [Getting Started](#getting-started)
   - [Installing](#installing)
     - [Package manager](#package-manager)
-    - [CDN](#cdn)
+    - [Use CDN](#use-cdn)
   - [Create instance](#create-instance)
   - [GET / POST / DELETE / PUT / PATCH / OPTIONS / HEAD](#get--post--delete--put--patch--options--head)
   - [Change default headers or params](#change-default-headers-or-params)
@@ -38,18 +38,12 @@ A lite request lib based on **fetch** with plugins support.
   - [Timeout and Cancel request](#timeout-and-cancel-request)
 - [Plugins](#plugins)
   - [Error retry plugin](#error-retry-plugin)
-    - [CDN](#cdn-1)
   - [Request throttle plugin](#request-throttle-plugin)
-    - [CDN](#cdn-2)
   - [Request dedupe plugin](#request-dedupe-plugin)
-    - [CDN](#cdn-3)
   - [Error cache plugin](#error-cache-plugin)
-    - [CDN](#cdn-4)
   - [Cache plugin](#cache-plugin)
   - [Upload and download progress plugin](#upload-and-download-progress-plugin)
-    - [CDN](#cdn-5)
   - [Mock plugin](#mock-plugin)
-    - [CDN](#cdn-6)
   - [Create your own custom plugin](#create-your-own-custom-plugin)
 - [Helper functions](#helper-functions)
 - [FAQ](#faq)
@@ -115,48 +109,36 @@ bun add xior
 yarn add xior
 ```
 
-#### CDN
+#### Use CDN
 
 > Since v0.2.1, xior support UMD format now :()
 
-Using jsDelivr CDN:
+Use jsDelivr CDN:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
-
-<!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/progress.umd.js"></script>
 
 <!-- Usage -->
 <script>
   console.log(xior.VERSION);
 
-  xior.plugins.use(xiorProgress());
-
-  xior.get('https://exmapledomain.com/api', {
-    onDownloadProgress(e) {
-      console.log(e.progress);
-    },
+  xior.get('https://exmapledomain.com/api').then((res) => {
+    console.log(res.data);
   });
 </script>
 ```
 
-Using unpkg CDN:
+Use unpkg CDN:
 
 ```html
 <script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
-
-<!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.2.1/plugins/progress.umd.js"></script>
 
 <!-- Usage -->
 <script>
   xior.plugins.use(xiorProgress());
 
-  xior.get('https://exmapledomain.com/api', {
-    onDownloadProgress(e) {
-      console.log(e.progress);
-    },
+  xior.get('https://exmapledomain.com/api').then((res) => {
+    console.log(res.data);
   });
 </script>
 ```
@@ -449,7 +431,7 @@ http.post('/api1');
 http.post('/api1', null, { retryTimes: 5, enableRetry: true });
 ```
 
-#### CDN
+Use CDN:
 
 Using jsDelivr CDN:
 
@@ -550,7 +532,7 @@ http.post('/get', null, {
 }); // response from cache
 ```
 
-#### CDN
+Use CDN:
 
 Using jsDelivr CDN:
 
@@ -616,7 +598,7 @@ http.post('/'); // make real http request
 http.post('/'); // make real http request
 ```
 
-#### CDN
+Use CDN:
 
 Using jsDelivr CDN:
 
@@ -692,7 +674,7 @@ http.post('/users'); // no cache for post
 http.post('/users', { isGet: true }); // but with `isGet: true` can let plugins know this is `GET` behavior! then will cache data
 ```
 
-#### CDN
+Use CDN:
 
 Using jsDelivr CDN:
 
@@ -845,7 +827,7 @@ http.post('/upload', formData, {
 });
 ```
 
-#### CDN
+Use CDN:
 
 Using jsDelivr CDN:
 
@@ -968,9 +950,9 @@ instance.get('/users', { searchText: 'John' }).then(function (response) {
 });
 ```
 
-Check more details about mock plugin, [click here](./Mock-plugin.md).
+**More details**, [check here](./Mock-plugin.md).
 
-#### CDN
+Use CDN:
 
 Using jsDelivr CDN:
 

@@ -3,7 +3,7 @@
 ## v0.2.1
 
 - feat: support direct call `xior.get/post..` similar to `axios.get/post..` API, no need create instance at first
-- feat: add umd format bundle(now you can directly load xior in browser)
+- feat: add UMD(Universal Module Definition) format bundle(now you can directly load xior in browser)
 - feat: add VERSION to `xior`, now you can get current version of xior by: `import xior from 'xior'; console.log(xior.VERSION)`
 - feat(new plugin): add `error-cache` plugin
 - feat(new plugin): add `dedupe` plugin
