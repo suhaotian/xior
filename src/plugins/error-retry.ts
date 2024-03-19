@@ -73,10 +73,8 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
             await delay(delayTime);
           }
           count++;
-          if (onRetry) onRetry(config, error, count);
+          if (onRetry) onRetry(config, error as XiorError, count);
           return handleRequest();
-
-          throw error;
         }
       }
 
