@@ -42,7 +42,7 @@ export default async function defaultRequestInterceptor(
       encodedParams = true;
       const encodeUrlData = encode(merge(data || {}, req.params || {}), encodeURI);
       if (encodeUrlData) {
-        _url = _url.includes('?') ? (_url += `&${encodeUrlData}`) : `${_url}?${encodeUrlData}`;
+        _url += _url.includes('?') ? `&${encodeUrlData}` : `?${encodeUrlData}`;
       }
     } else if (contentType === jsonType) {
       _data = JSON.stringify(data);
@@ -50,9 +50,9 @@ export default async function defaultRequestInterceptor(
   }
 
   if (!encodedParams && req.params && Object.keys(req.params).length > 0) {
-    _url = _url.includes('?')
-      ? (_url += `&${encode(req.params, encodeURI)}`)
-      : `${_url}?${encode(req.params, encodeURI)}`;
+    _url += _url.includes('?')
+      ? `&${encode(req.params, encodeURI)}`
+      : `?${encode(req.params, encodeURI)}`;
   }
 
   return {

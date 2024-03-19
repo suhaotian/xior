@@ -5,7 +5,7 @@ export default function buildSortedURL(
 ) {
   let builtURL = data ? encode(data) : '';
   if (builtURL) {
-    builtURL = _url.includes('?') ? _url + '&' + builtURL : _url + '?' + builtURL;
+    builtURL = _url + (_url.includes('?') ? '&' + builtURL : '?' + builtURL);
   }
   const [urlPath, queryString] = builtURL.split('?');
 

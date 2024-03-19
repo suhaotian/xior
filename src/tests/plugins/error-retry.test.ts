@@ -40,6 +40,12 @@ describe('xior error retry plugin tests', () => {
       await instance.get('/retry-error', {
         params: { count: 3 },
         retryTimes: 2,
+        retryInterval(count: number) {
+          return count * 200;
+        },
+        onRetry(config: any, error: any, count: any) {
+          console.log(`RETRY LOG: ${config.method} ${config.url} ${count} retry`);
+        },
       } as any);
     } catch (e) {
       if (e instanceof XiorError) {

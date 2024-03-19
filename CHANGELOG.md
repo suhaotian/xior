@@ -1,6 +1,12 @@
 # CHANGELOG 📝
 
-## v0.2.1
+## v0.2.2 2024/03/18
+
+- fix(plugin): fix `error-retry` plugin, `TypeError` should retry too
+- feat(plugin): `error-retry` plugin, `retryInterval` can be `function` too, and add `onRetry` to options
+- chore(core): minor improvment
+
+## v0.2.1 2024/03/17
 
 - feat(core): support direct call `xior.get/post..` similar to `axios.get/post..` API, no need create instance at first
 - fix(core): `DELETE` and `OPTIONS` method's data option should be url encoded format like `GET` / `HEAD`

@@ -1,6 +1,6 @@
 {
   "name": "xior",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A lite request lib based on fetch with plugins support, and axios similar API",
   "repository": "suhaotian/xior",
   "bugs": "https://github.com/suhaotian/xior/issues",
@@ -83,7 +83,7 @@
     "eslint-config-universe": "^12.0.0",
     "@tsconfig/recommended": "^1.0.3",
     "@types/mime": "^3.0.4",
-    "express": "^4.18.2",
+    "express": "^4.18.3",
     "@types/express": "^4.17.21",
     "axios": "^1.6.7",
     "multer": "^1.4.5-lts.1",

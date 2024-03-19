@@ -116,7 +116,7 @@ yarn add xior
 Use jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.2/dist/xior.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -131,12 +131,10 @@ Use jsDelivr CDN:
 Use unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.2.2/dist/xior.umd.js"></script>
 
 <!-- Usage -->
 <script>
-  xior.plugins.use(xiorProgress());
-
   xior.get('https://exmapledomain.com/api').then((res) => {
     console.log(res.data);
   });
@@ -391,18 +389,20 @@ API:
 ```ts
 function errorRetryPlugin(options: {
   retryTimes?: number;
-  retryInterval?: number;
+  retryInterval?: number | ((errorCount: number) => number);
   enableRetry?: boolean | (config: XiorRequestConfig, error: XiorError) => boolean;
+  onRetry?: (config: XiorRequestConfig, error: XiorError, count: number) => void;
 }): XiorPlugin;
 ```
 
 The `options` object:
 
-| Param         | Type                                                                  | Default value                                                | Description                                                                           |
-| ------------- | --------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
-| retryTimes    | number                                                                | 2                                                            | Set the retry times for failed request                                                |
-| retryInterval | number                                                                | 3000                                                         | After first time retry, the next retries interval time, default interval is 3 seconds |
-| enableRetry   | boolean \| ((config: XiorRequestConfig, error: XiorError) => boolean) | (config, error) => config.method === 'GET' \|\| config.isGet | Default only retry if `GET` request error and `retryTimes > 0`                        |
+| Param         | Type                                                                              | Default value                                                | Description                                                                                                              |
+| ------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| retryTimes    | number                                                                            | 2                                                            | Set the retry times for failed request                                                                                   |
+| retryInterval | number \| ((errorCount: number) => number)                                        | 3000                                                         | After first time retry, the next retries interval time, default interval is 3 seconds; you can use function as param too |
+| enableRetry   | boolean \| ((config: XiorRequestConfig, error: XiorError) => boolean)             | (config, error) => config.method === 'GET' \|\| config.isGet | Default only retry if `GET` request error and `retryTimes > 0`                                                           |
+| onRetry       | boolean \| ((config: XiorRequestConfig, error: XiorError, count: number) => void) | undefined                                                    | For log retry info                                                                                                       |
 
 Basic usage:
 
@@ -414,7 +414,13 @@ const http = xior.create();
 http.plugins.use(
   errorRetryPlugin({
     retryTimes: 3,
-    retryInterval: 3000,
+    // retryInterval: 3000,
+    retryInterval(count) {
+      return count * 3000;
+    },
+    onRetry(config, error, count) {
+      console.log(`${config.method} ${config.url} retry ${count} times`);
+    },
   })
 );
 
@@ -436,9 +442,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.2/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/error-retry.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.2/plugins/error-retry.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -451,10 +457,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.2.2/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.2.1/plugins/error-retry.umd.js"></script>
+<script src="https://unpkg.com/xior@0.2.2/plugins/error-retry.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -537,9 +543,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.2/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/throttle.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.2/plugins/throttle.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -552,10 +558,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.2.2/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.2.1/plugins/throttle.umd.js"></script>
+<script src="https://unpkg.com/xior@0.2.2/plugins/throttle.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -603,9 +609,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.2/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/dedupe.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.2/plugins/dedupe.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -618,10 +624,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.2.2/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.2.1/plugins/dedupe.umd.js"></script>
+<script src="https://unpkg.com/xior@0.2.2/plugins/dedupe.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -679,9 +685,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.2/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/error-cache.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.2/plugins/error-cache.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -694,10 +700,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.2.2/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.2.1/plugins/error-cache.umd.js"></script>
+<script src="https://unpkg.com/xior@0.2.2/plugins/error-cache.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -832,9 +838,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.2/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/progress.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.2/plugins/progress.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -847,10 +853,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.2.2/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.2.1/plugins/progress.umd.js"></script>
+<script src="https://unpkg.com/xior@0.2.2/plugins/progress.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -957,9 +963,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.2/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.1/plugins/mock.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.2.2/plugins/mock.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -972,10 +978,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.2.1/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.2.2/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.2.1/plugins/mock.umd.js"></script>
+<script src="https://unpkg.com/xior@0.2.2/plugins/mock.umd.js"></script>
 
 <!-- Usage -->
 <script>

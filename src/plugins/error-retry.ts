@@ -9,12 +9,13 @@ export type ErrorRetryOptions = {
    * Retry after milliseconds, default: 3000
    * after first time error retry, retry interval
    */
-  retryInterval?: number;
+  retryInterval?: number | ((count: number) => number);
   /**
    * default: true,
    * it's useful because we don't want retry when the error  because of token expired
    */
   enableRetry?: boolean | ((config: XiorRequestConfig, error: XiorError) => boolean);
+  onRetry?: (config: XiorRequestConfig, error: XiorError, count: number) => void;
 };
 
 /** @ts-ignore */
@@ -27,6 +28,7 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
     retryTimes: _retryTimes,
     retryInterval: _retryInterval,
     enableRetry: _enableRetry,
+    onRetry: _onRetry,
   } = options || {
     retryTimes: 2,
     retryInterval: 3000,
@@ -38,6 +40,7 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
         retryTimes = _retryTimes,
         retryInterval = _retryInterval,
         enableRetry = _enableRetry,
+        onRetry = _onRetry,
       } = config as ErrorRetryOptions;
 
       let timeUp = false;
@@ -47,7 +50,11 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
         try {
           return await adapter(config);
         } catch (error) {
-          if (error instanceof XiorError || error instanceof XiorTimeoutError) {
+          if (
+            error instanceof XiorError ||
+            error instanceof XiorTimeoutError ||
+            error instanceof TypeError
+          ) {
             const isGet = config.method === 'GET' || config.isGet;
             const t = typeof enableRetry;
             const enabled =
@@ -65,11 +72,13 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
               throw error;
             }
 
-            if (retryInterval && retryInterval > 0 && count > 0) {
-              await delay(retryInterval);
+            const delayTime =
+              typeof retryInterval === 'function' ? retryInterval(count) : retryInterval;
+            if (delayTime && delayTime > 0 && count > 0) {
+              await delay(delayTime);
             }
-
             count++;
+            if (onRetry) onRetry(config, error, count);
             return handleRequest();
           }
 
