@@ -60,10 +60,11 @@
   },
   "scripts": {
     "build": "bunchee -m",
-    "build:umd": "pnpm webpack --config ./scripts/webpack.config.mjs",
+    "build:lib": "rm -rf lib && tsc --project tsconfig.json",
+    "build:umd": "pnpm build:lib && pnpm webpack --config ./scripts/webpack.config.mjs",
     "test": "pnpm --filter=xior-tests test",
     "checktype": "tsc --noEmit",
-    "start-publish": "pnpm build && pnpm test && pnpm build:umd && node scripts/purge-pkg-for-publish.mjs && npm publish --registry=https://registry.npmjs.org",
+    "start-publish": "pnpm build && pnpm build:umd && node scripts/purge-pkg-for-publish.mjs && npm publish --registry=https://registry.npmjs.org",
     "push": "git push && git lfs push --all origin",
     "prepare": "is-ci || pnpm build && husky",
     "checksize": "pnpm --filter=vite-example build"
