@@ -6,3 +6,4 @@ uploads
 plugins/
 !src/plugins
 !src/tests/plugins
+!tests/src/tests/plugins

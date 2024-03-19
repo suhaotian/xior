@@ -144,6 +144,12 @@ importers:
         specifier: ^5
         version: 5.3.3
 
+  tests:
+    devDependencies:
+      xior:
+        specifier: workspace:*
+        version: link:..
+
   vite-example:
     dependencies:
       xior:

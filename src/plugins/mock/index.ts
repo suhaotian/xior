@@ -209,28 +209,28 @@ export default class MockPlugin {
     matcher?: string | RegExp,
     options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
-    const handler = this.createHandler('get');
+    const handler = this.createHandler('get').bind(this);
     return handler(matcher, options);
   }
   onDelete<T extends any>(
     matcher?: string | RegExp,
     options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
-    const handler = this.createHandler('delete');
+    const handler = this.createHandler('delete').bind(this);
     return handler(matcher, options);
   }
   onHead<T extends any>(
     matcher?: string | RegExp,
     options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
-    const handler = this.createHandler('head');
+    const handler = this.createHandler('head').bind(this);
     return handler(matcher, options);
   }
   onAny<T extends any>(
     matcher?: string | RegExp,
     options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
-    const handler = this.createHandler('any');
+    const handler = this.createHandler('any').bind(this);
     return handler(matcher, options);
   }
   onPost<T extends any>(
@@ -238,7 +238,7 @@ export default class MockPlugin {
     data?: RequestData<T>,
     options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
-    const handler = this.createHandler('post');
+    const handler = this.createHandler('post').bind(this);
     return handler(matcher, merge({}, options || {}, { data: data || {} }));
   }
   onPut<T extends any>(
@@ -246,7 +246,7 @@ export default class MockPlugin {
     data?: RequestData<T>,
     options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
-    const handler = this.createHandler('put');
+    const handler = this.createHandler('put').bind(this);
     return handler(matcher, merge({}, options || {}, { data: data || {} }));
   }
   onPatch<T extends any>(
@@ -254,60 +254,107 @@ export default class MockPlugin {
     data?: RequestData<T>,
     options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
-    const handler = this.createHandler('patch');
+    const handler = this.createHandler('patch').bind(this);
     return handler(matcher, merge({}, options || {}, { data: data || {} }));
   }
   onOptions<T extends any>(
     matcher?: string | RegExp,
     options?: RequestOptions
   ): ReturnType<ReturnType<typeof this.createHandler>> {
-    const handler = this.createHandler('options');
+    const handler = this.createHandler('options').bind(this);
     return handler(matcher, options);
   }
 
-  private createHandler(method: string) {
-    const _this = this;
+  /*
+  (matcher?: string | RegExp, options?: XiorRequestConfig) => ({
+    reply: (
+      code: StatusOrCallback,
+      responseData?: any,
+      responseHeaders?: MockHeaders
+    ) => MockPlugin;
+    replyOnce: (
+      code: StatusOrCallback,
+      responseData?: any,
+      responseHeaders?: MockHeaders
+    ) => MockPlugin;
+    withDelayInMs: (
+      delay: number
+    ) => (code: StatusOrCallback, responseData?: any, responseHeaders?: MockHeaders) => MockPlugin;
+    passThrough: () => MockPlugin;
+    abortRequest(): MockPlugin;
+    abortRequestOnce(): MockPlugin;
+    networkError(): MockPlugin;
+    networkErrorOnce(): MockPlugin;
+    timeout(): MockPlugin;
+    timeoutOnce(): MockPlugin;
+  })
+  */
+  createHandler(method: string): (
+    matcher?: string | RegExp,
+    options?: XiorRequestConfig
+  ) => {
+    reply: (
+      code: StatusOrCallback,
+      responseData?: any,
+      responseHeaders?: MockHeaders
+    ) => MockPlugin;
+    replyOnce: (
+      code: StatusOrCallback,
+      responseData?: any,
+      responseHeaders?: MockHeaders
+    ) => MockPlugin;
+    withDelayInMs: (
+      delay: number
+    ) => (code: StatusOrCallback, responseData?: any, responseHeaders?: MockHeaders) => MockPlugin;
+    passThrough: () => MockPlugin;
+    abortRequest(): MockPlugin;
+    abortRequestOnce(): MockPlugin;
+    networkError(): MockPlugin;
+    networkErrorOnce(): MockPlugin;
+    timeout(): MockPlugin;
+    timeoutOnce(): MockPlugin;
+  } {
     return (matcher?: string | RegExp, options?: XiorRequestConfig) => {
       options = options
         ? merge(
             {},
             {
-              headers: _this.instance?.config?.headers,
-              params: _this.instance?.config?.params,
-              data: _this.instance?.config?.data,
+              headers: this.instance?.config?.headers,
+              params: this.instance?.config?.params,
+              data: this.instance?.config?.data,
             },
             options || {}
           )
         : {};
       matcher = matcher === undefined ? /.*/ : matcher;
-      function reply(code: StatusOrCallback, responseData?: any, responseHeaders?: MockHeaders) {
+      const reply = (code: StatusOrCallback, responseData?: any, responseHeaders?: MockHeaders) => {
         const handler = [matcher, options, code, responseData, responseHeaders];
-        _this.addHandler(method, handler);
-        return _this;
-      }
+        this.addHandler(method, handler);
+        return this;
+      };
 
-      function replyOnce(
+      const replyOnce = (
         code: StatusOrCallback,
         responseData?: any,
         responseHeaders?: MockHeaders
-      ) {
+      ) => {
         // replyOnce: handle.length === 6
         const handler = [matcher, options, code, responseData, responseHeaders, true];
-        _this.addHandler(method, handler);
-        return _this;
-      }
+        this.addHandler(method, handler);
+        return this;
+      };
 
-      function replyWithDelay(
+      const replyWithDelay = (
         delay: number,
         code: StatusOrCallback,
         responseData: any,
         responseHeaders?: MockHeaders
-      ) {
+      ) => {
         // replyDelay: handle.length === 7
         const handler = [matcher, options, code, responseData, responseHeaders, false, delay];
-        _this.addHandler(method, handler);
-        return _this;
-      }
+        this.addHandler(method, handler);
+        return this;
+      };
 
       function withDelayInMs(delay: number) {
         return function (
@@ -318,15 +365,28 @@ export default class MockPlugin {
           return replyWithDelay(delay, code, responseData, responseHeaders);
         };
       }
-
-      return {
+      /*
+{
+    reply: (code: StatusOrCallback, responseData?: any, responseHeaders?: MockHeaders) => this;
+    replyOnce: (code: StatusOrCallback, responseData?: any, responseHeaders?: MockHeaders) => this;
+    withDelayInMs: (delay: number) => (code: StatusOrCallback, responseData?: any, responseHeaders?: MockHeaders) => this;
+    passThrough: () => this;
+    abortRequest(): this;
+    abortRequestOnce(): this;
+    networkError(): this;
+    networkErrorOnce(): this;
+    timeout(): this;
+    timeoutOnce(): this;
+}
+*/
+      const result = {
         reply,
         replyOnce,
         withDelayInMs,
         passThrough: () => {
           const handler = [matcher, options];
-          _this.addHandler(method, handler);
-          return _this;
+          this.addHandler(method, handler);
+          return this;
         },
         abortRequest() {
           return reply((config) => {
@@ -359,6 +419,8 @@ export default class MockPlugin {
           });
         },
       };
+
+      return result;
     };
   }
 

@@ -1,0 +1,11 @@
+{
+  "name": "xior-tests",
+  "private": true,
+  "scripts": {
+    "build:lib": "rm -rf lib && tsc --project tsconfig.json",
+    "test": "pnpm build:lib && node --test ./lib"
+  },
+  "devDependencies": {
+    "xior": "workspace:*"
+  }
+}

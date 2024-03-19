@@ -1,5 +1,10 @@
 # CHANGELOG 📝
 
+## v0.2.4 2024/03/20
+
+- fix(plugin): fix `mock` plugin not working after bundle
+- chore(tests): refactor tests to use bundled files to run tests
+
 ## v0.2.3 2024/03/19
 
 - fix(plugin): fix `error-retry` plugin not working after bundle
