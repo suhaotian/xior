@@ -20,17 +20,13 @@ jobs:
           version: 8
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install && pnpm build
 
       - name: Check type
         run: pnpm checktype
 
       - name: Run tests
         run: pnpm test
-
-      - name: Run build
-        run: pnpm build
-
 
       - name: Run vitest mock tests
         run: pnpm --filter=vitest-mock-example test
