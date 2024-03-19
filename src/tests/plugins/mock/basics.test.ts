@@ -834,7 +834,7 @@ describe('xior mock plguin basics tests', () => {
       })
       .catch(function (error) {
         assert.equal(error.message, 'Request failed with status code 404');
-        assert.equal(error.name, 'Error');
+        assert.equal(error.name, 'XiorError');
         assert.equal(typeof error.stack !== 'undefined', true);
         assert.equal(typeof error.config !== 'undefined', true);
       });

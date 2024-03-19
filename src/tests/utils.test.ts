@@ -1,7 +1,14 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
 
-import { encodeParams, isAbsoluteURL, joinPath } from '../utils';
+import {
+  XiorError,
+  XiorTimeoutError,
+  encodeParams,
+  isAbsoluteURL,
+  isXiorError,
+  joinPath,
+} from '../utils';
 
 describe('utils tests', () => {
   describe('utils.encodeParams tests', () => {
@@ -31,6 +38,23 @@ describe('utils tests', () => {
       assert.strictEqual(joinPath('/abc', ''), '/abc');
       assert.strictEqual(joinPath('/abc', '/def'), '/abc/def');
       assert.strictEqual(joinPath('/abc/', '/def/'), '/abc/def/');
+    });
+  });
+
+  describe('utils.isXiorError tests', () => {
+    it('should work exactly `XiorError`', () => {
+      const error = new XiorError('some error msg');
+      assert.strictEqual(isXiorError(error), true);
+    });
+
+    it('should work exactly with `XiorTimeoutError`', () => {
+      const error = new XiorTimeoutError('some error msg');
+      assert.strictEqual(isXiorError(error), true);
+    });
+
+    it('should work exactly with `Error`', () => {
+      const error = new Error('some error msg');
+      assert.strictEqual(isXiorError(error), false);
     });
   });
 });

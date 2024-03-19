@@ -1,6 +1,6 @@
 import { delay } from './utils';
 import { XiorPlugin, XiorRequestConfig } from '../types';
-import { XiorError, XiorTimeoutError } from '../utils';
+import { XiorError } from '../utils';
 
 export type ErrorRetryOptions = {
   /** retry times, default: 2 */
