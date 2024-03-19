@@ -2,7 +2,7 @@
 
 ## v0.2.3 2024/03/19
 
-- fix(plugin): fix `error-retry` plugin not working in Next.js
+- fix(plugin): fix `error-retry` plugin not working after bundle
 
 ## v0.2.2
 

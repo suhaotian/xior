@@ -1030,6 +1030,7 @@ import {
   buildSortedURL,
   isAbsoluteURL,
   joinPath,
+  isXiorError,
 } from 'xior';
 ```
 
