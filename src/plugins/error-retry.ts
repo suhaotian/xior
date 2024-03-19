@@ -50,37 +50,31 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
         try {
           return await adapter(config);
         } catch (error) {
-          if (
-            error instanceof XiorError ||
-            error instanceof XiorTimeoutError ||
-            error instanceof TypeError
-          ) {
-            const isGet = config.method === 'GET' || config.isGet;
-            const t = typeof enableRetry;
-            const enabled =
-              t === 'undefined'
-                ? isGet
-                : t === 'function'
-                  ? (enableRetry as (config: XiorRequestConfig, error: XiorError) => boolean)(
-                      config,
-                      error
-                    )
-                  : Boolean(enableRetry);
+          const isGet = config.method === 'GET' || config.isGet;
+          const t = typeof enableRetry;
+          const enabled =
+            t === 'undefined'
+              ? isGet
+              : t === 'function'
+                ? (enableRetry as (config: XiorRequestConfig, error: XiorError | Error) => boolean)(
+                    config,
+                    error as XiorError
+                  )
+                : Boolean(enableRetry);
 
-            timeUp = retryTimes === count;
-            if (timeUp || !enabled) {
-              throw error;
-            }
-
-            const delayTime =
-              typeof retryInterval === 'function' ? retryInterval(count) : retryInterval;
-            if (delayTime && delayTime > 0 && count > 0) {
-              await delay(delayTime);
-            }
-            count++;
-            if (onRetry) onRetry(config, error, count);
-            return handleRequest();
+          timeUp = retryTimes === count;
+          if (timeUp || !enabled) {
+            throw error;
           }
+
+          const delayTime =
+            typeof retryInterval === 'function' ? retryInterval(count) : retryInterval;
+          if (delayTime && delayTime > 0 && count > 0) {
+            await delay(delayTime);
+          }
+          count++;
+          if (onRetry) onRetry(config, error, count);
+          return handleRequest();
 
           throw error;
         }

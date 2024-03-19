@@ -390,19 +390,19 @@ API:
 function errorRetryPlugin(options: {
   retryTimes?: number;
   retryInterval?: number | ((errorCount: number) => number);
-  enableRetry?: boolean | (config: XiorRequestConfig, error: XiorError) => boolean;
-  onRetry?: (config: XiorRequestConfig, error: XiorError, count: number) => void;
+  enableRetry?: boolean | (config: XiorRequestConfig, error: XiorError | Error) => boolean;
+  onRetry?: (config: XiorRequestConfig, error: XiorError | Error, count: number) => void;
 }): XiorPlugin;
 ```
 
 The `options` object:
 
-| Param         | Type                                                                              | Default value                                                | Description                                                                                                              |
-| ------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
-| retryTimes    | number                                                                            | 2                                                            | Set the retry times for failed request                                                                                   |
-| retryInterval | number \| ((errorCount: number) => number)                                        | 3000                                                         | After first time retry, the next retries interval time, default interval is 3 seconds; you can use function as param too |
-| enableRetry   | boolean \| ((config: XiorRequestConfig, error: XiorError) => boolean)             | (config, error) => config.method === 'GET' \|\| config.isGet | Default only retry if `GET` request error and `retryTimes > 0`                                                           |
-| onRetry       | boolean \| ((config: XiorRequestConfig, error: XiorError, count: number) => void) | undefined                                                    | For log retry info                                                                                                       |
+| Param         | Type                                                                                       | Default value                                                | Description                                                                                                              |
+| ------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| retryTimes    | number                                                                                     | 2                                                            | Set the retry times for failed request                                                                                   |
+| retryInterval | number \| ((errorCount: number) => number)                                                 | 3000                                                         | After first time retry, the next retries interval time, default interval is 3 seconds; you can use function as param too |
+| enableRetry   | boolean \| ((config: XiorRequestConfig, error: XiorError \| Error) => boolean)             | (config, error) => config.method === 'GET' \|\| config.isGet | Default only retry if `GET` request error and `retryTimes > 0`                                                           |
+| onRetry       | boolean \| ((config: XiorRequestConfig, error: XiorError \| Error, count: number) => void) | undefined                                                    | For log retry info                                                                                                       |
 
 Basic usage:
 

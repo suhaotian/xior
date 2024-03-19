@@ -1,6 +1,10 @@
 # CHANGELOG 📝
 
-## v0.2.2 2024/03/18
+## v0.2.3 2024/03/19
+
+- fix(plugin): fix `error-retry` plugin not working in Next.js
+
+## v0.2.2
 
 - fix(plugin): fix `error-retry` plugin, `TypeError` should retry too
 - feat(plugin): `error-retry` plugin, `retryInterval` can be `function` too, and add `onRetry` to options

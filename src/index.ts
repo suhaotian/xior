@@ -1,4 +1,4 @@
-import { xior, XiorInstance } from './xior';
+import { xior } from './xior';
 
 export * from './xior';
 export * from './types';

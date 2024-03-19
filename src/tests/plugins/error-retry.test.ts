@@ -1,9 +1,9 @@
 import assert from 'node:assert';
 import { after, before, describe, it } from 'node:test';
 
+import xior from '../..';
 import xiorErrorRetryPlugin from '../../plugins/error-retry';
 import { XiorError } from '../../utils';
-import { xior } from '../../xior';
 import { startServer } from '../server';
 
 let close: Function;
