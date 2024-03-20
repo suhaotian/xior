@@ -94,11 +94,17 @@ describe('xior error retry plugin tests', () => {
   });
 
   it('should throw error when run out `retryTimes: 2` when `POST` error with `enableRetry: true`', async () => {
+    const instance = xior.create({ baseURL });
+    instance.plugins.use(
+      xiorErrorRetryPlugin({
+        retryInterval: 1000,
+      })
+    );
     await instance.get('/reset-error');
     let error: XiorError | undefined = undefined;
     try {
       await instance.post('/retry-error', { count: 3 }, {
-        retryTimes: 2,
+        // retryTimes: 2,
         enableRetry: true,
       } as any);
     } catch (e) {

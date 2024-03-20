@@ -29,9 +29,12 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
     retryInterval: _retryInterval,
     enableRetry: _enableRetry,
     onRetry: _onRetry,
-  } = options || {
-    retryTimes: 2,
-    retryInterval: 3000,
+  } = {
+    ...{
+      retryTimes: 2,
+      retryInterval: 3000,
+    },
+    ...(options || {}),
   };
 
   return function (adapter) {

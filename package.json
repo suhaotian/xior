@@ -1,6 +1,6 @@
 {
   "name": "xior",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "A lite request lib based on fetch with plugins support, and axios similar API",
   "repository": "suhaotian/xior",
   "bugs": "https://github.com/suhaotian/xior/issues",
@@ -63,6 +63,7 @@
     "build:lib": "rm -rf lib && tsc --project tsconfig.json",
     "build:umd": "pnpm build:lib && pnpm webpack --config ./scripts/webpack.config.mjs",
     "test": "pnpm --filter=xior-tests test",
+    "dev:test": "pnpm build && pnpm test",
     "checktype": "tsc --noEmit",
     "start-publish": "pnpm build && pnpm build:umd && node scripts/purge-pkg-for-publish.mjs && npm publish --registry=https://registry.npmjs.org",
     "push": "git push && git lfs push --all origin",
