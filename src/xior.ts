@@ -156,6 +156,11 @@ export class xior {
   }
 
   async handlerFetch<T>(requestConfig: XiorRequestConfig): Promise<XiorResponse<T>> {
+    if (this._plugins.length > 0) {
+      for (const item of this.requestInterceptors.slice(1)) {
+        requestConfig = await item(requestConfig as XiorInterceptorRequestConfig);
+      }
+    }
     const {
       url,
       method,

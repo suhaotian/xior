@@ -3,6 +3,7 @@
 ## v0.2.5 2024/03/20
 
 - fix(plugin): fix `error-retry` plugin default options override bugs
+- fix(plugin): `requestConfig` with plugins should always get latest config from `requestInteceptors`
 
 ## v0.2.4
 

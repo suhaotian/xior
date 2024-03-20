@@ -98,7 +98,7 @@ describe('xior mock plguin default instance tests', () => {
     ]);
   });
 
-  it('applies interceptors only once', function () {
+  it('applies interceptors should be twice', function () {
     mock.onGet('/get').passThrough();
     let requestCount = 0;
     let responseCount = 0;
@@ -113,7 +113,7 @@ describe('xior mock plguin default instance tests', () => {
     });
 
     return instance.get('/get').then(function () {
-      assert.equal(requestCount, 1);
+      assert.equal(requestCount, 2);
       assert.equal(responseCount, 1);
     });
   });
