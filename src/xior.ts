@@ -36,12 +36,14 @@ export class xior {
     } as XiorInterceptorRequestConfig;
   }
 
-  requestInterceptors: ((
+  /** request interceptors */
+  REQI: ((
     config: XiorInterceptorRequestConfig
   ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig)[] = [
     defaultRequestInterceptor,
   ];
-  responseInterceptors: {
+  /** response interceptors */
+  RESI: {
     fn: (config: { data: any; request: XiorInterceptorRequestConfig; response: Response }) =>
       | Promise<{
           data: any;
@@ -66,7 +68,7 @@ export class xior {
           /** @deprecated useless here */
           onRejected?: (error: any) => any
         ) => {
-          this.requestInterceptors.push(fn);
+          this.REQI.push(fn);
           return fn;
         },
         eject: (
@@ -74,10 +76,10 @@ export class xior {
             config: XiorInterceptorRequestConfig
           ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig
         ) => {
-          this.requestInterceptors = this.requestInterceptors.filter((item) => item !== fn);
+          this.REQI = this.REQI.filter((item) => item !== fn);
         },
         clear: () => {
-          this.requestInterceptors = [this.requestInterceptors[0]];
+          this.REQI = [this.REQI[0]];
         },
       },
       response: {
@@ -95,7 +97,7 @@ export class xior {
               },
           onRejected?: (error: XiorError) => any
         ) => {
-          this.responseInterceptors.push({ fn, onRejected });
+          this.RESI.push({ fn, onRejected });
           return fn;
         },
         eject: (
@@ -111,10 +113,10 @@ export class xior {
                 response: Response;
               }
         ) => {
-          this.responseInterceptors = this.responseInterceptors.filter((item) => item.fn !== fn);
+          this.RESI = this.RESI.filter((item) => item.fn !== fn);
         },
         clear: () => {
-          this.responseInterceptors = [];
+          this.RESI = [];
         },
       },
     };
@@ -144,20 +146,20 @@ export class xior {
       typeof options === 'string' ? { url: options } : options || {},
       { headers: {}, params: {} }
     );
-    for (const item of this.requestInterceptors) {
+    for (const item of this.REQI) {
       requestConfig = await item(requestConfig as XiorInterceptorRequestConfig);
     }
 
-    let finalPlugin = this.handlerFetch.bind(this);
+    let finalPlugin = this.fetch.bind(this);
     this._plugins.forEach((plugin) => {
       finalPlugin = plugin(finalPlugin);
     });
     return finalPlugin<T>(requestConfig);
   }
 
-  async handlerFetch<T>(requestConfig: XiorRequestConfig): Promise<XiorResponse<T>> {
+  async fetch<T>(requestConfig: XiorRequestConfig): Promise<XiorResponse<T>> {
     if (this._plugins.length > 0) {
-      for (const item of this.requestInterceptors.slice(1)) {
+      for (const item of this.REQI.slice(1)) {
         requestConfig = await item(requestConfig as XiorInterceptorRequestConfig);
       }
     }
@@ -233,7 +235,7 @@ export class xior {
           ...commonRes,
         }
       );
-      for (const item of this.responseInterceptors) {
+      for (const item of this.RESI) {
         if (item.onRejected) {
           const res = await item.onRejected(error);
           if (res?.response?.ok) return res;
@@ -268,7 +270,7 @@ export class xior {
         response,
       };
 
-      for (const item of this.responseInterceptors) {
+      for (const item of this.RESI) {
         responseObj = await item.fn(responseObj);
       }
       return {
@@ -285,42 +287,42 @@ export class xior {
     };
   }
 
-  createGetHandler<T>(method: string) {
+  createGet<T>(method: string) {
     return (url: string, options?: XiorRequestConfig) => {
       return this.request<T>(options ? { ...options, method, url } : { method, url });
     };
   }
 
-  createPostHandler<T>(method: string) {
+  createPost<T>(method: string) {
     return (url: string, data?: any, options?: XiorRequestConfig) => {
       return this.request<T>(options ? { ...options, method, url, data } : { method, url, data });
     };
   }
 
   get<T = any>(url: string, options?: XiorRequestConfig) {
-    return this.createGetHandler<T>('GET')(url, options);
+    return this.createGet<T>('GET')(url, options);
   }
   head<T = any>(url: string, options?: XiorRequestConfig) {
-    return this.createGetHandler<T>('HEAD')(url, options);
+    return this.createGet<T>('HEAD')(url, options);
   }
 
   post<T = any>(url: string, data?: any, options?: XiorRequestConfig) {
-    return this.createPostHandler<T>('POST')(url, data, options);
+    return this.createPost<T>('POST')(url, data, options);
   }
 
   put<T = any>(url: string, data?: any, options?: XiorRequestConfig) {
-    return this.createPostHandler<T>('PUT')(url, data, options);
+    return this.createPost<T>('PUT')(url, data, options);
   }
 
   patch<T = any>(url: string, data?: any, options?: XiorRequestConfig) {
-    return this.createPostHandler<T>('PATCH')(url, data, options);
+    return this.createPost<T>('PATCH')(url, data, options);
   }
 
   delete<T = any>(url: string, options?: XiorRequestConfig) {
-    return this.createGetHandler<T>('DELETE')(url, options);
+    return this.createGet<T>('DELETE')(url, options);
   }
 
   options<T = any>(url: string, options?: XiorRequestConfig) {
-    return this.createGetHandler<T>('OPTIONS')(url, options);
+    return this.createGet<T>('OPTIONS')(url, options);
   }
 }

@@ -403,36 +403,36 @@ describe('xior tests', () => {
     const xiorInstance = xior.create({ baseURL });
 
     it('xior.interceptors.request.use/eject/clear should work', () => {
-      // xior requestInterceptors always have at least 1 default interceptor
-      assert.strictEqual((xiorInstance as any).requestInterceptors.length, 1);
+      // xior REQI(request interceptors) always have at least 1 default interceptor
+      assert.strictEqual((xiorInstance as any).REQI.length, 1);
       const handler = xiorInstance.interceptors.request.use((config) => {
         return config;
       });
       xiorInstance.interceptors.request.use((config) => {
         return config;
       });
-      assert.strictEqual((xiorInstance as any).requestInterceptors.length - 1, 2);
+      assert.strictEqual((xiorInstance as any).REQI.length - 1, 2);
       xiorInstance.interceptors.request.eject(handler);
-      assert.strictEqual((xiorInstance as any).requestInterceptors.length - 1, 1);
+      assert.strictEqual((xiorInstance as any).REQI.length - 1, 1);
 
       xiorInstance.interceptors.request.clear();
-      assert.strictEqual((xiorInstance as any).requestInterceptors.length, 1);
+      assert.strictEqual((xiorInstance as any).REQI.length, 1);
     });
 
     it('xior.interceptors.response.use/eject/clear should work', () => {
-      assert.strictEqual((xiorInstance as any).responseInterceptors.length, 0);
+      assert.strictEqual((xiorInstance as any).RESI.length, 0);
       const handler = xiorInstance.interceptors.response.use((config) => {
         return config;
       });
       xiorInstance.interceptors.response.use((config) => {
         return config;
       });
-      assert.strictEqual((xiorInstance as any).responseInterceptors.length, 2);
+      assert.strictEqual((xiorInstance as any).RESI.length, 2);
       xiorInstance.interceptors.response.eject(handler);
-      assert.strictEqual((xiorInstance as any).responseInterceptors.length, 1);
+      assert.strictEqual((xiorInstance as any).RESI.length, 1);
 
       xiorInstance.interceptors.response.clear();
-      assert.strictEqual((xiorInstance as any).responseInterceptors.length, 0);
+      assert.strictEqual((xiorInstance as any).RESI.length, 0);
     });
 
     it('xior.plugins.use/eject/clear should work', () => {
