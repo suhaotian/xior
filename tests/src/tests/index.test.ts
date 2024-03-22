@@ -54,6 +54,29 @@ describe('xior tests', () => {
       assert.strictEqual(data.query.b, '2');
     });
 
+    it("POST should work without body when header's `content-type: application/x-www-form-urlencoded`", async () => {
+      const { data } = await xiorInstance.post<{
+        method: string;
+        body: Record<string, any>;
+        query: Record<string, any>;
+      }>(
+        '/post',
+        { a: 1, b: 2 },
+        {
+          params: { c: 3, d: 4 },
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
+      assert.strictEqual(data.method, 'post');
+      assert.strictEqual(Object.keys(data.query).length, 4);
+      assert.strictEqual(data.query.a, '1');
+      assert.strictEqual(data.query.b, '2');
+      assert.strictEqual(data.query.c, '3');
+      assert.strictEqual(data.query.d, '4');
+    });
+
     it('DELETE should work', async () => {
       const { data } = await xiorInstance.delete<{
         method: string;

@@ -1,5 +1,10 @@
 # CHANGELOG 📝
 
+## v0.2.6 2024/03/22
+
+- fix(core): when post with `headers: { 'content-type': 'application/x-www-form-urlencoded' }`, shouldn't post with body
+- chore(core): shorter naming words
+
 ## v0.2.5 2024/03/20
 
 - fix(plugin): fix `error-retry` plugin default options override bugs

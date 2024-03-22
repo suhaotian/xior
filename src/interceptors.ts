@@ -1,7 +1,7 @@
 import type { XiorInterceptorRequestConfig } from './types';
 import { encodeParams, merge } from './utils';
 
-const encodeUrlType = 'application/x-www-form-urlencoded';
+export const formUrl = 'application/x-www-form-urlencoded';
 const jsonType = 'application/json';
 // const formType = 'multipart/form-data';
 
@@ -31,14 +31,16 @@ export default async function defaultRequestInterceptor(
       });
       if (contentTypeKey) {
         contentType = req.headers[contentTypeKey];
+        req.headers['Content-Type'] = contentType;
+        delete req.headers[contentTypeKey];
       }
     }
     if (!contentType) {
-      contentType = likeGET(method) ? encodeUrlType : jsonType;
+      contentType = likeGET(method) ? formUrl : jsonType;
       headers['Content-Type'] = contentType;
     }
 
-    if (contentType === encodeUrlType && (typeof data === 'object' || req.params)) {
+    if (contentType === formUrl && (typeof data === 'object' || req.params)) {
       encodedParams = true;
       const encodeUrlData = encode(merge(data || {}, req.params || {}), encodeURI);
       if (encodeUrlData) {

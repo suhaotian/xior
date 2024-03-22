@@ -1,4 +1,4 @@
-import defaultRequestInterceptor, { likeGET } from './interceptors';
+import defaultRequestInterceptor, { formUrl, likeGET } from './interceptors';
 import type {
   XiorInterceptorRequestConfig,
   XiorPlugin,
@@ -23,7 +23,7 @@ export class xior {
   static create(options?: XiorRequestConfig): XiorInstance {
     return new xior(options);
   }
-  static VERSION = '0.2.5';
+  static VERSION = '0.2.6';
 
   config?: XiorRequestConfig;
   defaults: XiorInterceptorRequestConfig;
@@ -201,7 +201,10 @@ export class xior {
     }
 
     const response = await fetch(finalURL, {
-      body: likeGET(requestConfig.method) ? undefined : _data,
+      body:
+        likeGET(requestConfig.method) || requestConfig.headers?.['Content-Type'] === formUrl
+          ? undefined
+          : _data,
       ...rest,
       signal,
       method,
