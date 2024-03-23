@@ -1,6 +1,8 @@
 import express from 'express';
 import multer from 'multer';
 
+import { decrypt } from './encrypt-descypt/encryption';
+
 export async function startServer(port: number) {
   const app = express();
   app.use(express.urlencoded({ extended: true }));
@@ -64,6 +66,14 @@ export async function startServer(port: number) {
   });
   app.post('/params', (req, res) => {
     res.setHeader(req.body.headerName as string, req.body.headerValue as string).end('ok');
+  });
+
+  app.post('/encrypt', (req, res) => {
+    const x = (req.headers['X'] || req.headers['x']) as string;
+    if (x && req.body.blob) {
+      return res.send({ blob: decrypt(req.body.blob, x) });
+    }
+    return res.status(400).send({ msg: 'something wrong' });
   });
 
   const upload = multer({ dest: 'uploads/' });

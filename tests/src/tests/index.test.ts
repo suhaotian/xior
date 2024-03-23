@@ -3,7 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { before, after, describe, it } from 'node:test';
 // @ts-ignore
 import stringify from 'qs/lib/stringify';
-import { XiorTimeoutError, isXiorError, merge, xior } from 'xior';
+import { isXiorError, merge, xior } from 'xior';
 
 import { readChunks, startServer } from './server';
 
@@ -71,6 +71,7 @@ describe('xior tests', () => {
       );
       assert.strictEqual(data.method, 'post');
       assert.strictEqual(Object.keys(data.query).length, 4);
+      assert.strictEqual(Object.keys(data.body).length, 0);
       assert.strictEqual(data.query.a, '1');
       assert.strictEqual(data.query.b, '2');
       assert.strictEqual(data.query.c, '3');

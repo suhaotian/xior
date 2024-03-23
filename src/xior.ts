@@ -44,14 +44,21 @@ export class xior {
   ];
   /** response interceptors */
   RESI: {
-    fn: (config: { data: any; request: XiorInterceptorRequestConfig; response: Response }) =>
+    fn: (config: {
+      data: any;
+      config: XiorInterceptorRequestConfig;
+      request: XiorInterceptorRequestConfig;
+      response: Response;
+    }) =>
       | Promise<{
           data: any;
+          config: XiorInterceptorRequestConfig;
           request: XiorInterceptorRequestConfig;
           response: Response;
         }>
       | {
           data: any;
+          config: XiorInterceptorRequestConfig;
           request: XiorInterceptorRequestConfig;
           response: Response;
         };
@@ -84,14 +91,21 @@ export class xior {
       },
       response: {
         use: (
-          fn: (config: { data: any; request: XiorInterceptorRequestConfig; response: Response }) =>
+          fn: (config: {
+            data: any;
+            config: XiorInterceptorRequestConfig;
+            request: XiorInterceptorRequestConfig;
+            response: Response;
+          }) =>
             | Promise<{
                 data: any;
+                config: XiorInterceptorRequestConfig;
                 request: XiorInterceptorRequestConfig;
                 response: Response;
               }>
             | {
                 data: any;
+                config: XiorInterceptorRequestConfig;
                 request: XiorInterceptorRequestConfig;
                 response: Response;
               },
@@ -101,14 +115,21 @@ export class xior {
           return fn;
         },
         eject: (
-          fn: (config: { data: any; request: XiorInterceptorRequestConfig; response: Response }) =>
+          fn: (config: {
+            data: any;
+            config: XiorInterceptorRequestConfig;
+            request: XiorInterceptorRequestConfig;
+            response: Response;
+          }) =>
             | Promise<{
                 data: any;
+                config: XiorInterceptorRequestConfig;
                 request: XiorInterceptorRequestConfig;
                 response: Response;
               }>
             | {
                 data: any;
+                config: XiorInterceptorRequestConfig;
                 request: XiorInterceptorRequestConfig;
                 response: Response;
               }
@@ -269,6 +290,7 @@ export class xior {
       }
       let responseObj = {
         data: data as T,
+        config: requestConfig as XiorInterceptorRequestConfig,
         request: requestConfig as XiorInterceptorRequestConfig,
         response,
       };

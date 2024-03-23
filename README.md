@@ -36,6 +36,7 @@ A lite request lib based on **fetch** with plugins support.
   - [Upload file](#upload-file)
   - [Using interceptors](#using-interceptors)
   - [Timeout and Cancel request](#timeout-and-cancel-request)
+  - [Encrypt and Decrypt Example](#encrypt-and-decrypt-example)
 - [Plugins](#plugins)
   - [Error retry plugin](#error-retry-plugin)
   - [Request throttle plugin](#request-throttle-plugin)
@@ -350,6 +351,62 @@ xiorInstance.get('http://httpbin.org', { signal: controller.signal }).then((res)
 class CancelRequestError extends Error {}
 controller.abort(new CancelRequestError()); // abort request with custom error
 ```
+
+### Encrypt and Decrypt Example
+
+We can use interceptors easily to handle encrypt/decrypt.
+
+Create `encryption.ts`:
+
+```ts
+// encryption.ts
+export const SECRET = '&*&*^SDxsdasdas776';
+
+export function encrypt(data: string) {
+  return data + '____' + SECRET;
+}
+
+export function decrypt(data: string, s?: string) {
+  return data.replace('____' + (s || SECRET), '');
+}
+```
+
+Create `xior-instance.ts`:
+
+```ts
+import xior from 'xior';
+
+import { SECRET, encrypt, decrypt } from './encryption';
+
+export const instance = xior.create();
+
+instance.interceptors.request.use((req) => {
+  req.headers['X'] = SECRET;
+
+  if (req.url && req.data) {
+    const result = JSON.stringify(req.data);
+    const blob = encrypt(result);
+    req.data = { blob };
+    req._data = JSON.stringify({ blob });
+  }
+
+  return req;
+});
+
+instance.interceptors.response.use((res) => {
+  if (res.request.url && res.data?.blob) {
+    res.data = decrypt(res.data.blob);
+    try {
+      res.data = JSON.parse(res.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  return res;
+});
+```
+
+> Check test code in `tests/src/tests/encrypt-decrypt/`
 
 ## Plugins
 
