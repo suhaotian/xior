@@ -61,7 +61,7 @@ instance.get('/api/hello').then((res) => {
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.2.6/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.0/dist/xior.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xior@0.2.6/plugins/mock.umd.js"></script>
 
 <!-- Usage -->
@@ -79,7 +79,7 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.2.6/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.0/dist/xior.umd.js"></script>
 <script src="https://unpkg.com/xior@0.2.6/plugins/mock.umd.js"></script>
 
 <!-- Usage -->
