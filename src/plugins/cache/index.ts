@@ -3,6 +3,7 @@ import { lru } from 'tiny-lru';
 import buildSortedURL from './build-sorted-url';
 import { ICacheLike } from './utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../../types';
+import { isAbsoluteURL, joinPath } from '../../utils';
 
 type XiorPromise = Promise<XiorResponse>;
 
@@ -35,9 +36,7 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
         enableCache = _enableCache,
         forceUpdate,
         defaultCache = _defaultCache,
-        _url,
-        encode,
-        data,
+        paramsSerializer,
       } = config as XiorCacheOptions & {
         forceUpdate?: boolean;
       } & XiorRequestConfig;
@@ -56,9 +55,11 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
         const cache: ICacheLike<XiorPromise> = defaultCache;
 
         const index = buildSortedURL(
-          _url as string,
-          data,
-          encode as (obj: Record<string, any>) => string
+          config.url && isAbsoluteURL(config.url)
+            ? config.url
+            : joinPath(config.baseURL || '', config.url || ''),
+          { a: config.data, b: config.params },
+          paramsSerializer as (obj: Record<string, any>) => string
         );
         let responsePromise = cache.get(index);
 

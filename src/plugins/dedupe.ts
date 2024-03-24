@@ -1,5 +1,6 @@
 import buildSortedURL from './cache/build-sorted-url';
 import type { XiorPlugin, XiorRequestConfig } from '../types';
+import { isAbsoluteURL, joinPath } from '../utils';
 
 export type XiorDedupeOptions = {
   /**
@@ -25,12 +26,8 @@ export default function xiorDedupePlugin(options: XiorDedupeOptions = {}): XiorP
 
   return function (adapter) {
     return async (config) => {
-      const {
-        _url,
-        encode,
-        enableDedupe = _enableDedupe,
-        data,
-      } = config as XiorDedupeOptions & XiorRequestConfig;
+      const { paramsSerializer, enableDedupe = _enableDedupe } = config as XiorDedupeOptions &
+        XiorRequestConfig;
 
       const isGet = config.method === 'GET' || config.isGet;
 
@@ -45,11 +42,12 @@ export default function xiorDedupePlugin(options: XiorDedupeOptions = {}): XiorP
       if (!enabled) {
         return adapter(config);
       }
-
       const key = buildSortedURL(
-        _url as string,
-        data,
-        encode as (obj: Record<string, any>) => string
+        config.url && isAbsoluteURL(config.url)
+          ? config.url
+          : joinPath(config.baseURL || '', config.url || ''),
+        { a: config.data, b: config.params },
+        paramsSerializer as (obj: Record<string, any>) => string
       );
       if (!inflight.has(key)) {
         inflight.set(key, []);

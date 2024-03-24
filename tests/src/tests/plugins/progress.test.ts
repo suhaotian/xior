@@ -19,7 +19,7 @@ after(async () => {
 });
 
 describe('xior progress plugin tests', () => {
-  const instance = xior.create({ baseURL, encode: (params) => stringify(params) });
+  const instance = xior.create({ baseURL, paramsSerializer: (params) => stringify(params) });
   instance.plugins.use(
     xiorProgressPlugin({
       progressDuration: 5 * 1000,

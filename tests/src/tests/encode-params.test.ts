@@ -46,7 +46,7 @@ describe('encodeParams()', function () {
   it('encode nested object should work with server', async () => {
     const instance = xior.create({
       baseURL,
-      encode: encodeParams,
+      paramsSerializer: encodeParams,
     });
     const params = { a: 'b', c: [1, 2, 3, { d: [7, 8, 9, { e: 234 }] }] };
     const { data } = await instance.get('/get', { params });

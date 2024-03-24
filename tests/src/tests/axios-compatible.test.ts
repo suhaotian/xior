@@ -1,7 +1,7 @@
 import axios from 'axios';
 import assert from 'node:assert';
 import { before, after, describe, it } from 'node:test';
-import xior, { XiorInstance, XiorError, XiorTimeoutError, encodeParams, isXiorError } from 'xior';
+import xior, { XiorInstance, XiorError, encodeParams, isXiorError } from 'xior';
 
 import { startServer } from './server';
 
@@ -135,12 +135,14 @@ describe('axios compatible tests', () => {
       baseURL,
       timeout: 1000,
     });
-    for (const method of 'get/delete/options'.split('/')) {
+    for (const method of 'get/options'.split('/')) {
       const { data: axiosData } = await axiosInstance[method as 'options']('/' + method, {
         params: { b: 2 },
+        data: { a: 1 },
       });
       const { data: xiorData } = await xiorInstance[method as 'options']('/' + method, {
         params: { b: 2 },
+        data: { a: 1 },
       });
       assert.strictEqual(
         xiorData.query?.b,
@@ -149,7 +151,7 @@ describe('axios compatible tests', () => {
       );
     }
   });
-  it('should work with post/put/patch', async () => {
+  it('should work with post/put/patch/delete', async () => {
     const axiosInstance = axios.create({
       baseURL,
       timeout: 1000,

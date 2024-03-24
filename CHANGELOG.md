@@ -1,5 +1,13 @@
 # CHANGELOG 📝
 
+## v0.3.0 2024/03/24
+
+- fix(core): POST/DELETE/PUT/PATCH methods when have `data`, use formData to body(before put in url)
+- refactor(core): default request inteceptor should work before send fetch
+- refactor(core): remove `_data` in request config
+- refactor(core): remove `encode` in options, use `paramsSerializer` option instead
+- chore(README): add encrypt/decrypt to README
+
 ## v0.2.6 2024/03/22
 
 - fix(core): when post with `headers: { 'content-type': 'application/x-www-form-urlencoded' }`, shouldn't post with body

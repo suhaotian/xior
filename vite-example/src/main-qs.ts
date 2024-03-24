@@ -8,7 +8,7 @@ import uploadDownloadProgressPlugin from 'xior/plugins/progress';
 import throttlePlugin from 'xior/plugins/throttle';
 
 const instance = xior.create({
-  encode: (params: Record<string, any>) => stringify(params),
+  paramsSerializer: (params: Record<string, any>) => stringify(params),
 });
 instance.plugins.use(errorRetryPlugin({}));
 instance.plugins.use(cachePlugin({}));

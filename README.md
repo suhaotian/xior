@@ -387,7 +387,6 @@ instance.interceptors.request.use((req) => {
     const result = JSON.stringify(req.data);
     const blob = encrypt(result);
     req.data = { blob };
-    req._data = JSON.stringify({ blob });
   }
 
   return req;

@@ -1,11 +1,11 @@
 export default function buildSortedURL(
-  _url: string,
+  url: string,
   data: any,
-  encode: (obj: Record<string, any>) => string
+  paramsSerializer: (obj: Record<string, any>) => string
 ) {
-  let builtURL = data ? encode(data) : '';
+  let builtURL = data ? paramsSerializer(data) : '';
   if (builtURL) {
-    builtURL = _url + (_url.includes('?') ? '&' + builtURL : '?' + builtURL);
+    builtURL = url + (url.includes('?') ? '&' + builtURL : '?' + builtURL);
   }
   const [urlPath, queryString] = builtURL.split('?');
 
@@ -14,5 +14,5 @@ export default function buildSortedURL(
     return `${urlPath}?${paramsPair.sort().join('&')}`;
   }
 
-  return builtURL || _url;
+  return builtURL || url;
 }

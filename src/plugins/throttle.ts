@@ -3,6 +3,7 @@ import { lru } from 'tiny-lru';
 import buildSortedURL from './cache/build-sorted-url';
 import { ICacheLike } from './cache/utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../types';
+import { isAbsoluteURL, joinPath } from '../utils';
 
 type XiorPromise = Promise<XiorResponse>;
 
@@ -68,11 +69,9 @@ export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): X
 
     return async (config) => {
       const {
-        _url,
-        encode,
+        paramsSerializer,
         threshold = _threshold,
         enableThrottle = _enableThrottle,
-        data,
       } = config as XiorThrottleOptions & XiorRequestConfig;
 
       const isGet = config.method === 'GET' || config.isGet;
@@ -87,9 +86,11 @@ export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): X
 
       if (enabled) {
         const index = buildSortedURL(
-          _url as string,
-          data,
-          encode as (obj: Record<string, any>) => string
+          config.url && isAbsoluteURL(config.url)
+            ? config.url
+            : joinPath(config.baseURL || '', config.url || ''),
+          { a: config.data, b: config.params },
+          paramsSerializer as (obj: Record<string, any>) => string
         );
 
         const now = Date.now();

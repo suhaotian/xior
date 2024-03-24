@@ -20,7 +20,7 @@ after(async () => {
 });
 
 describe('xior cache plugin tests', () => {
-  const instance = xior.create({ baseURL, encode: (params) => stringify(params) });
+  const instance = xior.create({ baseURL, paramsSerializer: (params) => stringify(params) });
   const cache = lru(10, 1000 * 4);
   instance.plugins.use(
     xiorCachePlugin({

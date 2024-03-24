@@ -1,7 +1,7 @@
 import buildSortedURL from './cache/build-sorted-url';
 import { ICacheLike } from './utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../types';
-import { XiorError } from '../utils';
+import { XiorError, joinPath, isAbsoluteURL } from '../utils';
 
 const _cache: Record<string, XiorResponse> = {};
 const cacheObj = {
@@ -40,9 +40,7 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
       const {
         enableCache = _enableCache,
         defaultCache = _defaultCache,
-        _url,
-        encode,
-        data,
+        paramsSerializer,
       } = config as XiorErrorCacheOptions & XiorRequestConfig;
 
       const isGet = config.method === 'GET' || config.isGet;
@@ -60,9 +58,11 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
       const cache = defaultCache;
 
       const index = buildSortedURL(
-        _url as string,
-        data,
-        encode as (obj: Record<string, any>) => string
+        config.url && isAbsoluteURL(config.url)
+          ? config.url
+          : joinPath(config.baseURL || '', config.url || ''),
+        { a: config.data, b: config.params },
+        paramsSerializer as (obj: Record<string, any>) => string
       );
 
       try {

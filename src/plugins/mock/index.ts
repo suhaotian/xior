@@ -481,7 +481,6 @@ export default class MockPlugin {
     const {
       method: _method,
       url,
-      _url,
       headers,
       params,
       data = {},
@@ -527,9 +526,7 @@ export default class MockPlugin {
         );
       } else if (handler[0] instanceof RegExp) {
         return (
-          (handler[0].test(url) ||
-            handler[0].test(joinPath(baseURL || '', url)) ||
-            handler[0].test(_url)) &&
+          (handler[0].test(url) || handler[0].test(joinPath(baseURL || '', url))) &&
           (buildSortedURL(method, { b: params, c: data, a: headers }, encodeParams) ===
             buildSortedURL(
               method,

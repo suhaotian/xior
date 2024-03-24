@@ -75,6 +75,7 @@ describe('xior error retry plugin tests', () => {
     await instance.get('/reset-error');
     const { data } = await instance.post('/retry-error', { count: 3 }, {
       enableRetry: true,
+      headers: {},
     } as any);
     assert.strictEqual(data.count, 3);
     assert.strictEqual(data.errorCount, 3);

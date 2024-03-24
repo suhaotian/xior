@@ -1,28 +1,25 @@
 import type { XiorInterceptorRequestConfig } from './types';
 import { encodeParams, merge } from './utils';
 
-export const formUrl = 'application/x-www-form-urlencoded';
-const jsonType = 'application/json';
+const appPrefix = 'application/';
+const formUrl = `${appPrefix}x-www-form-urlencoded`;
+const jsonType = `${appPrefix}json`;
 // const formType = 'multipart/form-data';
 
 export function likeGET(method = 'GET') {
-  return ['HEAD', 'GET', 'DELETE', 'OPTIONS'].includes(method);
+  return ['HEAD', 'GET', 'OPTIONS'].includes(method);
 }
 
-export default async function defaultRequestInterceptor(
-  req: XiorInterceptorRequestConfig
-): Promise<XiorInterceptorRequestConfig> {
-  const encode = req.encode || req.paramsSerializer || encodeParams;
+export default async function defaultRequestInterceptor(req: XiorInterceptorRequestConfig) {
+  const paramsSerializer = req.paramsSerializer || encodeParams;
   const encodeURI = req.encodeURI !== false;
-
   const method = req.method ? req.method.toUpperCase() : 'GET';
   let _url = req.url || '';
   const url = _url;
   const data = req.data;
   let _data = data;
-  let encodedParams = false;
   const headers = req?.headers || {};
-
+  let newParams = req.params || {};
   if (data && !(data instanceof FormData)) {
     let contentType = '';
     if (req?.headers) {
@@ -32,29 +29,30 @@ export default async function defaultRequestInterceptor(
       if (contentTypeKey) {
         contentType = req.headers[contentTypeKey];
         req.headers['Content-Type'] = contentType;
-        delete req.headers[contentTypeKey];
+        if (contentTypeKey !== 'Content-Type') {
+          delete req.headers[contentTypeKey];
+        }
       }
     }
+    const isGet = likeGET(method);
     if (!contentType) {
-      contentType = likeGET(method) ? formUrl : jsonType;
+      contentType = isGet ? formUrl : jsonType;
       headers['Content-Type'] = contentType;
     }
-
-    if (contentType === formUrl && (typeof data === 'object' || req.params)) {
-      encodedParams = true;
-      const encodeUrlData = encode(merge(data || {}, req.params || {}), encodeURI);
-      if (encodeUrlData) {
-        _url += _url.includes('?') ? `&${encodeUrlData}` : `?${encodeUrlData}`;
-      }
-    } else if (contentType === jsonType) {
+    if (isGet && req.params) {
+      newParams = merge({}, data || {}, newParams);
+    }
+    if (contentType === jsonType) {
       _data = JSON.stringify(data);
+    } else if (!isGet && contentType === formUrl && data && typeof data === 'object') {
+      _data = paramsSerializer(data);
     }
   }
 
-  if (!encodedParams && req.params && Object.keys(req.params).length > 0) {
+  if (Object.keys(newParams).length > 0) {
     _url += _url.includes('?')
-      ? `&${encode(req.params, encodeURI)}`
-      : `?${encode(req.params, encodeURI)}`;
+      ? `&${paramsSerializer(newParams, encodeURI)}`
+      : `?${paramsSerializer(newParams, encodeURI)}`;
   }
 
   return {
@@ -65,7 +63,6 @@ export default async function defaultRequestInterceptor(
     _url,
     method,
     headers,
-    encode,
-    paramsSerializer: encode,
+    paramsSerializer,
   };
 }

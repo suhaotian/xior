@@ -93,9 +93,9 @@ describe('xior mock plugin tests', () => {
     assert.strictEqual(Object.keys(mock.handlers).length, 0);
   });
   it('should work with `restore()`', async () => {
-    assert.strictEqual((instance as any)._plugins.length, 1);
+    assert.strictEqual((instance as any).P.length, 1);
     mock.restore();
-    assert.strictEqual((instance as any)._plugins.length, 0);
+    assert.strictEqual((instance as any).P.length, 0);
     let hasError = false;
     try {
       await instance.get('/users', { params: { searchText: 'John' } });

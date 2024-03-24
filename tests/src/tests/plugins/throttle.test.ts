@@ -19,7 +19,7 @@ after(async () => {
 });
 
 describe('xior throttle plugin tests', () => {
-  const instance = xior.create({ baseURL, encode: (params) => stringify(params) });
+  const instance = xior.create({ baseURL, paramsSerializer: (params) => stringify(params) });
   instance.plugins.use(
     xiorThrottlePlugin({
       threshold: 1000,

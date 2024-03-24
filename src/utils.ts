@@ -9,7 +9,7 @@ export function encodeParams<T = any>(
   encodeURI = true,
   parentKey: string | null = null
 ): string {
-  if (typeof params === 'undefined' || params === null) return '';
+  if (params === undefined || params === null) return '';
   const encodedParams = [];
   const encodeURIFunc = encodeURI ? encodeURIComponent : (v: string) => v;
 

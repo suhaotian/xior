@@ -1,4 +1,4 @@
-import defaultRequestInterceptor, { formUrl, likeGET } from './interceptors';
+import defaultRequestInterceptor, { likeGET } from './interceptors';
 import type {
   XiorInterceptorRequestConfig,
   XiorPlugin,
@@ -13,6 +13,7 @@ import {
   XiorError,
   merge,
   joinPath,
+  encodeParams,
 } from './utils';
 
 const supportAbortController = typeof AbortController !== 'undefined';
@@ -23,7 +24,7 @@ export class xior {
   static create(options?: XiorRequestConfig): XiorInstance {
     return new xior(options);
   }
-  static VERSION = '0.2.6';
+  static VERSION = '0.3.0';
 
   config?: XiorRequestConfig;
   defaults: XiorInterceptorRequestConfig;
@@ -39,9 +40,7 @@ export class xior {
   /** request interceptors */
   REQI: ((
     config: XiorInterceptorRequestConfig
-  ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig)[] = [
-    defaultRequestInterceptor,
-  ];
+  ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig)[] = [];
   /** response interceptors */
   RESI: {
     fn: (config: {
@@ -86,7 +85,7 @@ export class xior {
           this.REQI = this.REQI.filter((item) => item !== fn);
         },
         clear: () => {
-          this.REQI = [this.REQI[0]];
+          this.REQI = [];
         },
       },
       response: {
@@ -143,18 +142,19 @@ export class xior {
     };
   }
 
-  _plugins: XiorPlugin[] = [];
+  /** plugins */
+  P: XiorPlugin[] = [];
   get plugins() {
     return {
       use: (plugin: XiorPlugin) => {
-        this._plugins.push(plugin);
+        this.P.push(plugin);
         return plugin;
       },
       eject: (plugin: XiorPlugin) => {
-        this._plugins = this._plugins.filter((item) => item !== plugin);
+        this.P = this.P.filter((item) => item !== plugin);
       },
       clear: () => {
-        this._plugins = [];
+        this.P = [];
       },
     };
   }
@@ -167,23 +167,21 @@ export class xior {
       typeof options === 'string' ? { url: options } : options || {},
       { headers: {}, params: {} }
     );
+    if (!requestConfig.paramsSerializer) {
+      requestConfig.paramsSerializer = encodeParams;
+    }
     for (const item of this.REQI) {
       requestConfig = await item(requestConfig as XiorInterceptorRequestConfig);
     }
 
     let finalPlugin = this.fetch.bind(this);
-    this._plugins.forEach((plugin) => {
+    this.P.forEach((plugin) => {
       finalPlugin = plugin(finalPlugin);
     });
     return finalPlugin<T>(requestConfig);
   }
 
   async fetch<T>(requestConfig: XiorRequestConfig): Promise<XiorResponse<T>> {
-    if (this._plugins.length > 0) {
-      for (const item of this.REQI.slice(1)) {
-        requestConfig = await item(requestConfig as XiorInterceptorRequestConfig);
-      }
-    }
     const {
       url,
       method,
@@ -192,8 +190,10 @@ export class xior {
       signal: reqSignal,
       data,
       _data,
+      _url,
       ...rest
-    } = requestConfig;
+    } = await defaultRequestInterceptor(requestConfig as XiorInterceptorRequestConfig);
+    requestConfig._url = _url;
 
     /** timeout */
     let signal: AbortSignal;
@@ -216,16 +216,13 @@ export class xior {
       });
     }
 
-    let finalURL = requestConfig._url || url || '';
+    let finalURL = _url || url || '';
     if (requestConfig.baseURL && !isAbsoluteURL(finalURL)) {
       finalURL = joinPath(requestConfig.baseURL, finalURL);
     }
 
     const response = await fetch(finalURL, {
-      body:
-        likeGET(requestConfig.method) || requestConfig.headers?.['Content-Type'] === formUrl
-          ? undefined
-          : _data,
+      body: likeGET(method) ? undefined : _data,
       ...rest,
       signal,
       method,
@@ -268,7 +265,7 @@ export class xior {
       throw error;
     }
 
-    if (requestConfig.method === 'HEAD') {
+    if (method === 'HEAD') {
       return {
         data: undefined as T,
         request: requestConfig,
@@ -277,7 +274,7 @@ export class xior {
     }
 
     const { responseType } = requestConfig;
-    if (!responseType || responseType === 'json' || responseType === 'text') {
+    if (!responseType || ['json', 'text'].includes(responseType)) {
       let data: any;
       try {
         data = (await response.text()) as T;
@@ -324,10 +321,22 @@ export class xior {
     };
   }
 
-  get<T = any>(url: string, options?: XiorRequestConfig) {
+  get<T = any>(
+    url: string,
+    options?: XiorRequestConfig & {
+      /** @deprecated No `data` in `GET` method */
+      data?: any;
+    }
+  ) {
     return this.createGet<T>('GET')(url, options);
   }
-  head<T = any>(url: string, options?: XiorRequestConfig) {
+  head<T = any>(
+    url: string,
+    options?: XiorRequestConfig & {
+      /** @deprecated No `data` in `HEAD` method */
+      data?: any;
+    }
+  ) {
     return this.createGet<T>('HEAD')(url, options);
   }
 
@@ -347,7 +356,13 @@ export class xior {
     return this.createGet<T>('DELETE')(url, options);
   }
 
-  options<T = any>(url: string, options?: XiorRequestConfig) {
+  options<T = any>(
+    url: string,
+    options?: XiorRequestConfig & {
+      /** @deprecated No `data` in `OPTIONS` method */
+      data?: any;
+    }
+  ) {
     return this.createGet<T>('OPTIONS')(url, options);
   }
 }

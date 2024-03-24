@@ -30,7 +30,7 @@ afterEach(function () {
 
 describe('xior mock plguin basics tests', () => {
   it('correctly sets the plugin on the xior instance', async () => {
-    assert.equal((instance as any)._plugins.length, 1);
+    assert.equal((instance as any).P.length, 1);
   });
 
   it('calls interceptors', async () => {

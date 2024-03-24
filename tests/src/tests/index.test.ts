@@ -54,7 +54,7 @@ describe('xior tests', () => {
       assert.strictEqual(data.query.b, '2');
     });
 
-    it("POST should work without body when header's `content-type: application/x-www-form-urlencoded`", async () => {
+    it("POST should work with body when header's `content-type: application/x-www-form-urlencoded`", async () => {
       const { data } = await xiorInstance.post<{
         method: string;
         body: Record<string, any>;
@@ -70,10 +70,10 @@ describe('xior tests', () => {
         }
       );
       assert.strictEqual(data.method, 'post');
-      assert.strictEqual(Object.keys(data.query).length, 4);
-      assert.strictEqual(Object.keys(data.body).length, 0);
-      assert.strictEqual(data.query.a, '1');
-      assert.strictEqual(data.query.b, '2');
+      assert.strictEqual(Object.keys(data.query).length, 2);
+      assert.strictEqual(Object.keys(data.body).length, 2);
+      assert.strictEqual(data.body.a, '1');
+      assert.strictEqual(data.body.b, '2');
       assert.strictEqual(data.query.c, '3');
       assert.strictEqual(data.query.d, '4');
     });
@@ -87,8 +87,8 @@ describe('xior tests', () => {
       assert.strictEqual(data.method, 'delete');
       assert.strictEqual(data.query.a, '1');
       assert.strictEqual(data.query.b, '2');
-      assert.strictEqual(data.query.c, '3');
-      assert.strictEqual(Object.keys(data.body).length, 0);
+      assert.strictEqual(data.body.c, 3);
+      assert.strictEqual(Object.keys(data.body).length, 1);
     });
 
     it('PUT should work', async () => {
@@ -140,7 +140,7 @@ describe('xior tests', () => {
     });
   });
 
-  describe('Options `encode` and `encodeURI` tests', () => {
+  describe('Options `paramsSerializer` and `encodeURI` tests', () => {
     const xiorInstance = xior.create({ baseURL, withCredentials: true });
 
     it('default encode should work', async () => {
@@ -169,7 +169,7 @@ describe('xior tests', () => {
     it('Use `qs.stringify` as custom encode function should work', async () => {
       const xiorInstance = xior.create({
         baseURL,
-        encode: (params: Record<string, any>) => stringify(params, {}),
+        paramsSerializer: (params: Record<string, any>) => stringify(params, {}),
       });
 
       const { data, request } = await xiorInstance.get<{
@@ -427,20 +427,19 @@ describe('xior tests', () => {
     const xiorInstance = xior.create({ baseURL });
 
     it('xior.interceptors.request.use/eject/clear should work', () => {
-      // xior REQI(request interceptors) always have at least 1 default interceptor
-      assert.strictEqual((xiorInstance as any).REQI.length, 1);
+      assert.strictEqual((xiorInstance as any).REQI.length, 0);
       const handler = xiorInstance.interceptors.request.use((config) => {
         return config;
       });
       xiorInstance.interceptors.request.use((config) => {
         return config;
       });
-      assert.strictEqual((xiorInstance as any).REQI.length - 1, 2);
-      xiorInstance.interceptors.request.eject(handler);
       assert.strictEqual((xiorInstance as any).REQI.length - 1, 1);
+      xiorInstance.interceptors.request.eject(handler);
+      assert.strictEqual((xiorInstance as any).REQI.length - 1, 0);
 
       xiorInstance.interceptors.request.clear();
-      assert.strictEqual((xiorInstance as any).REQI.length, 1);
+      assert.strictEqual((xiorInstance as any).REQI.length, 0);
     });
 
     it('xior.interceptors.response.use/eject/clear should work', () => {
@@ -460,7 +459,7 @@ describe('xior tests', () => {
     });
 
     it('xior.plugins.use/eject/clear should work', () => {
-      assert.strictEqual((xiorInstance as any)._plugins.length, 0);
+      assert.strictEqual((xiorInstance as any).P.length, 0);
       const handler = xiorInstance.plugins.use((plugin) => {
         return (config) => {
           return plugin(config);
@@ -471,12 +470,12 @@ describe('xior tests', () => {
           return plugin(config);
         };
       });
-      assert.strictEqual((xiorInstance as any)._plugins.length, 2);
+      assert.strictEqual((xiorInstance as any).P.length, 2);
       xiorInstance.plugins.eject(handler);
-      assert.strictEqual((xiorInstance as any)._plugins.length, 1);
+      assert.strictEqual((xiorInstance as any).P.length, 1);
 
       xiorInstance.plugins.clear();
-      assert.strictEqual((xiorInstance as any)._plugins.length, 0);
+      assert.strictEqual((xiorInstance as any).P.length, 0);
     });
   });
 });

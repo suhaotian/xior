@@ -57,10 +57,11 @@ describe('xior polyfill tests', () => {
         method: string;
         body: Record<string, any>;
         query: Record<string, any>;
-      }>('/delete', { params: { a: 1, b: 2 } });
+      }>('/delete', { params: { a: 1, b: 2 }, data: { c: 3 } });
       assert.strictEqual(data.method, 'delete');
       assert.strictEqual(data.query.a, '1');
       assert.strictEqual(data.query.b, '2');
+      assert.strictEqual(data.body.c, 3);
     });
 
     it('PUT should work', async () => {
@@ -111,7 +112,7 @@ describe('xior polyfill tests', () => {
     });
   });
 
-  describe('Options `encode` and `encodeURI` tests', () => {
+  describe('Options `paramsSerializer` and `encodeURI` tests', () => {
     const xiorInstance = xior.create({ baseURL });
 
     it('default encode should work', async () => {
@@ -140,7 +141,7 @@ describe('xior polyfill tests', () => {
     it('Use `qs.stringify` as custom encode function should work', async () => {
       const xiorInstance = xior.create({
         baseURL,
-        encode: (params: Record<string, any>) => stringify(params, {}),
+        paramsSerializer: (params: Record<string, any>) => stringify(params, {}),
       });
 
       const { data, request } = await xiorInstance.get<{

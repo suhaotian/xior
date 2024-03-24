@@ -11,7 +11,7 @@ import throttlePlugin from 'xior/plugins/throttle';
 // console.log(merge, delay, buildSortedURL);
 
 const instance = xior.create({
-  encode: (params: Record<string, any>) => stringify(params),
+  paramsSerializer: (params: Record<string, any>) => stringify(params),
 });
 instance.plugins.use(errorRetryPlugin({}));
 instance.plugins.use(cachePlugin({}));

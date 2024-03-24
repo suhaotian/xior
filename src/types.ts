@@ -5,8 +5,6 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
   params?: Record<string, any>;
   /** If no set, default depends on browsers timeout */
   timeout?: number;
-  /** @deprecated use paramsSerializer */
-  encode?: (params: Record<string, any>) => string;
   paramsSerializer?: (params: Record<string, any>) => string;
   /** Use encodeURIComponent, default: true */
   encodeURI?: boolean;
@@ -16,10 +14,8 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
    */
   responseType?: 'json' | 'text' | 'stream' | 'document' | 'arraybuffer' | 'blob' | 'original';
   data?: any;
-  _data?: any;
   /** encoded url with params */
   _url?: string;
-  /** useless now, compitable axios */
   withCredentials?: boolean;
   /**
    * some API is get data, but the method is not 'GET',
@@ -32,7 +28,6 @@ export type XiorInterceptorRequestConfig<T = any> = XiorRequestConfig & {
   headers: Record<string, any>;
   params: Record<string, any>;
   url: string;
-  _url: string;
   method: string;
 };
 export interface XiorResponse<T = any> {
