@@ -6,7 +6,7 @@
 - refactor(core): default request inteceptor should work before send fetch
 - refactor(core): remove `_data` in request config
 - refactor(core): remove `encode` in options, use `paramsSerializer` option instead
-- chore(README): add encrypt/decrypt to README
+- chore(README): add encrypt/decrypt example to README
 
 ## v0.2.6 2024/03/22
 

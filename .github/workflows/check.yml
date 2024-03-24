@@ -26,7 +26,7 @@ jobs:
         run: pnpm checktype
 
       - name: Run tests
-        run: pnpm dev:test
+        run: pnpm test
 
       - name: Run vitest mock tests
         run: pnpm --filter=vitest-mock-example test
