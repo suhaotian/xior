@@ -2,7 +2,7 @@
 
 ## v0.3.0 2024/03/24
 
-- fix(core): POST/DELETE/PUT/PATCH methods when have `data`, use formData to body(before put in url)
+- fix(core): POST/DELETE/PUT/PATCH methods when `content-type=application/x-www-form-urlencoded`, use formData to in body(previous put in url)
 - refactor(core): default request inteceptor should work before send fetch
 - refactor(core): remove `_data` in request config
 - refactor(core): remove `encode` in options, use `paramsSerializer` option instead

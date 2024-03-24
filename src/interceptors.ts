@@ -20,6 +20,7 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
   let _data = data;
   const headers = req?.headers || {};
   let newParams = req.params || {};
+  const isGet = likeGET(method);
   if (data && !(data instanceof FormData)) {
     let contentType = '';
     if (req?.headers) {
@@ -34,7 +35,6 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
         }
       }
     }
-    const isGet = likeGET(method);
     if (!contentType) {
       contentType = isGet ? formUrl : jsonType;
       headers['Content-Type'] = contentType;
@@ -63,6 +63,6 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
     _url,
     method,
     headers,
-    paramsSerializer,
+    isGet,
   };
 }

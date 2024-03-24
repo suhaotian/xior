@@ -1,4 +1,4 @@
-import defaultRequestInterceptor, { likeGET } from './interceptors';
+import defaultRequestInterceptor from './interceptors';
 import type {
   XiorInterceptorRequestConfig,
   XiorPlugin,
@@ -191,6 +191,7 @@ export class xior {
       data,
       _data,
       _url,
+      isGet,
       ...rest
     } = await defaultRequestInterceptor(requestConfig as XiorInterceptorRequestConfig);
     requestConfig._url = _url;
@@ -222,7 +223,7 @@ export class xior {
     }
 
     const response = await fetch(finalURL, {
-      body: likeGET(method) ? undefined : _data,
+      body: isGet ? undefined : _data,
       ...rest,
       signal,
       method,
@@ -309,13 +310,15 @@ export class xior {
     };
   }
 
-  createGet<T>(method: string) {
+  /** create get method */
+  cG<T>(method: string) {
     return (url: string, options?: XiorRequestConfig) => {
       return this.request<T>(options ? { ...options, method, url } : { method, url });
     };
   }
 
-  createPost<T>(method: string) {
+  /** create post method */
+  cP<T>(method: string) {
     return (url: string, data?: any, options?: XiorRequestConfig) => {
       return this.request<T>(options ? { ...options, method, url, data } : { method, url, data });
     };
@@ -328,7 +331,7 @@ export class xior {
       data?: any;
     }
   ) {
-    return this.createGet<T>('GET')(url, options);
+    return this.cG<T>('GET')(url, options);
   }
   head<T = any>(
     url: string,
@@ -337,23 +340,23 @@ export class xior {
       data?: any;
     }
   ) {
-    return this.createGet<T>('HEAD')(url, options);
+    return this.cG<T>('HEAD')(url, options);
   }
 
   post<T = any>(url: string, data?: any, options?: XiorRequestConfig) {
-    return this.createPost<T>('POST')(url, data, options);
+    return this.cP<T>('POST')(url, data, options);
   }
 
   put<T = any>(url: string, data?: any, options?: XiorRequestConfig) {
-    return this.createPost<T>('PUT')(url, data, options);
+    return this.cP<T>('PUT')(url, data, options);
   }
 
   patch<T = any>(url: string, data?: any, options?: XiorRequestConfig) {
-    return this.createPost<T>('PATCH')(url, data, options);
+    return this.cP<T>('PATCH')(url, data, options);
   }
 
   delete<T = any>(url: string, options?: XiorRequestConfig) {
-    return this.createGet<T>('DELETE')(url, options);
+    return this.cG<T>('DELETE')(url, options);
   }
 
   options<T = any>(
@@ -363,6 +366,6 @@ export class xior {
       data?: any;
     }
   ) {
-    return this.createGet<T>('OPTIONS')(url, options);
+    return this.cG<T>('OPTIONS')(url, options);
   }
 }
