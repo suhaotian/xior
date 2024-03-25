@@ -1,3 +1,5 @@
+import { XiorInstance } from './xior';
+
 export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
   url?: string;
   headers?: Record<string, any>;
@@ -41,5 +43,6 @@ export interface XiorResponse<T = any> {
 }
 
 export type XiorPlugin = (
-  adapter: (request: XiorRequestConfig) => Promise<XiorResponse>
+  adapter: (request: XiorRequestConfig) => Promise<XiorResponse>,
+  instance?: XiorInstance
 ) => (request: XiorRequestConfig) => Promise<XiorResponse<any>>;

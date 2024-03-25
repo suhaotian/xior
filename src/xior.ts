@@ -24,7 +24,7 @@ export class xior {
   static create(options?: XiorRequestConfig): XiorInstance {
     return new xior(options);
   }
-  static VERSION = '0.3.0';
+  static VERSION = '0.3.1';
 
   config?: XiorRequestConfig;
   defaults: XiorInterceptorRequestConfig;
@@ -176,7 +176,7 @@ export class xior {
 
     let finalPlugin = this.fetch.bind(this);
     this.P.forEach((plugin) => {
-      finalPlugin = plugin(finalPlugin);
+      finalPlugin = plugin(finalPlugin, this);
     });
     return finalPlugin<T>(requestConfig);
   }

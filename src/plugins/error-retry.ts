@@ -1,5 +1,5 @@
 import { delay } from './utils';
-import { XiorPlugin, XiorRequestConfig } from '../types';
+import { XiorInterceptorRequestConfig, XiorPlugin, XiorRequestConfig } from '../types';
 import { XiorError } from '../utils';
 
 export type ErrorRetryOptions = {
@@ -37,7 +37,7 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
     ...(options || {}),
   };
 
-  return function (adapter) {
+  return function (adapter, instance) {
     return async (config) => {
       const {
         retryTimes = _retryTimes,
@@ -49,7 +49,12 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
       let timeUp = false;
       let count = 0;
 
-      async function handleRequest() {
+      async function handleRequest(isRetry = false) {
+        if (isRetry && instance?.REQI) {
+          for (const item of instance.REQI) {
+            config = await item(config as XiorInterceptorRequestConfig);
+          }
+        }
         try {
           return await adapter(config);
         } catch (error) {
@@ -77,7 +82,7 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
           }
           count++;
           if (onRetry) onRetry(config, error as XiorError, count);
-          return handleRequest();
+          return handleRequest(true);
         }
       }
 

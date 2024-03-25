@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.3.1 2024/03/25
+
+- fix(error-retry plugin): if have `request inteceptors`, when error retry, retry with the latest request cofnig from `request inteceptors`
+
 ## v0.3.0 2024/03/24
 
 - fix(core): POST/DELETE/PUT/PATCH methods when `content-type=application/x-www-form-urlencoded`, use formData to in body(previous put in url)

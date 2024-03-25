@@ -102,6 +102,9 @@ export async function startServer(port: number) {
     res.end('ok');
   });
   app.post('/retry-error', (req, res) => {
+    if (req.headers['s'] || req.headers['S']) {
+      return res.status(200).send({ msg: 'ok' });
+    }
     if (errorCount < +(req.body.count || 2)) {
       errorCount += 1;
       return res.status(400).send({ errorCount: errorCount - 1, count: +(req.body.count || '2') });

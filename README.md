@@ -117,7 +117,7 @@ yarn add xior
 Use jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.0/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.1/dist/xior.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -132,7 +132,7 @@ Use jsDelivr CDN:
 Use unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.0/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.1/dist/xior.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -498,7 +498,7 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.0/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.1/dist/xior.umd.js"></script>
 <!-- Load plugin -->
 <script src="https://cdn.jsdelivr.net/npm/xior@0.2.6/plugins/error-retry.umd.js"></script>
 
@@ -513,7 +513,7 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.0/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.1/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
 <script src="https://unpkg.com/xior@0.2.6/plugins/error-retry.umd.js"></script>
@@ -599,7 +599,7 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.0/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.1/dist/xior.umd.js"></script>
 <!-- Load plugin -->
 <script src="https://cdn.jsdelivr.net/npm/xior@0.2.6/plugins/throttle.umd.js"></script>
 
@@ -614,7 +614,7 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.0/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.1/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
 <script src="https://unpkg.com/xior@0.2.6/plugins/throttle.umd.js"></script>
@@ -665,7 +665,7 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.0/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.1/dist/xior.umd.js"></script>
 <!-- Load plugin -->
 <script src="https://cdn.jsdelivr.net/npm/xior@0.2.6/plugins/dedupe.umd.js"></script>
 
@@ -680,7 +680,7 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.0/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.1/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
 <script src="https://unpkg.com/xior@0.2.6/plugins/dedupe.umd.js"></script>
@@ -741,7 +741,7 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.0/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.1/dist/xior.umd.js"></script>
 <!-- Load plugin -->
 <script src="https://cdn.jsdelivr.net/npm/xior@0.2.6/plugins/error-cache.umd.js"></script>
 
@@ -756,7 +756,7 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.0/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.1/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
 <script src="https://unpkg.com/xior@0.2.6/plugins/error-cache.umd.js"></script>
@@ -894,7 +894,7 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.0/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.1/dist/xior.umd.js"></script>
 <!-- Load plugin -->
 <script src="https://cdn.jsdelivr.net/npm/xior@0.2.6/plugins/progress.umd.js"></script>
 
@@ -909,7 +909,7 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.0/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.1/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
 <script src="https://unpkg.com/xior@0.2.6/plugins/progress.umd.js"></script>
@@ -1019,7 +1019,7 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.0/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.1/dist/xior.umd.js"></script>
 <!-- Load plugin -->
 <script src="https://cdn.jsdelivr.net/npm/xior@0.2.6/plugins/mock.umd.js"></script>
 
@@ -1034,7 +1034,7 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.0/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.1/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
 <script src="https://unpkg.com/xior@0.2.6/plugins/mock.umd.js"></script>
@@ -1059,7 +1059,7 @@ Here are examples:
 import xior from 'xior';
 
 const instance = xior.create();
-instance.plugins.use(function logPlugin(adapter) {
+instance.plugins.use(function logPlugin(adapter, instance) {
   return async (config) => {
     const start = Date.now();
     const res = await adapter(config);

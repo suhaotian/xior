@@ -117,4 +117,57 @@ describe('xior error retry plugin tests', () => {
     assert.strictEqual(error?.response?.data.errorCount, 2);
     assert.strictEqual(error?.response?.data.count, 3);
   });
+
+  it("should use the latest request inteceptor's request config when error retry", async () => {
+    await xior.get('/reset-error', { baseURL });
+
+    const instance = xior.create({ baseURL });
+
+    let S = '';
+    let errorCount = 0;
+
+    instance.interceptors.request.use((config) => {
+      if (S) {
+        config.headers['S'] = S;
+      }
+      return config;
+    });
+
+    instance.interceptors.response.use(
+      (config) => {
+        return config;
+      },
+      () => {
+        errorCount++;
+        if (!S) {
+          S = 'S123456';
+        }
+      }
+    );
+
+    instance.plugins.use(
+      xiorErrorRetryPlugin({
+        retryInterval: (count) => count * 500,
+        onRetry(config, error, count) {
+          console.log(`${config.method} ${config.url} retry ${count} times`);
+        },
+      })
+    );
+    let error: XiorError | undefined = undefined;
+    let msg = '';
+    try {
+      const { data } = await instance.post('/retry-error', { count: 3 }, {
+        retryTimes: 3,
+        enableRetry: true,
+      } as any);
+      msg = data.msg;
+    } catch (e) {
+      if (isXiorError(e)) {
+        error = e as XiorError;
+      }
+    }
+    assert.strictEqual(errorCount, 1);
+    assert.strictEqual(msg, 'ok');
+    assert.strictEqual(typeof error === 'undefined', true);
+  });
 });
