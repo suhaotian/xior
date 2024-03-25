@@ -111,6 +111,13 @@ export async function startServer(port: number) {
     }
     res.status(200).send({ errorCount, count: +(req.body.count || '2') });
   });
+  app.post('/retry-error-401', (req, res) => {
+    if (errorCount < +(req.body.count || 2)) {
+      errorCount += 1;
+      return res.status(401).send({ errorCount: errorCount - 1, count: +(req.body.count || '2') });
+    }
+    res.status(200).send({ errorCount, count: +(req.body.count || '2') });
+  });
 
   app.all('/stream/:chunks', function (req, res, next) {
     res.writeHead(200, {

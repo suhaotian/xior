@@ -2,7 +2,7 @@
 
 ## v0.3.1 2024/03/25
 
-- fix(error-retry plugin): if have `request inteceptors`, when error retry, retry with the latest request cofnig from `request inteceptors`
+- fix(error-retry plugin): if have `request inteceptors`, when error retry, retry with the latest request config from `request inteceptors`
 
 ## v0.3.0 2024/03/24
 

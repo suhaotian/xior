@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { after, before, describe, it } from 'node:test';
-import xior, { XiorError, isXiorError } from 'xior';
+import xior, { XiorError, XiorRequestConfig, isXiorError } from 'xior';
 import xiorErrorRetryPlugin from 'xior/plugins/error-retry';
 
 import { startServer } from '../server';
@@ -169,5 +169,32 @@ describe('xior error retry plugin tests', () => {
     assert.strictEqual(errorCount, 1);
     assert.strictEqual(msg, 'ok');
     assert.strictEqual(typeof error === 'undefined', true);
+  });
+
+  it('shouldn\t error retry with `enableRetry: config `', async () => {
+    const instance = xior.create({ baseURL });
+    instance.plugins.use(
+      xiorErrorRetryPlugin({
+        retryInterval: 1000,
+      })
+    );
+    await instance.get('/reset-error');
+    let error: XiorError | undefined = undefined;
+    try {
+      await instance.post('/retry-error-401', { count: 3 }, {
+        // retryTimes: 2,
+        enableRetry: (config: XiorRequestConfig, error: XiorError) => {
+          if (error.response?.status === 401) return false;
+          return true;
+        },
+      } as any);
+    } catch (e) {
+      if (isXiorError(e)) {
+        error = e as XiorError;
+      }
+    }
+    assert.strictEqual(typeof error !== 'undefined', true);
+    assert.strictEqual(error?.response?.data.errorCount, 0);
+    assert.strictEqual(error?.response?.data.count, 3);
   });
 });
