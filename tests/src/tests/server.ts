@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 
-import { decrypt } from './encrypt-descypt/encryption';
+import { decrypt } from './encrypt-decrypt/encryption';
 
 export async function startServer(port: number) {
   const app = express();
