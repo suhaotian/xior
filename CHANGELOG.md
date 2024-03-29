@@ -1,5 +1,10 @@
 # CHANGELOG 📝
 
+## v0.3.2 2024/03/30
+
+- feat: reduce build size use common `xior/utils`
+- chore: bump bunchee to v5.0.1
+
 ## v0.3.1 2024/03/25
 
 - fix(error-retry plugin): if have `request inteceptors`, when error retry, retry with the latest request config from `request inteceptors`
