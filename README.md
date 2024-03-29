@@ -15,7 +15,7 @@ A lite request lib based on **fetch** with plugins support.
 - 🫡 **Similar axios API**: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`
 - 🤙 Support timeout and cancel requests
 - 🥷 Plugin support: error retry, cache, throttling, dedupe, error cache, mock and easily create custom plugins
-- 🚀 Lightweight (~7KB, Gzip ~3kb)
+- 🚀 Lightweight (~8KB, Gzip ~3kb)
 - 👊 Unit tested and strongly typed 💪
 
 ## Table of Contents
