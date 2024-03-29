@@ -3,11 +3,9 @@
   "version": "0.3.1",
   "description": "A lite request lib based on fetch with plugins support, and axios similar API",
   "repository": "suhaotian/xior",
+  "type": "module",
   "bugs": "https://github.com/suhaotian/xior/issues",
   "homepage": "https://github.com/suhaotian/xior",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.esm.js",
-  "types": "./dist/types/index.d.ts",
   "exports": {
     "./plugins/error-retry": {
       "types": "./plugins/error-retry/index.d.ts",
