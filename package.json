@@ -3,12 +3,26 @@
   "version": "0.3.1",
   "description": "A lite request lib based on fetch with plugins support, and axios similar API",
   "repository": "suhaotian/xior",
+  "type": "module",
   "bugs": "https://github.com/suhaotian/xior/issues",
   "homepage": "https://github.com/suhaotian/xior",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.esm.js",
   "types": "./dist/types/index.d.ts",
+  "require": "./dist/index.cjs",
+  "import": "./dist/index.mjs",
+  "module": "./dist/index.esm.js",
   "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "module": "./dist/index.mjs"
+    },
+    "./utils": {
+      "types": "./utils/index.d.ts",
+      "require": "./utils/index.cjs",
+      "import": "./utils/index.mjs",
+      "module": "./utils/index.esm.js"
+    },
     "./plugins/error-retry": {
       "types": "./plugins/error-retry/index.d.ts",
       "require": "./plugins/error-retry/index.cjs",
@@ -50,12 +64,6 @@
       "require": "./plugins/error-cache/index.cjs",
       "import": "./plugins/error-cache/index.mjs",
       "module": "./plugins/error-cache/index.esm.js"
-    },
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.mjs",
-      "module": "./dist/index.esm.js"
     }
   },
   "scripts": {
@@ -74,6 +82,7 @@
     "tiny-lru": "^11.2.5"
   },
   "devDependencies": {
+    "xior": "workspace:*",
     "husky": "^9.0.7",
     "lint-staged": "^15.2.0",
     "prettier": "^3.2.4",
@@ -90,11 +99,11 @@
     "@types/multer": "^1.4.11",
     "qs": "^6.11.2",
     "@types/qs": "^6.9.11",
-    "bunchee": "^4.4.8",
+    "bunchee": "^5.0.1",
     "lfs-auto-track": "^1.1.0",
     "isomorphic-unfetch": "^4.0.2",
     "promise-polyfill": "^8.3.0",
-    "webpack": "^5.90.3",
+    "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4",
     "change-case": "^5.4.3"
   },

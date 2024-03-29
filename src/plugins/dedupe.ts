@@ -1,6 +1,7 @@
-import buildSortedURL from './cache/build-sorted-url';
+// @ts-ignore
+import { joinPath, isAbsoluteURL, buildSortedURL } from 'xior/utils';
+
 import type { XiorPlugin, XiorRequestConfig } from '../types';
-import { isAbsoluteURL, joinPath } from '../utils';
 
 export type XiorDedupeOptions = {
   /**
