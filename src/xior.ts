@@ -26,7 +26,7 @@ export class xior {
   static create(options?: XiorRequestConfig): XiorInstance {
     return new xior(options);
   }
-  static VERSION = '0.3.2';
+  static VERSION = '0.3.3';
 
   config?: XiorRequestConfig;
   defaults: XiorInterceptorRequestConfig;
