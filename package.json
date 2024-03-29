@@ -1,10 +1,11 @@
 {
   "name": "xior",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "A lite request lib based on fetch with plugins support, and axios similar API",
   "repository": "suhaotian/xior",
   "bugs": "https://github.com/suhaotian/xior/issues",
   "homepage": "https://github.com/suhaotian/xior",
+  "main": "./dist/index.cjs",
   "types": "./dist/types/index.d.ts",
   "require": "./dist/index.cjs",
   "import": "./dist/index.mjs",
