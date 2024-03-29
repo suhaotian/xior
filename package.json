@@ -6,7 +6,17 @@
   "type": "module",
   "bugs": "https://github.com/suhaotian/xior/issues",
   "homepage": "https://github.com/suhaotian/xior",
+  "types": "./dist/types/index.d.ts",
+  "require": "./dist/index.cjs",
+  "import": "./dist/index.mjs",
+  "module": "./dist/index.esm.js",
   "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "module": "./dist/index.mjs"
+    },
     "./plugins/error-retry": {
       "types": "./plugins/error-retry/index.d.ts",
       "require": "./plugins/error-retry/index.cjs",
@@ -48,12 +58,6 @@
       "require": "./plugins/error-cache/index.cjs",
       "import": "./plugins/error-cache/index.mjs",
       "module": "./plugins/error-cache/index.esm.js"
-    },
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.mjs",
-      "module": "./dist/index.esm.js"
     }
   },
   "scripts": {
