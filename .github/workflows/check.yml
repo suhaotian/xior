@@ -28,6 +28,9 @@ jobs:
       - name: Run tests
         run: pnpm test
 
+      - name: Build umd
+        run: pnpm build:umd
+
       - name: Run vitest mock tests
         run: pnpm --filter=vitest-mock-example test
 
