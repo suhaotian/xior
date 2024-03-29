@@ -8,6 +8,7 @@ export type XiorDedupeOptions = {
    * check if we need enable throttle, default only `GET` method or`isGet: true` enable
    */
   enableDedupe?: boolean | ((config?: XiorRequestConfig) => boolean);
+  onDedupe?: (config: XiorRequestConfig) => void;
 };
 
 /** @ts-ignore */
@@ -23,12 +24,15 @@ export const inflight = new Map<string, any[]>();
  * Prevents having multiple identical requests on the fly at the same time.
  */
 export default function xiorDedupePlugin(options: XiorDedupeOptions = {}): XiorPlugin {
-  const { enableDedupe: _enableDedupe } = options;
+  const { enableDedupe: _enableDedupe, onDedupe: _onDedupe } = options;
 
   return function (adapter) {
     return async (config) => {
-      const { paramsSerializer, enableDedupe = _enableDedupe } = config as XiorDedupeOptions &
-        XiorRequestConfig;
+      const {
+        paramsSerializer,
+        enableDedupe = _enableDedupe,
+        onDedupe = _onDedupe,
+      } = config as XiorDedupeOptions & XiorRequestConfig;
 
       const isGet = config.method === 'GET' || config.isGet;
 
@@ -53,6 +57,7 @@ export default function xiorDedupePlugin(options: XiorDedupeOptions = {}): XiorP
       if (!inflight.has(key)) {
         inflight.set(key, []);
       } else {
+        if (onDedupe) onDedupe(config);
         return new Promise((resolve, reject) => {
           inflight.get(key)?.push([resolve, reject]);
         });

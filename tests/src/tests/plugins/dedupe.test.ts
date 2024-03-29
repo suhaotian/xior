@@ -18,7 +18,13 @@ after(async () => {
 
 describe('xior dedupe plugin tests', () => {
   const instance = xior.create({ baseURL });
-  instance.plugins.use(xiorDedupePlugin());
+  instance.plugins.use(
+    xiorDedupePlugin({
+      onDedupe(config) {
+        console.log(`Dedupe ${config.method} ${config.url}`);
+      },
+    })
+  );
 
   it('should request only once when send multiple but same requests at once', async () => {
     const result: number[] = [];
