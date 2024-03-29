@@ -1,7 +1,8 @@
-import buildSortedURL from './cache/build-sorted-url';
+// @ts-ignore
+import { XiorError, joinPath, isAbsoluteURL, buildSortedURL } from 'xior/utils';
+
 import { ICacheLike } from './utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../types';
-import { XiorError, joinPath, isAbsoluteURL } from '../utils';
 
 const _cache: Record<string, XiorResponse> = {};
 const cacheObj = {

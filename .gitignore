@@ -7,3 +7,7 @@ plugins/
 !src/plugins
 !src/tests/plugins
 !tests/src/tests/plugins
+utils/
+!src/utils
+!src/tests/utils
+!tests/src/tests/utils

@@ -17,6 +17,12 @@
       "import": "./dist/index.mjs",
       "module": "./dist/index.mjs"
     },
+    "./utils": {
+      "types": "./utils/index.d.ts",
+      "require": "./utils/index.cjs",
+      "import": "./utils/index.mjs",
+      "module": "./utils/index.esm.js"
+    },
     "./plugins/error-retry": {
       "types": "./plugins/error-retry/index.d.ts",
       "require": "./plugins/error-retry/index.cjs",
@@ -76,6 +82,7 @@
     "tiny-lru": "^11.2.5"
   },
   "devDependencies": {
+    "xior": "workspace:*",
     "husky": "^9.0.7",
     "lint-staged": "^15.2.0",
     "prettier": "^3.2.4",

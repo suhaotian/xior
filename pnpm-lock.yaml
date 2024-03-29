@@ -84,6 +84,9 @@ importers:
       webpack-cli:
         specifier: ^5.1.4
         version: 5.1.4(webpack@5.91.0)
+      xior:
+        specifier: workspace:*
+        version: 'link:'
 
   cloudflare-example:
     dependencies:
