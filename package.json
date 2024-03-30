@@ -8,14 +8,12 @@
   "main": "./dist/index.cjs",
   "types": "./dist/types/index.d.ts",
   "require": "./dist/index.cjs",
-  "import": "./dist/index.mjs",
-  "module": "./dist/index.esm.js",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
       "require": "./dist/index.cjs",
       "import": "./dist/index.mjs",
-      "module": "./dist/index.mjs"
+      "module": "./dist/index.esm.js"
     },
     "./utils": {
       "types": "./utils/index.d.ts",
