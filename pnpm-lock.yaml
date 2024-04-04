@@ -37,8 +37,8 @@ importers:
         specifier: ^1.6.7
         version: 1.6.7
       bunchee:
-        specifier: ^5.0.1
-        version: 5.0.1(typescript@5.3.3)
+        specifier: ^5.1.2
+        version: 5.1.2(typescript@5.3.3)
       change-case:
         specifier: ^5.4.3
         version: 5.4.3
@@ -2627,8 +2627,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /bunchee@5.0.1(typescript@5.3.3):
-    resolution: {integrity: sha512-awtn36CmPdrAHtT13U9cn/g/pqW8fw1/UVsUJh0XjX1w8UJtLUJYuBe8PqVKoguNu0HUTQn6p0eZaXVjotBIhw==}
+  /bunchee@5.1.2(typescript@5.3.3):
+    resolution: {integrity: sha512-fOcub+z6CcCesKjVX82+B6wPTzQjtcHjrI1zcAc/acc5PRmI4fNsww7p20VxR8lctaXPrLnbuWeuhtSrZ311/Q==}
     engines: {node: '>= 18.0.0'}
     hasBin: true
     peerDependencies:

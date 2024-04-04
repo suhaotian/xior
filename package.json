@@ -97,7 +97,7 @@
     "@types/multer": "^1.4.11",
     "qs": "^6.11.2",
     "@types/qs": "^6.9.11",
-    "bunchee": "^5.0.1",
+    "bunchee": "^5.1.2",
     "lfs-auto-track": "^1.1.0",
     "isomorphic-unfetch": "^4.0.2",
     "promise-polyfill": "^8.3.0",
