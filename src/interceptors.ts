@@ -52,9 +52,8 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
   }
 
   if (Object.keys(newParams).length > 0) {
-    _url += _url.includes('?')
-      ? `&${paramsSerializer(newParams, encodeURI)}`
-      : `?${paramsSerializer(newParams, encodeURI)}`;
+    const result = paramsSerializer(newParams, encodeURI);
+    _url += _url.includes('?') ? `&${result}` : `?${result}`;
   }
 
   return {
