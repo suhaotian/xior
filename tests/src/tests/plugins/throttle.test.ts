@@ -23,6 +23,9 @@ describe('xior throttle plugin tests', () => {
   instance.plugins.use(
     xiorThrottlePlugin({
       threshold: 1000,
+      onThrottle(config) {
+        console.log(`Throttle requests ${config.method} ${config.url}`);
+      },
     })
   );
 

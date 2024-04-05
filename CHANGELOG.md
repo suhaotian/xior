@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.3.6 2024/04/6
+
+- feat(plugin): add `onThrottle` to throttle plugin for logging purpose
+
 ## v0.3.5 2024/03/30
 
 - feat(plugin): add `onDedupe` to dedupe plugin for logging purpose

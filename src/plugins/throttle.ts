@@ -20,6 +20,7 @@ export type XiorThrottleOptions = {
    */
   enableThrottle?: boolean | ((config?: XiorRequestConfig) => boolean);
   throttleCache?: ICacheLike<RecordedCache>;
+  onThrottle?: (config: XiorRequestConfig) => void;
 };
 
 /** @ts-ignore */
@@ -34,6 +35,7 @@ export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): X
     enableThrottle: _enableThrottle,
     threshold: _threshold = 1000,
     throttleCache = lru<RecordedCache>(10),
+    onThrottle: _onThrottle,
   } = options;
 
   const cache = throttleCache;
@@ -72,6 +74,7 @@ export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): X
         paramsSerializer,
         threshold = _threshold,
         enableThrottle = _enableThrottle,
+        onThrottle = _onThrottle,
       } = config as XiorThrottleOptions & XiorRequestConfig;
 
       const isGet = config.method === 'GET' || config.isGet;
@@ -95,12 +98,10 @@ export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): X
 
         const now = Date.now();
         const cachedRecord = cache.get(index) || { timestamp: now };
-
-        if (now - cachedRecord.timestamp <= threshold) {
-          const responsePromise = cachedRecord.value;
-          if (responsePromise) {
-            return responsePromise;
-          }
+        const responsePromise = cachedRecord.value;
+        if (responsePromise && now - cachedRecord.timestamp <= threshold) {
+          onThrottle?.(config);
+          return responsePromise;
         }
 
         return recordCacheWithRequest(index, config);
