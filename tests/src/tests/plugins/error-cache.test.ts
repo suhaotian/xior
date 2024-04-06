@@ -85,4 +85,26 @@ describe('xior error cache plugin tests', () => {
     assert.strictEqual(res.data.count, 3);
     assert.strictEqual(res.data.errorCount, 3);
   });
+
+  it('should work exactly with `useCacheFirst: true` option', async () => {
+    const instance = xior.create({ baseURL });
+    const errorCachePlugin = xiorErrorCachePlugin({
+      useCacheFirst: true,
+    });
+    instance.plugins.use(errorCachePlugin);
+    await instance.get('/get', { params: { a: 1, b: 3 } });
+    const res = await instance.get('/get', {
+      params: { a: 2, b: 5 },
+    });
+    assert.strictEqual((res as any).fromCache, undefined);
+    assert.strictEqual(res.data.query.a, '2');
+    assert.strictEqual(res.data.query.b, '5');
+
+    const res2 = await instance.get('/get', {
+      params: { a: 2, b: 5 },
+    });
+    assert.strictEqual((res2 as any).fromCache, true);
+    assert.strictEqual(res2.data.query.a, '2');
+    assert.strictEqual(res2.data.query.b, '5');
+  });
 });

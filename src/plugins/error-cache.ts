@@ -4,22 +4,24 @@ import { XiorError, joinPath, isAbsoluteURL, buildSortedURL } from 'xior/utils';
 import { ICacheLike } from './utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../types';
 
-const _cache: Record<string, XiorResponse> = {};
+const _cache: Record<string, { loading?: boolean; res?: XiorResponse }> = {};
 const cacheObj = {
   get(key: string) {
     return _cache[key];
   },
-  set(key: string, result: XiorResponse) {
+  set(key: string, result: { loading?: boolean; res?: XiorResponse }) {
     _cache[key] = result;
   },
 };
 
 export type XiorErrorCacheOptions = {
   /**
-   * check if we need enable cache, default only `GET` method or`isGet: true` enable cache
+   * check if we need enable cache, default only `GET` method or`isGet: true` enable cache @error-cache-plugin
    */
   enableCache?: boolean | ((config?: XiorRequestConfig) => boolean);
-  defaultCache?: ICacheLike<XiorResponse>;
+  defaultCache?: ICacheLike<{ loading?: boolean; res?: XiorResponse }>;
+  /** if `useCacheFirst: true` and have cache, will return the cache response first, then run fetching in the background  @error-cache-plugin  */
+  useCacheFirst?: boolean;
 };
 
 /** @ts-ignore */
@@ -34,13 +36,18 @@ declare module 'xior' {
 }
 
 export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}): XiorPlugin {
-  const { enableCache: _enableCache, defaultCache: _defaultCache = cacheObj } = options;
+  const {
+    enableCache: _enableCache,
+    defaultCache: _defaultCache = cacheObj,
+    useCacheFirst: _inBg,
+  } = options;
 
   return function (adapter) {
     return async (config) => {
       const {
         enableCache = _enableCache,
         defaultCache = _defaultCache,
+        useCacheFirst = _inBg,
         paramsSerializer,
       } = config as XiorErrorCacheOptions & XiorRequestConfig;
 
@@ -67,15 +74,36 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
       );
 
       try {
+        if (useCacheFirst) {
+          const result = cache.get(index);
+          cache.set(index, { loading: true, res: result?.res });
+          if (result?.res) {
+            if (!result?.loading) {
+              (async () => {
+                try {
+                  const res = await adapter(config);
+                  cache.set(index, { loading: false, res });
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                } catch (e) {
+                  const result = cache.get(index);
+                  if (useCacheFirst) cache.set(index, { loading: false, res: result?.res });
+                }
+              })();
+            }
+            (result as any).res.fromCache = true;
+            return result?.res;
+          }
+        }
         const res = await adapter(config);
-        cache.set(index, res);
+        cache.set(index, { loading: false, res });
         return res;
       } catch (e) {
-        const res = cache.get(index);
-        if (res) {
-          (res as any).fromCache = true;
-          (res as any).error = e;
-          return res;
+        const result = cache.get(index);
+        if (useCacheFirst) cache.set(index, { loading: false, res: result?.res });
+        if (result?.res) {
+          (result as any).res.fromCache = true;
+          (result as any).res.error = e;
+          return result.res;
         }
         throw e;
       }
