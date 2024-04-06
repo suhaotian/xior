@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.3.7 2024/04/7
+
+- feat(plugin): add `useCacheFirst` to error cache plugin
+
 ## v0.3.6 2024/04/6
 
 - feat(plugin): add `onThrottle` to throttle plugin for logging purpose
