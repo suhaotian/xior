@@ -1,5 +1,6 @@
 import express from 'express';
 import multer from 'multer';
+import { delay } from 'xior/utils';
 
 import { decrypt } from './encrypt-decrypt/encryption';
 
@@ -9,7 +10,10 @@ export async function startServer(port: number) {
   app.use(express.json());
 
   (['get', 'post', 'patch', 'put', 'delete', 'head', 'options'] as const).forEach((method) => {
-    app[method](`/${method}`, (req, res) => {
+    app[method](`/${method}`, async (req, res) => {
+      if (req.headers['x-delay-value']) {
+        await delay(+req.headers['x-delay-value']);
+      }
       if (req.headers['x-custom-value'] === 'error') {
         return res.status(500).send({
           method,
@@ -18,7 +22,7 @@ export async function startServer(port: number) {
           value: req.headers['x-custom-value'],
         });
       }
-      res.send({
+      res.setHeader('x-custom-value', req.headers['x-custom-value'] || '').send({
         method,
         query: req.query,
         body: req.body,

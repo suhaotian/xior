@@ -22,6 +22,8 @@ export type XiorErrorCacheOptions = {
   defaultCache?: ICacheLike<{ loading?: boolean; res?: XiorResponse }>;
   /** if `useCacheFirst: true` and have cache, will return the cache response first, then run fetching in the background  @error-cache-plugin  */
   useCacheFirst?: boolean;
+  /** for logging purpose @error-cache-plugin */
+  onCacheRequest?: (config?: XiorRequestConfig) => void;
 };
 
 /** @ts-ignore */
@@ -40,6 +42,7 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
     enableCache: _enableCache,
     defaultCache: _defaultCache = cacheObj,
     useCacheFirst: _inBg,
+    onCacheRequest: _cacheRequest,
   } = options;
 
   return function (adapter) {
@@ -48,6 +51,7 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
         enableCache = _enableCache,
         defaultCache = _defaultCache,
         useCacheFirst = _inBg,
+        onCacheRequest = _cacheRequest,
         paramsSerializer,
       } = config as XiorErrorCacheOptions & XiorRequestConfig;
 
@@ -79,6 +83,7 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
           cache.set(index, { loading: true, res: result?.res });
           if (result?.res) {
             if (!result?.loading) {
+              onCacheRequest?.(config);
               (async () => {
                 try {
                   const res = await adapter(config);

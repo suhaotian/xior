@@ -107,4 +107,48 @@ describe('xior error cache plugin tests', () => {
     assert.strictEqual(res2.data.query.a, '2');
     assert.strictEqual(res2.data.query.b, '5');
   });
+
+  it('should only request once with `useCacheFirst: true` option when have multiple same requests', async () => {
+    const instance = xior.create({ baseURL });
+    const errorCachePlugin = xiorErrorCachePlugin({
+      useCacheFirst: true,
+    });
+    instance.plugins.use(errorCachePlugin);
+    const res = await instance.get('/get', {
+      params: { a: 1 },
+      headers: {
+        'x-custom-value': 1,
+      },
+    });
+    assert.strictEqual((res as any).fromCache, undefined);
+    assert.strictEqual(res.data.query.a, '1');
+    console.log('res.headers', res.headers);
+
+    assert.strictEqual(res.headers.get('x-custom-value'), '1');
+
+    const requests: number[] = [];
+    const result = await Promise.all(
+      [1, 2, 3, 4, 5].map((item) => {
+        return instance.get('/get', {
+          params: { a: 1 },
+          headers: {
+            'x-custom-value': item,
+            'x-delay-value': 200 * item,
+          },
+          onCacheRequest(config) {
+            requests.push(config?.headers?.['x-custom-value']);
+          },
+        });
+      })
+    );
+
+    assert.strictEqual(requests.length, 1);
+
+    result.forEach((res) => {
+      assert.strictEqual((res as any).fromCache, true);
+      assert.strictEqual(res.data.query.a, '1');
+      console.log('res.headers', res.headers);
+      assert.strictEqual(res.headers.get('X-Custom-Value'), '1');
+    });
+  });
 });
