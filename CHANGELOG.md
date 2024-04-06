@@ -2,7 +2,7 @@
 
 ## v0.3.7 2024/04/7
 
-- feat(plugin): add `useCacheFirst` to error cache plugin
+- feat(plugin): add `useCacheFirst` to error cache plugin, If `useCacheFirst: true` and there's a cache, it will return the cached response first, then run fetching in the background. This is useful when the response takes a long time, and the data is unnecessary in real-time.
 
 ## v0.3.6 2024/04/6
 
