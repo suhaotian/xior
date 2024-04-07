@@ -15,7 +15,7 @@ export type ErrorRetryOptions = {
    * default: true,
    * it's useful because we don't want retry when the error  because of token expired
    */
-  enableRetry?: boolean | ((config: XiorRequestConfig, error: XiorError) => boolean);
+  enableRetry?: boolean | ((config: XiorRequestConfig, error: XiorError) => boolean | undefined);
   onRetry?: (config: XiorRequestConfig, error: XiorError, count: number) => void;
 };
 
@@ -59,17 +59,21 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
         try {
           return await adapter(config);
         } catch (error) {
-          const isGet = config.method === 'GET' || config.isGet;
+          const isGet = config.method === 'GET' || Boolean(config.isGet);
           const t = typeof enableRetry;
-          const enabled =
-            t === 'undefined'
-              ? isGet
-              : t === 'function'
-                ? (enableRetry as (config: XiorRequestConfig, error: XiorError | Error) => boolean)(
-                    config,
-                    error as XiorError
-                  )
-                : Boolean(enableRetry);
+
+          let enabled: boolean | undefined = undefined;
+          if (t === 'function') {
+            enabled = (
+              enableRetry as (
+                config: XiorRequestConfig,
+                error: XiorError | Error
+              ) => boolean | undefined
+            )(config, error as XiorError);
+          }
+          if (enabled === undefined) {
+            enabled = t === 'undefined' ? isGet : Boolean(enableRetry);
+          }
 
           timeUp = retryTimes === count;
           if (timeUp || !enabled) {

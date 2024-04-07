@@ -35,14 +35,15 @@ export default function xiorDedupePlugin(options: XiorDedupeOptions = {}): XiorP
       } = config as XiorDedupeOptions & XiorRequestConfig;
 
       const isGet = config.method === 'GET' || config.isGet;
-
       const t = typeof enableDedupe;
-      const enabled =
-        t === 'undefined'
-          ? isGet
-          : t === 'function'
-            ? (enableDedupe as Function)(config)
-            : Boolean(enableDedupe);
+
+      let enabled: boolean | undefined = undefined;
+      if (t === 'function') {
+        enabled = (enableDedupe as (config: XiorRequestConfig) => boolean | undefined)(config);
+      }
+      if (enabled === undefined) {
+        enabled = t === 'undefined' ? isGet : Boolean(enableDedupe);
+      }
 
       if (!enabled) {
         return adapter(config);
