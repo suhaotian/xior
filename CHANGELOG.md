@@ -1,8 +1,35 @@
 # CHANGELOG 📝
 
+## v0.3.8 2024/04/8
+
+- feat(plugins): enhance plugins's `enable*` logic
+
+---
+
+Now you can return `undefined` in `enable*` method:
+
+```ts
+import xior from 'xior';
+import errorRetryPlugin from 'xior/plugins/error-retry';
+
+const http = xior.create();
+http.plugins.use(
+  errorRetryPlugin({
+    enableRetry(config, error) {
+      if (error.response?.status === 401) {
+        return false;
+      }
+      // no return here, and will reuse the default `enableRetry` logic
+    },
+  })
+);
+```
+
 ## v0.3.7 2024/04/7
 
-- feat(plugin): add `useCacheFirst` to error cache plugin, If `useCacheFirst: true` and there's a cache, it will return the cached response first, then run fetching in the background. This is useful when the response takes a long time, and the data is unnecessary in real-time.
+- feat(plugin): add `useCacheFirst` to error cache plugin
+
+> If `useCacheFirst: true` and there's a cache, it will return the cached response first, then run fetching in the background. This is useful when the response takes a long time, and the data is unnecessary in real-time.
 
 ## v0.3.6 2024/04/6
 

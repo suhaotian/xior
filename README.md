@@ -49,7 +49,7 @@ A lite request lib based on **fetch** with plugins support.
 - [Helper functions](#helper-functions)
 - [FAQ](#faq)
   - [1. Is **xior** 100% compatiable with `axios`?](#1-is-xior-100-compatiable-with-axios)
-  - [2. Can I use xior in projects like Bun, Expo, React Native, Next.js, Vue, or Nuxt.js?](#2-can-i-use-xior-in-projects-like-bun-expo-react-native-nextjs-vue-or-nuxtjs)
+  - [2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, or Nuxt.js?](#2-can-i-use-xior-in-projects-like-bun-expo-react-native-remixjs-nextjs-vue-or-nuxtjs)
   - [3. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?](#3-how-do-i-handle-responses-with-types-like-stream-document-arraybuffer-or-blob)
   - [5. How do I support older browsers?](#5-how-do-i-support-older-browsers)
   - [6. Why is xior named "xior"?](#6-why-is-xior-named-xior)
@@ -69,6 +69,7 @@ A lite request lib based on **fetch** with plugins support.
   - [Sending a request with credentials included](#sending-a-request-with-credentials-included)
   - [Uploading a file](#uploading-a-file)
   - [Processing a text file line by line](#processing-a-text-file-line-by-line)
+- [Star History](#star-history)
 - [Thanks](#thanks)
 
 ## Why Choose **xior**?
@@ -117,7 +118,7 @@ yarn add xior
 Use jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.7/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.8/dist/xior.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -132,7 +133,7 @@ Use jsDelivr CDN:
 Use unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.7/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.8/dist/xior.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -521,9 +522,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.7/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.8/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.7/plugins/error-retry.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.8/plugins/error-retry.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -536,10 +537,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.7/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.8/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.3.7/plugins/error-retry.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.8/plugins/error-retry.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -629,9 +630,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.7/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.8/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.7/plugins/throttle.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.8/plugins/throttle.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -644,10 +645,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.7/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.8/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.3.7/plugins/throttle.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.8/plugins/throttle.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -702,9 +703,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.7/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.8/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.7/plugins/dedupe.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.8/plugins/dedupe.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -717,10 +718,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.7/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.8/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.3.7/plugins/dedupe.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.8/plugins/dedupe.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -780,9 +781,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.7/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.8/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.7/plugins/error-cache.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.8/plugins/error-cache.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -795,10 +796,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.7/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.8/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.3.7/plugins/error-cache.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.8/plugins/error-cache.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -933,9 +934,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.7/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.8/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.7/plugins/progress.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.8/plugins/progress.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -948,10 +949,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.7/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.8/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.3.7/plugins/progress.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.8/plugins/progress.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1058,9 +1059,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.7/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.8/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.7/plugins/mock.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.3.8/plugins/mock.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1073,10 +1074,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.7/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.8/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.3.7/plugins/mock.umd.js"></script>
+<script src="https://unpkg.com/xior@0.3.8/plugins/mock.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1137,7 +1138,7 @@ import {
 
 **No**, but **xior** offers a similar API like axios: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`.
 
-### 2. Can I use xior in projects like Bun, Expo, React Native, Next.js, Vue, or Nuxt.js?
+### 2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, or Nuxt.js?
 
 **Yes**, **xior** works anywhere where the native `fetch` API is supported.
 Even if the environment doesn't support `fetch`, you can use a `fetch` polyfill like for older browsers.
@@ -1788,6 +1789,10 @@ async function run() {
 
 run();
 ```
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=suhaotian/xior&type=Date)](https://star-history.com/#suhaotian/xior&Date)
 
 ## Thanks
 
