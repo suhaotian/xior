@@ -1,5 +1,33 @@
 # CHANGELOG 📝
 
+## v0.3.9 2024/04/9
+
+- feat(core): add `try catch` to `await fetch(...)`
+
+Now you can capture the request error in response intecetptors, and the error will be `TypeError`:
+
+```ts
+import xior, { merge } from 'xior';
+
+const http = xior.create({
+  // ...options
+});
+
+http.inteceptors.response.use(
+  (result) => {
+    return result;
+  },
+  async (error) => {
+    if (error instanceof TypeError) {
+      console.log(`Request error:`, error);
+    }
+    if (error?.response?.status === 401) {
+      localStorage.removeItem('REQUEST_TOKEN');
+    }
+  }
+);
+```
+
 ## v0.3.8 2024/04/8
 
 - feat(plugins): enhance plugins's `enable*` logic
