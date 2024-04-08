@@ -26,7 +26,7 @@ export class xior {
   static create(options?: XiorRequestConfig): XiorInstance {
     return new xior(options);
   }
-  static VERSION = '0.3.8';
+  static VERSION = '0.3.9';
 
   config?: XiorRequestConfig;
   defaults: XiorInterceptorRequestConfig;
@@ -224,16 +224,26 @@ export class xior {
       finalURL = joinPath(requestConfig.baseURL, finalURL);
     }
 
-    const response = await fetch(finalURL, {
-      body: isGet ? undefined : _data,
-      ...rest,
-      signal,
-      method,
-      headers,
-    });
-
-    if (timer) clearTimeout(timer);
-    (signal as ClearableSignal)?.clear?.();
+    let response: Response;
+    try {
+      response = await fetch(finalURL, {
+        body: isGet ? undefined : _data,
+        ...rest,
+        signal,
+        method,
+        headers,
+      });
+    } catch (e) {
+      for (const item of this.RESI) {
+        if (item.onRejected) {
+          await item.onRejected(e as XiorError);
+        }
+      }
+      throw e;
+    } finally {
+      if (timer) clearTimeout(timer);
+      (signal as ClearableSignal)?.clear?.();
+    }
 
     const commonRes = {
       response,

@@ -5,7 +5,7 @@ export default function buildSortedURL(
 ) {
   let builtURL = data ? paramsSerializer(data) : '';
   if (builtURL) {
-    builtURL = url + (url.includes('?') ? '&' + builtURL : '?' + builtURL);
+    builtURL = url + (url.includes('?') ? '&' : '?') + builtURL;
   }
   const [urlPath, queryString] = builtURL.split('?');
 

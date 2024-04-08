@@ -4,6 +4,7 @@ import { before, after, describe, it } from 'node:test';
 // @ts-ignore
 import stringify from 'qs/lib/stringify';
 import { isXiorError, merge, xior } from 'xior';
+import errorRetryPlugin from 'xior/plugins/error-retry';
 
 import { readChunks, startServer } from './server';
 
@@ -476,6 +477,82 @@ describe('xior tests', () => {
 
       xiorInstance.plugins.clear();
       assert.strictEqual((xiorInstance as any).P.length, 0);
+    });
+  });
+
+  describe('custom plugins tests', () => {
+    const xiorInstance = xior.create({ baseURL });
+    it('xior plugins order should work', async () => {
+      assert.strictEqual((xiorInstance as any).P.length, 0);
+
+      const order: number[] = [];
+      xiorInstance.plugins.use((adapter) => {
+        return (config) => {
+          order.push(1);
+          return adapter(config);
+        };
+      });
+
+      xiorInstance.plugins.use((adapter) => {
+        return (config) => {
+          order.push(2);
+          return adapter(config);
+        };
+      });
+
+      xiorInstance.plugins.use((adapter) => {
+        return (config) => {
+          order.push(3);
+          return adapter(config);
+        };
+      });
+      assert.strictEqual((xiorInstance as any).P.length, 3);
+      await xiorInstance.get('/get');
+      assert.strictEqual(order.length, 3);
+      assert.strictEqual(order.join(','), [3, 2, 1].join(','));
+
+      let error = false;
+      xiorInstance.plugins.use((adapter, instance) => {
+        return async (config) => {
+          try {
+            const res = await adapter(config);
+            return res;
+          } catch (err) {
+            error = err instanceof TypeError;
+            throw err;
+          }
+        };
+      });
+
+      let catchFetchFailedError = false;
+      xiorInstance.interceptors.response.use(
+        (config) => {
+          return config;
+        },
+        function (error) {
+          catchFetchFailedError = error instanceof TypeError;
+        }
+      );
+      xiorInstance.plugins.use(
+        errorRetryPlugin({
+          retryInterval(count) {
+            return count * 200;
+          },
+          onRetry(config, error, count) {
+            console.log(`${config.method} ${config.url} retry ${count} times`);
+          },
+        })
+      );
+
+      try {
+        await xiorInstance.post('http://192.168.9.1:3000/hi', {}, { isGet: true });
+      } catch (e) {
+        //
+      } finally {
+        //
+      }
+      assert.strictEqual(error, true);
+      assert.strictEqual(catchFetchFailedError, true);
     });
   });
 });
