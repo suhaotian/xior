@@ -2,7 +2,7 @@
 
 ## v0.3.10 2024/04/11
 
-- feat(plugin): `error-retry` plugin's `retryInterval` add paramaters `config` and `error` as paramaters
+- feat(plugin): `error-retry` plugin's `retryInterval` add `config` and `error` to parameters
 
 ## v0.3.9 2024/04/9
 
