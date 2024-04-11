@@ -10,7 +10,9 @@ export type ErrorRetryOptions = {
    * Retry after milliseconds, default: 3000
    * after first time error retry, retry interval
    */
-  retryInterval?: number | ((count: number) => number);
+  retryInterval?:
+    | number
+    | ((count: number, config: XiorInterceptorRequestConfig, error: XiorError) => number);
   /**
    * default: true,
    * it's useful because we don't want retry when the error  because of token expired
@@ -81,7 +83,9 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
           }
 
           const delayTime =
-            typeof retryInterval === 'function' ? retryInterval(count) : retryInterval;
+            typeof retryInterval === 'function'
+              ? retryInterval(count, config as XiorInterceptorRequestConfig, error as XiorError)
+              : retryInterval;
           if (delayTime && delayTime > 0 && count > 0) {
             await delay(delayTime);
           }
