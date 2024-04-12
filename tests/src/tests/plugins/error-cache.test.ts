@@ -30,6 +30,7 @@ describe('xior error cache plugin tests', () => {
       },
     });
     assert.strictEqual((res as any).fromCache, true);
+    assert.strictEqual((res as any).cacheTime < Date.now(), true);
     assert.strictEqual(res.data.query.a, '1');
     assert.strictEqual(res.data.query.b, '2');
   });
@@ -40,6 +41,7 @@ describe('xior error cache plugin tests', () => {
       params: { a: 2, b: 4 },
     });
     assert.strictEqual((res as any).fromCache, undefined);
+    assert.strictEqual((res as any).cacheTime, undefined);
     assert.strictEqual(res.data.query.a, '2');
     assert.strictEqual(res.data.query.b, '4');
   });
