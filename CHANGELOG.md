@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.3.12 2024/04/13
+
+- fix(plugin): fix(plugin): fix error cache plugin `cacheTime` is undefined when `useCacheFirst: true`
+
 ## v0.3.11 2024/04/12
 
 - feat(plugin): error-cache plugin add cacheTime to the response
