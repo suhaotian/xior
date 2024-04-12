@@ -82,7 +82,7 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
       try {
         if (useCacheFirst) {
           const result = cache.get(index);
-          cache.set(index, { loading: true, res: result?.res });
+          cache.set(index, { loading: true, res: result?.res, cacheTime: result?.cacheTime });
           if (result?.res) {
             if (!result?.loading) {
               onCacheRequest?.(config);
@@ -93,7 +93,12 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 } catch (e) {
                   const result = cache.get(index);
-                  if (useCacheFirst) cache.set(index, { loading: false, res: result?.res });
+                  if (useCacheFirst)
+                    cache.set(index, {
+                      loading: false,
+                      res: result?.res,
+                      cacheTime: result?.cacheTime,
+                    });
                 }
               })();
             }
@@ -107,7 +112,8 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
         return res;
       } catch (e) {
         const result = cache.get(index);
-        if (useCacheFirst) cache.set(index, { loading: false, res: result?.res });
+        if (useCacheFirst)
+          cache.set(index, { loading: false, res: result?.res, cacheTime: result?.cacheTime });
         if (result?.res) {
           (result as any).res.fromCache = true;
           (result as any).res.error = e;

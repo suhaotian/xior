@@ -84,6 +84,7 @@ describe('xior error cache plugin tests', () => {
     } as any);
 
     assert.strictEqual((res as any).fromCache, true);
+    assert.strictEqual((res as any).cacheTime < Date.now(), true);
     assert.strictEqual(res.data.count, 3);
     assert.strictEqual(res.data.errorCount, 3);
   });
@@ -106,6 +107,7 @@ describe('xior error cache plugin tests', () => {
       params: { a: 2, b: 5 },
     });
     assert.strictEqual((res2 as any).fromCache, true);
+    assert.strictEqual(typeof (res as any).cacheTime === 'number', true);
     assert.strictEqual(res2.data.query.a, '2');
     assert.strictEqual(res2.data.query.b, '5');
   });
@@ -148,6 +150,7 @@ describe('xior error cache plugin tests', () => {
 
     result.forEach((res) => {
       assert.strictEqual((res as any).fromCache, true);
+      assert.strictEqual(typeof (res as any).cacheTime === 'number', true);
       assert.strictEqual(res.data.query.a, '1');
       console.log('res.headers', res.headers);
       assert.strictEqual(res.headers.get('X-Custom-Value'), '1');

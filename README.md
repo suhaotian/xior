@@ -485,7 +485,7 @@ http.plugins.use(
       console.log(`${config.method} ${config.url} retry ${count} times`);
     },
     // enableRetry(config, error) {
-    //   if (error.response?.status === 401) {
+    //   if ([401, 400].includes(error.response?.status)) { // no retry when status is 400 or 401
     //     return false;
     //   }
     //   // no return or return `undefined` here, will reuse the default `enableRetry` logic
