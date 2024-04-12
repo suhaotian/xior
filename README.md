@@ -603,6 +603,7 @@ http.plugins.use(
 http.get('/'); // make real http request
 http.get('/'); // response from cache
 http.get('/'); // response from cache
+http.get('/', { throttle: 2e3 }); // custom throttle to 2 seconds
 
 http.post('/'); // make real http request
 http.post('/'); // make real http request
@@ -753,11 +754,11 @@ function errorCachePlugin(options: {
 
 The `options` object:
 
-| Param         | Type                                                             | Default value                                         | Description                                                                                                                                                                                                                |
-| ------------- | ---------------------------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| enableCache   | boolean \| ((config: XiorRequestConfig) => boolean \| undefined) | (config) => config.method === 'GET' \|\| config.isGet | Default only enabled in `GET` request                                                                                                                                                                                      |
-| defaultCache  | CacheLike                                                        | lru(Inifinite, 0)                                     | will used for storing requests by default, except you define a custom Cache with your request config, use `tiny-lru` module                                                                                                |
-| useCacheFirst | boolean                                                          | false                                                 | If `useCacheFirst: true` and there's a cache, it will return the cached response first, then run fetching in the background. This is useful when the response takes a long time, and the data is unnecessary in real-time. |
+| Param         | Type                                                             | Default value                                         | Description                                                                                                                                                                                                                     |
+| ------------- | ---------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| enableCache   | boolean \| ((config: XiorRequestConfig) => boolean \| undefined) | (config) => config.method === 'GET' \|\| config.isGet | Default only enabled in `GET` request                                                                                                                                                                                           |
+| defaultCache  | CacheLike                                                        | lru(Inifinite, 0)                                     | will used for storing requests by default, except you define a custom Cache with your request config, use `tiny-lru` module                                                                                                     |
+| useCacheFirst | boolean                                                          | false                                                 | If `useCacheFirst: true` and there's a cache, it will return the cached response first, then run fetching task on the background. This is useful when the response takes a long time, and the data is unnecessary in real-time. |
 
 Basic usage:
 
@@ -773,6 +774,7 @@ const res = await http.get('/users'); // if request error, use the cache data
 if (res.fromCache) {
   // if `fromCache` is true, means data from cache!
   console.log('data from cache!');
+  console.log('data cache timestamp: ', res.cacheTime);
   // and get what's the error
   console.log('error', res.error);
 }
