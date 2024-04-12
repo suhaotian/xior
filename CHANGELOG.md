@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.3.11 2024/04/12
+
+- feat(plugin): error-cache plugin add cacheTime to the response
+
 ## v0.3.10 2024/04/11
 
 - feat(plugin): `error-retry` plugin's `retryInterval` add `config` and `error` to parameters
