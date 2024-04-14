@@ -59,9 +59,7 @@ export function isAbsoluteURL(url: string) {
  */
 export function joinPath(path1: string, path2: string) {
   if (!path2) return path1;
-  return (
-    (path1.endsWith('/') ? path1 : path1 + '/') + (path2.startsWith('/') ? path2.slice(1) : path2)
-  );
+  return (path1.endsWith('/') ? path1 : path1 + '/') + (path2[0] === '/' ? path2.slice(1) : path2);
 }
 
 export class XiorError extends Error {
