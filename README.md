@@ -269,7 +269,7 @@ http.post('/upload', formData, {
 
 **xior** supports interceptors similar to Axios, allowing you to modify requests and handle responses programmatically.
 
-Request inteceptors:
+Request interceptors:
 
 ```ts
 import xior, { merge } from 'xior';
@@ -278,7 +278,7 @@ const http = xior.create({
   // ...options
 });
 
-http.inteceptors.request.use((config) => {
+http.interceptors.request.use((config) => {
   const token = localStorage.getItem('REQUEST_TOKEN');
   if (!token) return config;
 
@@ -290,19 +290,19 @@ http.inteceptors.request.use((config) => {
 });
 
 // One more inteceptor for request
-http.inteceptors.request.use((config) => {
+http.interceptors.request.use((config) => {
   return config;
 });
 ```
 
-Response inteceptors:
+Response interceptors:
 
 ```ts
 import xior, { merge } from 'xior';
 
 const http = xior.create({});
 
-http.inteceptors.response.use(
+http.interceptors.response.use(
   (result) => {
     const { data, request: config, response: originalResponse } = result;
     return result;
@@ -414,7 +414,7 @@ instance.interceptors.response.use((res) => {
 
 ### Automatically refreshing access token
 
-We can use some plugins and inteceptors to do this, the flows:
+We can use some plugins and interceptors to do this, the flows:
 
 1. In response interceptors, check if status code is session expired, we get new access token from API
 2. Then throw error, the error will occur the error retry plugin to retry request with the new access token
