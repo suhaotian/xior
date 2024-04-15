@@ -502,7 +502,7 @@ http.plugins.use(throttlePlugin()); // Throttle same `GET` request in 1000ms
 // 2. If retry still error, return the cache data(if have) to prevent page crash or show error page;
 http.get('/api/get-data'); // these will retry if have error
 
-// 3. Dedupe the `GET` requests, only sent 1 real request
+// 3. Dedupe the same `GET` requests, this will only sent 1 real request
 await Promise.all([
   http.get('/api/get-data-2'),
   http.get('/api/get-data-2'),
