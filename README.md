@@ -425,12 +425,14 @@ Example code:
 import xior, { XiorError as AxiosError } from 'xior';
 import errorRetryPlugin from 'xior/plugins/error-retry';
 import dedupePlugin from 'xior/plugins/dedupe';
+import throttlePlugin from 'xior/plugins/throttle';
 
 const http = axios.create({
   baseURL: 'http://localhost:3000',
 });
 http.plugins.use(errorRetryPlugin());
 http.plugins.use(dedupePlugin()); // Prevent same `GET` request
+http.plugins.use(throttlePlugin()); // Throttle same `GET` request in 1000ms
 
 const TOKEN_EXPIRED_STATUS = 403;
 const TOKEN_STORAGE_KEY = 'AUTH_TOKEN';
@@ -451,7 +453,10 @@ http.interceptors.response.use(
   async (error: AxiosError) => {
     if (error.response?.status === TOKEN_EXPIRED_STATUS) {
       try {
-        const { data } = await http.post('/api/new_token');
+        const { data } = await http.post('/api/new_token', {
+          enableDedupe: true, // Use `enableDedupe: true` to enable dedupe this API request, if is GET method, can ignore
+          enableThrottle: true, // Use `enableThrottle: true` to enable throttle this API request, if is GET method, can ignore
+        });
         // Save token
         localStorage.setItem(TOKEN_STORAGE_KEY, data.token);
       } catch (e) {
