@@ -37,6 +37,7 @@ A lite request lib based on **fetch** with plugins support.
   - [Using interceptors](#using-interceptors)
   - [Timeout and Cancel request](#timeout-and-cancel-request)
   - [Encrypt and Decrypt Example](#encrypt-and-decrypt-example)
+  - [Automatically refreshing access token](#automatically-refreshing-access-token)
 - [Plugins](#plugins)
   - [Error retry plugin](#error-retry-plugin)
   - [Request throttle plugin](#request-throttle-plugin)
@@ -410,6 +411,58 @@ instance.interceptors.response.use((res) => {
 ```
 
 > Check test code in `tests/src/tests/encrypt-decrypt/`
+
+### Automatically refreshing access token
+
+We can use some plugins and inteceptors to do this, the flows:
+
+1. In response inteceptors, check if status code is session expired, we get new access token from API
+2. Then throw error, the error will occur the error retry plugin to retry request with the new access token
+
+Example code:
+
+```ts
+import xior, { XiorError as AxiosError } from 'xior';
+import errorRetryPlugin from 'xior/plugins/error-retry';
+import dedupePlugin from 'xior/plugins/dedupe';
+
+const http = axios.create({
+  baseURL: 'http://localhost:3000',
+});
+http.plugins.use(errorRetryPlugin());
+http.plugins.use(dedupePlugin()); // Prevent same `GET` request
+
+const TOKEN_EXPIRED_STATUS = 403;
+const TOKEN_STORAGE_KEY = 'AUTH_TOKEN';
+
+http.interceptors.request.use((config) => {
+  // Get token from localStorage
+  const token = localStorage.getItem(TOKEN_STORAGE_KEY);
+  if (token) {
+    config.headers['Authorization'] = 'Bearer ' + token;
+  }
+  return config;
+});
+
+http.interceptors.response.use(
+  async (response) => {
+    return response;
+  },
+  async (error: AxiosError) => {
+    if (error.response?.status === TOKEN_EXPIRED_STATUS) {
+      try {
+        const { data } = await http.post('/api/new_token');
+        // Save token
+        localStorage.setItem(TOKEN_STORAGE_KEY, data.token);
+      } catch (e) {
+        throw e;
+      }
+    }
+    // If error, will retry on GET method
+    return Promise.reject(error);
+  }
+);
+```
 
 ## Plugins
 
