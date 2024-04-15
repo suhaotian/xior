@@ -416,7 +416,7 @@ instance.interceptors.response.use((res) => {
 
 We can use some plugins and inteceptors to do this, the flows:
 
-1. In response inteceptors, check if status code is session expired, we get new access token from API
+1. In response interceptors, check if status code is session expired, we get new access token from API
 2. Then throw error, the error will occur the error retry plugin to retry request with the new access token
 
 Example code:
