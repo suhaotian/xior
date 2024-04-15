@@ -38,6 +38,7 @@ A lite request lib based on **fetch** with plugins support.
   - [Timeout and Cancel request](#timeout-and-cancel-request)
   - [Encrypt and Decrypt Example](#encrypt-and-decrypt-example)
   - [Automatically refreshing access token](#automatically-refreshing-access-token)
+  - [Tips: Make your SSR(Server-side Rendering) app more stable and faster](#tips-make-your-ssrserver-side-rendering-app-more-stable-and-faster)
 - [Plugins](#plugins)
   - [Error retry plugin](#error-retry-plugin)
   - [Request throttle plugin](#request-throttle-plugin)
@@ -467,6 +468,52 @@ http.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+```
+
+### Tips: Make your SSR(Server-side Rendering) app more stable and faster
+
+How we do that? Use the xior's plugins:
+
+1. If `GET` data error, at least have chance to retry;
+2. If retry still error, return the cache data(if have) to prevent page crash or show error page;
+3. Dedupe the `GET` requests
+4. Throttle the `GET` requests
+5. Return cache data first and run the fetching data task on the background
+
+Example code:
+
+```ts
+import xior, { XiorError as AxiosError } from 'xior';
+import errorRetryPlugin from 'xior/plugins/error-retry';
+import dedupePlugin from 'xior/plugins/dedupe';
+import throttlePlugin from 'xior/plugins/throttle';
+import errorCachePlugin from 'xior/plugins/error-cache';
+
+// Setup
+const http = axios.create({
+  baseURL: 'http://localhost:3000',
+});
+http.plugins.use(errorRetryPlugin());
+http.plugins.use(errorCachePlugin());
+http.plugins.use(dedupePlugin()); // Prevent same GET requests from occurring simultaneously.
+http.plugins.use(throttlePlugin()); // Throttle same `GET` request in 1000ms
+
+// 1. If `GET` data error, at least have chance to retry;
+// 2. If retry still error, return the cache data(if have) to prevent page crash or show error page;
+http.get('/api/get-data'); // these will retry if have error
+
+// 3. Dedupe the `GET` requests, only sent 1 real request
+await Promise.all([
+  http.get('/api/get-data-2'),
+  http.get('/api/get-data-2'),
+  http.get('/api/get-data-2'),
+]);
+
+// 4. Throttle the `GET` requests, we want throttle some larget data request in 10s, default is 1s
+http.get('/api/get-some-big-data', { threshold: 10e3 });
+
+// 5. Return cache data first and run the fetching data task on the background
+http.get('/api/get-some-big-data', { threshold: 10e3, useCacheFirst: true }); // If have cache data, return the cache data first, and run the real request in background
 ```
 
 ## Plugins
