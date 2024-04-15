@@ -414,9 +414,9 @@ instance.interceptors.response.use((res) => {
 
 ### Automatically refreshing access token
 
-We can use some plugins and interceptors to do this, the flows:
+We can use some plugins and interceptors to achieve this. The flow would be:
 
-1. In response interceptors, check if status code is session expired, we get new access token from API
+1. In response interceptors, check if status code is session expired, we set the new access token from API
 2. Then throw error, the error will occur the error retry plugin to retry request with the new access token
 
 Example code:
@@ -431,7 +431,7 @@ const http = axios.create({
   baseURL: 'http://localhost:3000',
 });
 http.plugins.use(errorRetryPlugin());
-http.plugins.use(dedupePlugin()); // Prevent same `GET` request
+http.plugins.use(dedupePlugin()); // Prevent same GET requests from occurring simultaneously.
 http.plugins.use(throttlePlugin()); // Throttle same `GET` request in 1000ms
 
 const TOKEN_EXPIRED_STATUS = 403;
