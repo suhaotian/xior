@@ -47,6 +47,7 @@ A lite request lib based on **fetch** with plugins support.
   - [Cache plugin](#cache-plugin)
   - [Upload and download progress plugin](#upload-and-download-progress-plugin)
   - [Mock plugin](#mock-plugin)
+  - [Auth refresh token plugin](#auth-refresh-token-plugin)
   - [Create your own custom plugin](#create-your-own-custom-plugin)
 - [Helper functions](#helper-functions)
 - [FAQ](#faq)
@@ -417,27 +418,27 @@ instance.interceptors.response.use((res) => {
 
 We can use some plugins and interceptors to achieve this. The flow would be:
 
-1. In response interceptors, check if status code is session expired, we set the new access token from API
-2. Then throw error, the error will occur the error retry plugin to retry request with the new access token
+- 1. In response interceptors, check if status code is session expired, we set the new access token from API
+- 2. Then throw error, the error will occur the error retry plugin to retry request with the new access token
 
 Example code:
 
 ```ts
-import xior, { XiorError as AxiosError } from 'xior';
+import axios, { XiorError as AxiosError } from 'xior';
 import errorRetryPlugin from 'xior/plugins/error-retry';
 import dedupePlugin from 'xior/plugins/dedupe';
 import throttlePlugin from 'xior/plugins/throttle';
+
+const TOKEN_EXPIRED_STATUS = 403;
 
 const http = axios.create({
   baseURL: 'http://localhost:3000',
 });
 http.plugins.use(errorRetryPlugin());
-http.plugins.use(dedupePlugin()); // Prevent same GET requests from occurring simultaneously.
+http.plugins.use(dedupePlugin()); // Prevent same `GET` requests from occurring simultaneously.
 http.plugins.use(throttlePlugin()); // Throttle same `GET` request in 1000ms
 
-const TOKEN_EXPIRED_STATUS = 403;
 const TOKEN_STORAGE_KEY = 'AUTH_TOKEN';
-
 http.interceptors.request.use((config) => {
   // Get token from localStorage
   const token = localStorage.getItem(TOKEN_STORAGE_KEY);
@@ -447,21 +448,37 @@ http.interceptors.request.use((config) => {
   return config;
 });
 
+let refreshingToken = false;
+const queue: (() => void)[] = [];
 http.interceptors.response.use(
   async (response) => {
     return response;
   },
   async (error: AxiosError) => {
-    if (error.response?.status === TOKEN_EXPIRED_STATUS) {
-      try {
-        const { data } = await http.post('/api/new_token', {
-          enableDedupe: true, // Use `enableDedupe: true` to enable dedupe this API request, if is GET method, can ignore
-          enableThrottle: true, // Use `enableThrottle: true` to enable throttle this API request, if is GET method, can ignore
+    const token = localStorage.getItem(TOKEN_STORAGE_KEY);
+    if (error.response?.status === TOKEN_EXPIRED_STATUS && token) {
+      if (refreshingToken) {
+        await new Promise<void>((resolve, reject) => {
+          queue.push(resolve);
         });
-        // Save token
-        localStorage.setItem(TOKEN_STORAGE_KEY, data.token);
-      } catch (e) {
-        throw e;
+      } else {
+        refreshingToken = true;
+        try {
+          const { data } = await http.post('/api/new_token', {
+            enableDedupe: true, // Use `enableDedupe: true` to enable dedupe request, if is GET method, can ignore
+            enableThrottle: true, // Use `enableThrottle: true` to enable throttle request, if is GET method, can ignore
+          });
+          // Save token
+          localStorage.setItem(TOKEN_STORAGE_KEY, data.token);
+        } catch (e) {
+          // refresh token wrong, remove the old token?
+          localStorage.removeItem(TOKEN_STORAGE_KEY);
+          throw e;
+        } finally {
+          refreshingToken = false;
+          queue.forEach((r) => r());
+        }
+        return Promise.reject(new Error('Token expired, refreshing token...'));
       }
     }
     // If error, will retry on GET method
@@ -469,6 +486,8 @@ http.interceptors.response.use(
   }
 );
 ```
+
+Or You can use the plugin from community: [Auth refresh token plugin](#auth-refresh-token-plugin).
 
 ### Tips: Make your SSR(Server-side Rendering) app more stable and faster
 
@@ -500,7 +519,10 @@ http.plugins.use(throttlePlugin()); // Throttle same `GET` request in 1000ms
 
 // 1. If `GET` data error, at least have chance to retry;
 // 2. If retry still error, return the cache data(if have) to prevent page crash or show error page;
-http.get('/api/get-data'); // these will retry if have error
+const res = await http.get('/api/get-data'); // these will retry if have error
+if (res.fromCache) {
+  console.log(`the data from cahce`, res.cacheTime);
+}
 
 // 3. Dedupe the same `GET` requests, this will only sent 1 real request
 await Promise.all([
@@ -509,11 +531,13 @@ await Promise.all([
   http.get('/api/get-data-2'),
 ]);
 
-// 4. Throttle the `GET` requests, we want throttle some larget data request in 10s, default is 1s
+// 4. Throttle the `GET` requests,
+//    we want throttle some larget data request in 10s, default is 1s
 http.get('/api/get-some-big-data', { threshold: 10e3 });
 
-// 5. Return cache data first and run the fetching data task on the background
-http.get('/api/get-some-big-data', { threshold: 10e3, useCacheFirst: true }); // If have cache data, return the cache data first, and run the real request in background
+// 5. If have cache data, return the cache data first,
+//    and run the real request in background
+http.get('/api/get-some-big-data', { threshold: 10e3, useCacheFirst: true });
 ```
 
 ## Plugins
@@ -527,6 +551,7 @@ http.get('/api/get-some-big-data', { threshold: 10e3, useCacheFirst: true }); //
 - [Cache plugin](#cache-plugin)
 - [Upload and download progress plugin](#upload-and-download-progress-plugin)
 - [Mock plugin](#Mock-plugin)
+- [Auth token refreshing plugin]
 
 Usage:
 
@@ -1199,6 +1224,45 @@ Using unpkg CDN:
   const mock = new xiorMock(xior);
 </script>
 ```
+
+### Auth refresh token plugin
+
+We will use `xior-auth-refresh` plugin from the community: https://github.com/Audiu/xior-auth-refresh
+
+**Install:**
+
+```sh
+npm install xior-auth-refresh --save
+# or
+yarn add xior-auth-refresh
+# or
+pnpm add xior-auth-refresh
+```
+
+**Usage:**
+
+```ts
+import xior from 'xior';
+import createAuthRefreshInterceptor from 'xior-auth-refresh';
+
+// Function that will be called to refresh authorization
+const refreshAuthLogic = (failedRequest) =>
+  xior.post('https://www.example.com/auth/token/refresh').then((tokenRefreshResponse) => {
+    localStorage.setItem('token', tokenRefreshResponse.data.token);
+    failedRequest.response.config.headers['Authorization'] =
+      'Bearer ' + tokenRefreshResponse.data.token;
+    return Promise.resolve();
+  });
+
+// Instantiate the interceptor
+createAuthRefreshInterceptor(xior, refreshAuthLogic);
+
+// Make a call. If it returns a 401 error, the refreshAuthLogic will be run,
+// and the request retried with the new token
+xior.get('https://www.example.com/restricted/area').then(/* ... */).catch(/* ... */);
+```
+
+More: https://github.com/Audiu/xior-auth-refresh
 
 ### Create your own custom plugin
 
