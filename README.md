@@ -63,7 +63,7 @@ A lite request lib based on **fetch** with plugins support.
   - [`axios(requestObj)`: axios({ method: 'get', params: { a: 1 } })](#axiosrequestobj-axios-method-get-params--a-1--)
   - [Creating an instance](#creating-an-instance)
   - [Get response headers](#get-response-headers-1)
-  - [Download file with `responseType: 'stream'` (In Node.JS)](#download-file-with-responsetype-stream-in-nodejs)
+  - [Download file with `responseType: 'stream' | 'blob'`](#download-file-with-responsetype-stream--blob)
   - [Use stream](#use-stream)
 - [Migrate from `fetch` to **xior**](#migrate-from-fetch-to-xior)
   - [GET](#get-1)
@@ -1579,20 +1579,42 @@ const { data, headers } = await xiorInstance.get('/');
 console.log(headers.get('X-Header-Name'));
 ```
 
-### Download file with `responseType: 'stream'` (In Node.JS)
+### Download file with `responseType: 'stream' | 'blob'`
 
 axios:
 
 ```ts
 import axios from 'axios';
+import fs from 'fs';
 
-// GET request for remote image in node.js
+// GET request for remote image in Node.js
 axios({
   method: 'get',
   url: 'https://bit.ly/2mTM3nY',
   responseType: 'stream',
 }).then(function (response) {
   response.data.pipe(fs.createWriteStream('ada_lovelace.jpg'));
+});
+
+// For browser
+axios({
+  method: 'get',
+  url: 'https://bit.ly/2mTM3nY',
+  responseType: 'blob',
+}).then(function (response) {
+  // create file link in browser's memory
+  const href = URL.createObjectURL(response.data);
+
+  // create "a" HTML element with href to file & click
+  const link = document.createElement('a');
+  link.href = href;
+  link.setAttribute('download', 'file.pdf'); //or any other extension
+  document.body.appendChild(link);
+  link.click();
+
+  // clean up "a" element & remove ObjectURL
+  document.body.removeChild(link);
+  URL.revokeObjectURL(href);
 });
 ```
 
