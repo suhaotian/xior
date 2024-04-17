@@ -418,8 +418,10 @@ instance.interceptors.response.use((res) => {
 
 We can use some plugins and interceptors to achieve this. The flow would be:
 
-- 1. In response interceptors, check if status code is session expired, we set the new access token from API
-- 2. Then throw error, the error will occur the error retry plugin to retry request with the new access token
+1. In response interceptors, check if status code is session expired, we set the new access token from API
+2. Then throw error, the error will occur the error retry plugin to retry request with the new access token
+
+> The error retry plugin will not retry with `POST` method request in default.
 
 Example code:
 
@@ -478,7 +480,7 @@ http.interceptors.response.use(
           refreshingToken = false;
           queue.forEach((r) => r());
         }
-        return Promise.reject(new Error('Token expired, refreshing token...'));
+        return Promise.reject(new Error('Token expired, new token refreshed, try again!'));
       }
     }
     // If error, will retry on GET method
