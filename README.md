@@ -431,8 +431,6 @@ import errorRetryPlugin from 'xior/plugins/error-retry';
 import dedupePlugin from 'xior/plugins/dedupe';
 import throttlePlugin from 'xior/plugins/throttle';
 
-const TOKEN_EXPIRED_STATUS = 403;
-
 const http = axios.create({
   baseURL: 'http://localhost:3000',
 });
@@ -440,6 +438,7 @@ http.plugins.use(errorRetryPlugin());
 http.plugins.use(dedupePlugin()); // Prevent same `GET` requests from occurring simultaneously.
 http.plugins.use(throttlePlugin()); // Throttle same `GET` request in 1000ms
 
+const TOKEN_EXPIRED_STATUS = 403;
 const TOKEN_STORAGE_KEY = 'AUTH_TOKEN';
 http.interceptors.request.use((config) => {
   // Get token from localStorage
@@ -1324,7 +1323,20 @@ Even if the environment doesn't support `fetch`, you can use a `fetch` polyfill 
 
 ### 3. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?
 
-To handle such responses, use the `responseType: 'stream'` option in your request:
+> Currently in `xior`, when `responseType` is set to `'stream', 'document', 'arraybuffer', 'blob', or 'original'`, Xior will return the original fetch response.
+
+```ts
+fetch('https://exmaple.com/some/api').then((response) => {
+  console.log(response);
+});
+
+// same with
+xior.get('https://exmaple.com/some/api', { responseType: 'blob' }).then((res) => {
+  console.log(res.response); // res.data will be undefined
+});
+```
+
+And to handle a stream response, use the `responseType: 'stream'` option in your request, then do something with the `response` as `fetch` does:
 
 ```ts
 import xior from 'xior';
@@ -1587,6 +1599,7 @@ axios({
 xior:
 
 ```ts
+// Node.js
 import xior from 'xior';
 const axios = xior.create();
 
@@ -1597,6 +1610,25 @@ axios
   .then(async function ({ response, config }) {
     const buffer = Buffer.from(await response.arrayBuffer());
     return writeFile('ada_lovelace.jpg', buffer);
+  });
+
+// For browser
+xior
+  .get('https://d2l.ai/d2l-en.pdf', {
+    headers: {
+      Accept: 'application/pdf',
+    },
+    responseType: 'blob',
+  })
+  .then((res) => res.response.blob())
+  .then((blob) => {
+    var url = window.URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'filename.pdf';
+    document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+    a.click();
+    a.remove(); //afterwards we remove the element again
   });
 ```
 
