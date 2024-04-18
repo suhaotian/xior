@@ -7,7 +7,7 @@
 
 ## Intro
 
-A lite request lib based on **fetch** with plugins support.
+A lite request lib based on **fetch** with plugin support and similar API to axios.
 
 **Features:**
 
