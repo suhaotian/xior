@@ -1,18 +1,9 @@
+import { lru } from 'tiny-lru';
 // @ts-ignore
 import { XiorError, joinPath, isAbsoluteURL, buildSortedURL } from 'xior/utils';
 
 import { ICacheLike } from './utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../types';
-
-const _cache: Record<string, { loading?: boolean; res?: XiorResponse; cacheTime?: number }> = {};
-const cacheObj = {
-  get(key: string) {
-    return _cache[key];
-  },
-  set(key: string, result: { loading?: boolean; res?: XiorResponse; cacheTime?: number }) {
-    _cache[key] = result;
-  },
-};
 
 export type XiorErrorCacheOptions = {
   /**
@@ -24,11 +15,13 @@ export type XiorErrorCacheOptions = {
   useCacheFirst?: boolean;
   /** for logging purpose @error-cache-plugin */
   onCacheRequest?: (config?: XiorRequestConfig) => void;
+  /** max cache numbers in LRU, default is 100 */
+  cacheItems?: number;
 };
 
 /** @ts-ignore */
 declare module 'xior' {
-  interface XiorRequestConfig extends XiorErrorCacheOptions {
+  interface XiorRequestConfig extends Omit<XiorErrorCacheOptions, 'cacheItems'> {
     //
   }
   interface XiorResponse {
@@ -41,7 +34,11 @@ declare module 'xior' {
 export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}): XiorPlugin {
   const {
     enableCache: _enableCache,
-    defaultCache: _defaultCache = cacheObj,
+    defaultCache: _defaultCache = lru<{
+      loading?: boolean;
+      res?: XiorResponse;
+      cacheTime?: number;
+    }>(options.cacheItems || 100),
     useCacheFirst: _inBg,
     onCacheRequest: _cacheRequest,
   } = options;

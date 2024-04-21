@@ -19,7 +19,9 @@ after(async () => {
 
 describe('xior error cache plugin tests', () => {
   const instance = xior.create({ baseURL });
-  const errorCachePlugin = xiorErrorCachePlugin({});
+  const errorCachePlugin = xiorErrorCachePlugin({
+    cacheItems: 100,
+  });
   instance.plugins.use(errorCachePlugin);
   it('should use cache if request error', async () => {
     await instance.get('/get', { params: { a: 1, b: 2 } });

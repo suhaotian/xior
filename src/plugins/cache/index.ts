@@ -13,22 +13,32 @@ export type XiorCacheOptions = {
    */
   enableCache?: boolean | ((config?: XiorRequestConfig) => boolean);
   defaultCache?: ICacheLike<XiorPromise>;
+  /** max cache number in LRU, default is 100 */
+  cacheItems?: number;
+  /** cache time in ms, default is 5 minutes */
+  cacheTime?: number;
 };
 
 /** @ts-ignore */
 declare module 'xior' {
-  interface XiorRequestConfig extends XiorCacheOptions {
+  interface XiorRequestConfig extends Omit<XiorCacheOptions, 'cacheItems' | 'cacheTime'> {
     /** forceUpdate, default: false */
     forceUpdate?: boolean;
   }
   interface XiorResponse {
     fromCache?: boolean;
+    cacheTime?: number;
   }
 }
 
 export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlugin {
-  const { enableCache: _enableCache, defaultCache: _defaultCache = lru(100, 1000 * 60 * 5) } =
-    options;
+  const {
+    enableCache: _enableCache,
+    defaultCache: _defaultCache = lru(
+      options.cacheItems || 100,
+      options.cacheTime || 1000 * 60 * 5
+    ),
+  } = options;
 
   return function (adapter) {
     return async (config) => {
@@ -85,6 +95,7 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
 
         return responsePromise.then((res) => {
           (res as any).fromCache = true;
+          (res as any).cacheTime = Date.now();
           return res;
         });
       }
