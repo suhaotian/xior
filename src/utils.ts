@@ -69,7 +69,7 @@ export class XiorError extends Error {
 
   constructor(message: string, request?: XiorRequestConfig, response?: XiorResponse) {
     super(message);
-    this.name = 'XiorError';
+    this.name = 'XError';
     this.request = request;
     this.config = request;
     this.response = response;
@@ -78,7 +78,7 @@ export class XiorError extends Error {
 export class XiorTimeoutError extends XiorError {
   constructor(message: string, request?: XiorRequestConfig, response?: XiorResponse) {
     super(message);
-    this.name = 'XiorTimeoutError';
+    this.name = 'XTimeoutError';
     this.request = request;
     this.config = request;
     this.response = response;
@@ -86,5 +86,5 @@ export class XiorTimeoutError extends XiorError {
 }
 
 export function isXiorError(error: any) {
-  return error.name === 'XiorError' || error.name === 'XiorTimeoutError';
+  return error.name === 'XError' || error.name === 'XTimeoutError';
 }

@@ -22,6 +22,27 @@ const supportAbortController = typeof AbortController !== 'undefined';
 
 export type XiorInstance = xior;
 
+async function getData(
+  response: Response,
+  responseType?: 'json' | 'text' | 'stream' | 'document' | 'arraybuffer' | 'blob' | 'original'
+) {
+  let data: any;
+  if (!responseType || !response.ok || ['text', 'json'].includes(responseType)) {
+    data = await response.text();
+    if (data && responseType !== 'text') {
+      try {
+        data = JSON.parse(data);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (e) {}
+    }
+  } else if (responseType === 'blob') {
+    data = await response.blob();
+  } else if (responseType === 'arraybuffer') {
+    data = await response.arrayBuffer();
+  }
+  return data;
+}
+
 export class xior {
   static create(options?: XiorRequestConfig): XiorInstance {
     return new xior(options);
@@ -252,15 +273,10 @@ export class xior {
       statusText: response.statusText,
       headers: response.headers,
     };
+    const { responseType } = requestConfig;
     if (!response.ok) {
-      let data: any = undefined;
-      try {
-        data = await response.text();
-        if (data) {
-          data = JSON.parse(data);
-        }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (e) {}
+      const data = await getData(response, responseType);
+
       const error = new XiorError(
         !response.status ? `Network error` : `Request failed with status code ${response.status}`,
         requestConfig,
@@ -286,37 +302,19 @@ export class xior {
       };
     }
 
-    const { responseType } = requestConfig;
-    if (!responseType || ['json', 'text'].includes(responseType)) {
-      let data: any;
-      try {
-        data = (await response.text()) as T;
-        if (data && responseType !== 'text') {
-          data = JSON.parse(data as string);
-        }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (e) {
-        //
-      }
-      let responseObj = {
-        data: data as T,
-        config: requestConfig as XiorInterceptorRequestConfig,
-        request: requestConfig as XiorInterceptorRequestConfig,
-        response,
-      };
+    const result = await getData(response, responseType);
+    let responseObj = {
+      data: result as T,
+      config: requestConfig as XiorInterceptorRequestConfig,
+      request: requestConfig as XiorInterceptorRequestConfig,
+      response,
+    };
 
-      for (const item of this.RESI) {
-        responseObj = await item.fn(responseObj);
-      }
-      return {
-        data: responseObj.data,
-        request: requestConfig,
-        ...commonRes,
-      };
+    for (const item of this.RESI) {
+      responseObj = await item.fn(responseObj);
     }
-
     return {
-      data: undefined as T,
+      data: responseObj.data,
       request: requestConfig,
       ...commonRes,
     };
