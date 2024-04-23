@@ -294,55 +294,6 @@ describe('interceptors', function () {
     assert.equal(response?.data, 'get13');
   });
 
-  // it('should remove async interceptor before making request and execute synchronously', function (done) {
-  //   let asyncFlag = false;
-  //   const asyncIntercept = axios.interceptors.request.use(
-  //     function (config) {
-  //       config.headers.async = 'async it!';
-  //       return config;
-  //     },
-  //     null,
-  //     { synchronous: false }
-  //   );
-
-  //   const syncIntercept = axios.interceptors.request.use(
-  //     function (config) {
-  //       config.headers.sync = 'hello world';
-  //       expect(asyncFlag).toBe(false);
-  //       return config;
-  //     },
-  //     null,
-  //     { synchronous: true }
-  //   );
-
-  //   axios.interceptors.request.eject(asyncIntercept);
-
-  //   axios('/foo');
-  //   asyncFlag = true;
-
-  //   getAjaxRequest().then(function (request) {
-  //     expect(request.requestHeaders.async).toBeUndefined();
-  //     expect(request.requestHeaders.sync).toBe('hello world');
-  //     done();
-  //   });
-  // });
-
-  // it('should execute interceptors before transformers', async function () {
-  //   axios.interceptors.request.use(function (config) {
-  //     config.data.baz = 'qux';
-  //     return config;
-  //   });
-
-  //   const {config: request} = await  axios.post('/post', {
-  //     foo: 'bar',
-  //   });
-
-  //   getAjaxRequest().then(function (request) {
-  //     expect(request.params).toEqual('{"foo":"bar","baz":"qux"}');
-  //     ();
-  //   });
-  // });
-
   it('should modify base URL in request interceptor', async function () {
     const instance = xior.create({
       baseURL: 'http://test.com/',
