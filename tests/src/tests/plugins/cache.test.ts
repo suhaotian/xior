@@ -46,6 +46,7 @@ describe('xior cache plugin tests', () => {
   it('cache size should be 1 get from cache when request same data', async () => {
     const result: string[] = [];
     const fromCache: boolean[] = [];
+    const cacheTimes: boolean[] = [];
     await Promise.all(
       Array(5)
         .fill(5)
@@ -57,12 +58,14 @@ describe('xior cache plugin tests', () => {
           });
           result.push(res.data.value);
           fromCache.push((res as any).fromCache);
+          cacheTimes.push(Boolean((res as any).cacheTime));
           return res.data;
         })
     );
     assert.strictEqual(cache.size, 1);
     assert.strictEqual(result.join(','), '1,1,1,1,1');
     assert.strictEqual(fromCache.join(','), 'true,true,true,true,true');
+    assert.strictEqual(cacheTimes.join(','), 'true,true,true,true,true');
   });
 
   it('delay 5 seconds, should return latest new data', async () => {

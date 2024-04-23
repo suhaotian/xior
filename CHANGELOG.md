@@ -1,5 +1,10 @@
 # CHANGELOG 📝
 
+## v0.3.13 2024/04/21
+
+- Feat(plugin): add custom paramaters of LRU in plugins: cache, error-cache, throttle
+- Feat(plugin): add `cacheTime` to cache plugin
+
 ## v0.3.12 2024/04/13
 
 - fix(plugin): fix error cache plugin `cacheTime` is undefined when `useCacheFirst: true`

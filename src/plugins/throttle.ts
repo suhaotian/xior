@@ -21,11 +21,13 @@ export type XiorThrottleOptions = {
   enableThrottle?: boolean | ((config?: XiorRequestConfig) => boolean);
   throttleCache?: ICacheLike<RecordedCache>;
   onThrottle?: (config: XiorRequestConfig) => void;
+  /** max throttle numbers in LRU, default is 100 */
+  throttleItems?: number;
 };
 
 /** @ts-ignore */
 declare module 'xior' {
-  interface XiorRequestConfig extends Omit<XiorThrottleOptions, 'throttleCache'> {
+  interface XiorRequestConfig extends Omit<XiorThrottleOptions, 'throttleCache' | 'throttleItems'> {
     //
   }
 }
@@ -34,7 +36,7 @@ export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): X
   const {
     enableThrottle: _enableThrottle,
     threshold: _threshold = 1000,
-    throttleCache = lru<RecordedCache>(10),
+    throttleCache = lru<RecordedCache>(options.throttleItems || 100),
     onThrottle: _onThrottle,
   } = options;
 
