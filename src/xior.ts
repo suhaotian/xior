@@ -12,14 +12,16 @@ import {
 
 import defaultRequestInterceptor from './interceptors';
 import type {
+  XiorInterceptorOptions,
   XiorInterceptorRequestConfig,
   XiorPlugin,
   XiorRequestConfig,
   XiorResponse,
+  XiorResponseInterceptorConfig,
 } from './types';
 
 const supportAbortController = typeof AbortController !== 'undefined';
-
+const undefinedValue = undefined;
 export type XiorInstance = xior;
 
 async function getData(
@@ -66,25 +68,10 @@ export class xior {
   ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig)[] = [];
   /** response interceptors */
   RESI: {
-    fn: (config: {
-      data: any;
-      config: XiorInterceptorRequestConfig;
-      request: XiorInterceptorRequestConfig;
-      response: Response;
-    }) =>
-      | Promise<{
-          data: any;
-          config: XiorInterceptorRequestConfig;
-          request: XiorInterceptorRequestConfig;
-          response: Response;
-        }>
-      | {
-          data: any;
-          config: XiorInterceptorRequestConfig;
-          request: XiorInterceptorRequestConfig;
-          response: Response;
-        };
-    onRejected?: (error: XiorError) => any;
+    fn: (
+      config: XiorResponseInterceptorConfig
+    ) => Promise<XiorResponseInterceptorConfig> | XiorResponseInterceptorConfig;
+    onRejected?: null | ((error: XiorError) => any);
   }[] = [];
 
   get interceptors() {
@@ -95,7 +82,8 @@ export class xior {
             config: XiorInterceptorRequestConfig
           ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig,
           /** @deprecated useless here */
-          onRejected?: (error: any) => any
+          onRejected?: null | ((error: any) => any),
+          options?: XiorInterceptorOptions
         ) => {
           this.REQI.push(fn);
           return fn;
@@ -113,48 +101,18 @@ export class xior {
       },
       response: {
         use: (
-          fn: (config: {
-            data: any;
-            config: XiorInterceptorRequestConfig;
-            request: XiorInterceptorRequestConfig;
-            response: Response;
-          }) =>
-            | Promise<{
-                data: any;
-                config: XiorInterceptorRequestConfig;
-                request: XiorInterceptorRequestConfig;
-                response: Response;
-              }>
-            | {
-                data: any;
-                config: XiorInterceptorRequestConfig;
-                request: XiorInterceptorRequestConfig;
-                response: Response;
-              },
-          onRejected?: (error: XiorError) => any
+          fn: (
+            config: XiorResponseInterceptorConfig
+          ) => Promise<XiorResponseInterceptorConfig> | XiorResponseInterceptorConfig,
+          onRejected?: null | ((error: XiorError) => any)
         ) => {
           this.RESI.push({ fn, onRejected });
           return fn;
         },
         eject: (
-          fn: (config: {
-            data: any;
-            config: XiorInterceptorRequestConfig;
-            request: XiorInterceptorRequestConfig;
-            response: Response;
-          }) =>
-            | Promise<{
-                data: any;
-                config: XiorInterceptorRequestConfig;
-                request: XiorInterceptorRequestConfig;
-                response: Response;
-              }>
-            | {
-                data: any;
-                config: XiorInterceptorRequestConfig;
-                request: XiorInterceptorRequestConfig;
-                response: Response;
-              }
+          fn: (
+            config: XiorResponseInterceptorConfig
+          ) => Promise<XiorResponseInterceptorConfig> | XiorResponseInterceptorConfig
         ) => {
           this.RESI = this.RESI.filter((item) => item.fn !== fn);
         },
@@ -222,7 +180,7 @@ export class xior {
     /** timeout */
     let signal: AbortSignal;
     const signals: AbortSignal[] = [];
-    let timer: ReturnType<typeof setTimeout> | undefined = undefined;
+    let timer: ReturnType<typeof setTimeout> | undefined = undefinedValue;
     if (timeout && supportAbortController) {
       const controller = new AbortController();
       timer = setTimeout(() => {
@@ -245,21 +203,29 @@ export class xior {
       finalURL = joinPath(requestConfig.baseURL, finalURL);
     }
 
+    const handleResponseRejects = async (error: XiorError) => {
+      let hasReject = false;
+      for (const item of this.RESI) {
+        if (item.onRejected) {
+          hasReject = true;
+          const res = await item.onRejected(error);
+          if (res?.response?.ok) return res;
+        }
+      }
+      if (!hasReject) throw error;
+    };
+
     let response: Response;
     try {
       response = await fetch(finalURL, {
-        body: isGet ? undefined : _data,
+        body: isGet ? undefinedValue : _data,
         ...rest,
         signal,
         method,
         headers,
       });
     } catch (e) {
-      for (const item of this.RESI) {
-        if (item.onRejected) {
-          await item.onRejected(e as XiorError);
-        }
-      }
+      await handleResponseRejects(e as XiorError);
       throw e;
     } finally {
       if (timer) clearTimeout(timer);
@@ -285,39 +251,45 @@ export class xior {
           ...commonRes,
         }
       );
-      for (const item of this.RESI) {
-        if (item.onRejected) {
-          const res = await item.onRejected(error);
-          if (res?.response?.ok) return res;
-        }
-      }
+      await handleResponseRejects(error);
       throw error;
     }
 
     if (method === 'HEAD') {
       return {
-        data: undefined as T,
+        data: undefinedValue as T,
         request: requestConfig,
         ...commonRes,
       };
     }
 
     const result = await getData(response, responseType);
-    let responseObj = {
-      data: result as T,
-      config: requestConfig as XiorInterceptorRequestConfig,
-      request: requestConfig as XiorInterceptorRequestConfig,
-      response,
-    };
 
-    for (const item of this.RESI) {
-      responseObj = await item.fn(responseObj);
+    try {
+      let lastRes = {
+        ...commonRes,
+        data: result as T,
+        config: requestConfig as XiorInterceptorRequestConfig,
+        request: requestConfig as XiorInterceptorRequestConfig,
+        response,
+      };
+      for (const item of this.RESI) {
+        // eslint-disable-next-line no-inner-declarations
+        async function run() {
+          return item.fn(lastRes);
+        }
+        const res = await run().catch(async (error) => {
+          await handleResponseRejects(error as XiorError);
+        });
+        if (res) {
+          lastRes = res;
+        }
+      }
+      return lastRes;
+    } catch (error) {
+      await handleResponseRejects(error as XiorError);
+      throw error;
     }
-    return {
-      data: responseObj.data,
-      request: requestConfig,
-      ...commonRes,
-    };
   }
 
   /** create get method */

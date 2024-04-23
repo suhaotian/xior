@@ -46,3 +46,20 @@ export type XiorPlugin = (
   adapter: (request: XiorRequestConfig) => Promise<XiorResponse>,
   instance?: XiorInstance
 ) => (request: XiorRequestConfig) => Promise<XiorResponse<any>>;
+
+export interface XiorInterceptorOptions {
+  /** @deprecated useless here */
+  synchronous?: boolean;
+  /** @deprecated useless here */
+  runWhen?: (config: XiorInterceptorRequestConfig) => boolean;
+}
+
+export interface XiorResponseInterceptorConfig<T = any> {
+  data: T;
+  config: XiorInterceptorRequestConfig<T>;
+  request: XiorInterceptorRequestConfig<T>;
+  response: Response;
+  status: number;
+  statusText: string;
+  headers: Headers;
+}
