@@ -498,7 +498,7 @@ describe('axios compatible tests', () => {
       //
     });
     assert.strictEqual(xiorHasError, true);
-    assert.strictEqual(xiorError.request?.url, '/400');
-    assert.strictEqual(xiorError.response?.config.url, '/400');
+    assert.strictEqual(xiorError.request?.url, baseURL + '/400');
+    assert.strictEqual(xiorError.response?.config.url, baseURL + '/400');
   });
 });

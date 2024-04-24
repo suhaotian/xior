@@ -49,7 +49,7 @@ export class xior {
   static create(options?: XiorRequestConfig): XiorInstance {
     return new xior(options);
   }
-  static VERSION = '0.3.13';
+  static VERSION = '0.4.0';
 
   config?: XiorRequestConfig;
   defaults: XiorInterceptorRequestConfig;
@@ -71,7 +71,8 @@ export class xior {
     fn: (
       config: XiorResponseInterceptorConfig
     ) => Promise<XiorResponseInterceptorConfig> | XiorResponseInterceptorConfig;
-    onRejected?: null | ((error: XiorError | Error | TypeError) => any);
+    /** error: XiorError | Error | TypeError */
+    onRejected?: null | ((error: XiorError) => any);
   }[] = [];
 
   get interceptors() {
@@ -104,7 +105,8 @@ export class xior {
           fn: (
             config: XiorResponseInterceptorConfig
           ) => Promise<XiorResponseInterceptorConfig> | XiorResponseInterceptorConfig,
-          onRejected?: null | ((error: XiorError | Error | TypeError) => any)
+          /** error: XiorError | Error | TypeError */
+          onRejected?: null | ((error: XiorError) => any)
         ) => {
           this.RESI.push({ fn, onRejected });
           return fn;

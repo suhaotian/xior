@@ -1,5 +1,14 @@
 # CHANGELOG 📝
 
+## v0.4.0 2024/04/24
+
+**Breaking Change**
+
+This version is about Axios compatible issue in some cases. Fixing https://github.com/suhaotian/xior/issues/12 and https://github.com/suhaotian/xior/issues/15.
+
+- Feat(core): when `responseType: 'blob' | 'arrarybuffer'` then the `resposne.data` is `Blob` and `ArrayBuffer`, no need `response.blob()` or `response.arraybuffer()` anymore.
+- Fix(interceptors): make sure the multiple response interceptors chain behaviour same as axios's interceptors.
+
 ## v0.3.13 2024/04/21
 
 - Feat(plugin): add custom paramaters of LRU in plugins: cache, error-cache, throttle
