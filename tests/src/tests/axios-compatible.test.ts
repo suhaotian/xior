@@ -320,6 +320,32 @@ describe('axios compatible tests', () => {
 
     assert.strictEqual(1, 1);
   });
+
+  it('should work with request error and should be TypeError', async () => {
+    const axiosInstance = axios.create({
+      baseURL,
+    });
+    const xiorInstance = xior.create({
+      baseURL,
+    });
+    let axiosError: any;
+    let xiorError: any;
+    try {
+      await axiosInstance.get('http://localhost:9001');
+    } catch (e) {
+      axiosError = e;
+    }
+
+    try {
+      await xiorInstance.get('http://localhost:9001');
+    } catch (e) {
+      xiorError = e;
+    }
+    assert.equal(xiorError instanceof TypeError, true);
+    // Axios request error is Not TypeError
+    assert.equal(axiosError instanceof TypeError, false);
+  });
+
   it('should work with axios.interceptors.response.use', async () => {
     const axiosInstance = axios.create({
       baseURL,
@@ -347,6 +373,59 @@ describe('axios compatible tests', () => {
     });
     assert.equal(config.url, xiorConfig.url);
     assert.equal(Object.keys(data).sort().join(','), Object.keys(xiorData).sort().join(','));
+  });
+
+  it('should work same when axios.interceptors.response.use empty reject', async () => {
+    const axiosInstance = axios.create({
+      baseURL,
+    });
+    const xiorInstance = xior.create({
+      baseURL,
+    });
+    axiosInstance.interceptors.response.use(
+      (config) => {
+        return config;
+      },
+      () => {
+        return 1;
+      }
+    );
+    axiosInstance.interceptors.response.use(
+      (config) => {
+        return config;
+      },
+      (e) => {
+        console.log('eeee', e);
+        return e + '1';
+      }
+    );
+    xiorInstance.interceptors.response.use(
+      (config) => config,
+      () => {
+        return 1;
+      }
+    );
+    xiorInstance.interceptors.response.use(
+      (config) => {
+        return config;
+      },
+      (e) => {
+        return e + '1';
+      }
+    );
+    let fired = false;
+    const axiosRes = await axiosInstance.get('/404').catch(() => {
+      fired = true;
+    });
+    assert.equal(fired, false);
+    let fired2 = false;
+    const xiorRes = await xiorInstance.get('/404?abc=test').catch(() => {
+      fired2 = true;
+    });
+    console.log('axiosRes, xiorRes', axiosRes, xiorRes);
+    assert.equal(axiosRes, 1);
+    assert.equal(xiorRes, 1);
+    assert.equal(fired, fired2);
   });
 
   it('should work same with request object', async () => {

@@ -24,7 +24,7 @@ const supportAbortController = typeof AbortController !== 'undefined';
 const undefinedValue = undefined;
 export type XiorInstance = xior;
 
-async function getData(
+async function getResponseData(
   response: Response,
   responseType?: 'json' | 'text' | 'stream' | 'document' | 'arraybuffer' | 'blob' | 'original'
 ) {
@@ -71,7 +71,7 @@ export class xior {
     fn: (
       config: XiorResponseInterceptorConfig
     ) => Promise<XiorResponseInterceptorConfig> | XiorResponseInterceptorConfig;
-    onRejected?: null | ((error: XiorError) => any);
+    onRejected?: null | ((error: XiorError | Error | TypeError) => any);
   }[] = [];
 
   get interceptors() {
@@ -104,7 +104,7 @@ export class xior {
           fn: (
             config: XiorResponseInterceptorConfig
           ) => Promise<XiorResponseInterceptorConfig> | XiorResponseInterceptorConfig,
-          onRejected?: null | ((error: XiorError) => any)
+          onRejected?: null | ((error: XiorError | Error | TypeError) => any)
         ) => {
           this.RESI.push({ fn, onRejected });
           return fn;
@@ -203,93 +203,51 @@ export class xior {
       finalURL = joinPath(requestConfig.baseURL, finalURL);
     }
 
-    const handleResponseRejects = async (error: XiorError) => {
-      let hasReject = false;
-      for (const item of this.RESI) {
-        if (item.onRejected) {
-          hasReject = true;
-          const res = await item.onRejected(error);
-          if (res?.response?.ok) return res;
-        }
-      }
-      if (!hasReject) throw error;
-    };
-
-    let response: Response;
-    try {
-      response = await fetch(finalURL, {
-        body: isGet ? undefinedValue : _data,
-        ...rest,
-        signal,
-        method,
-        headers,
-      });
-    } catch (e) {
-      await handleResponseRejects(e as XiorError);
-      throw e;
-    } finally {
-      if (timer) clearTimeout(timer);
-      (signal as ClearableSignal)?.clear?.();
-    }
-
-    const commonRes = {
-      response,
-      config: requestConfig as XiorInterceptorRequestConfig,
-      status: response.status,
-      statusText: response.statusText,
-      headers: response.headers,
-    };
-    const { responseType } = requestConfig;
-    if (!response.ok) {
-      const data = await getData(response, responseType);
-
-      const error = new XiorError(
-        !response.status ? `Network error` : `Request failed with status code ${response.status}`,
-        requestConfig,
-        {
+    let i = 0;
+    let promise = fetch(finalURL, {
+      body: isGet ? undefinedValue : _data,
+      ...rest,
+      signal,
+      method,
+      headers,
+    })
+      .then(async (response) => {
+        const { responseType } = requestConfig;
+        const data = await getResponseData(response, responseType);
+        const commonRes = {
           data,
-          ...commonRes,
+          response,
+          config: requestConfig as XiorInterceptorRequestConfig,
+          request: requestConfig as XiorInterceptorRequestConfig,
+          status: response.status,
+          statusText: response.statusText,
+          headers: response.headers,
+        };
+        if (!response.ok) {
+          const error = new XiorError(
+            !response.status
+              ? `Network error`
+              : `Request failed with status code ${response.status}`,
+            requestConfig,
+            commonRes
+          );
+          return Promise.reject(error);
         }
-      );
-      await handleResponseRejects(error);
-      throw error;
+        return commonRes;
+      })
+      .finally(() => {
+        if (timer) clearTimeout(timer);
+        (signal as ClearableSignal)?.clear?.();
+      });
+    const responseInterceptorChain: any[] = [];
+    this.RESI.forEach(function pushResponseInterceptors(interceptor) {
+      responseInterceptorChain.push(interceptor.fn, interceptor.onRejected);
+    });
+    while (responseInterceptorChain.length > i) {
+      promise = promise.then(responseInterceptorChain[i++], responseInterceptorChain[i++]);
     }
 
-    if (method === 'HEAD') {
-      return {
-        data: undefinedValue as T,
-        request: requestConfig,
-        ...commonRes,
-      };
-    }
-
-    const result = await getData(response, responseType);
-
-    try {
-      let lastRes = {
-        ...commonRes,
-        data: result as T,
-        config: requestConfig as XiorInterceptorRequestConfig,
-        request: requestConfig as XiorInterceptorRequestConfig,
-        response,
-      };
-      for (const item of this.RESI) {
-        // eslint-disable-next-line no-inner-declarations
-        async function run() {
-          return item.fn(lastRes);
-        }
-        const res = await run().catch(async (error) => {
-          await handleResponseRejects(error as XiorError);
-        });
-        if (res) {
-          lastRes = res;
-        }
-      }
-      return lastRes;
-    } catch (error) {
-      await handleResponseRejects(error as XiorError);
-      throw error;
-    }
+    return promise;
   }
 
   /** create get method */
