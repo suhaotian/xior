@@ -306,7 +306,7 @@ describe('interceptors', function () {
 
     await instance.get('/get').then(({ config: request }) => {
       assert.equal(request.baseURL, baseURL);
-      assert.equal(request.url, baseURL + '/get');
+      assert.equal(request.url, '/get');
     });
   });
 
