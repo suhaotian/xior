@@ -58,10 +58,10 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
 
   return {
     ...req,
-    data,
     _data,
-    url,
     _url,
+    data,
+    url,
     method,
     headers,
     isGet,

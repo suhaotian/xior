@@ -121,7 +121,7 @@ yarn add xior
 Use jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.13/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.0/dist/xior.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -136,7 +136,7 @@ Use jsDelivr CDN:
 Use unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.13/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.0/dist/xior.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -316,6 +316,7 @@ http.interceptors.response.use(
     if (error?.response?.status === 401) {
       localStorage.removeItem('REQUEST_TOKEN');
     }
+    return Promise.reject(error);
   }
 );
 ```
@@ -659,9 +660,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.13/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.0/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.13/plugins/error-retry.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.0/plugins/error-retry.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -674,10 +675,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.13/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.0/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.3.13/plugins/error-retry.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.0/plugins/error-retry.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -770,9 +771,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.13/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.0/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.13/plugins/throttle.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.0/plugins/throttle.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -785,10 +786,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.13/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.0/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.3.13/plugins/throttle.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.0/plugins/throttle.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -843,9 +844,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.13/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.0/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.13/plugins/dedupe.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.0/plugins/dedupe.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -858,10 +859,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.13/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.0/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.3.13/plugins/dedupe.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.0/plugins/dedupe.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -923,9 +924,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.13/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.0/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.13/plugins/error-cache.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.0/plugins/error-cache.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -938,10 +939,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.13/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.0/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.3.13/plugins/error-cache.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.0/plugins/error-cache.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1086,9 +1087,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.13/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.0/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.13/plugins/progress.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.0/plugins/progress.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1101,10 +1102,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.13/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.0/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.3.13/plugins/progress.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.0/plugins/progress.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1211,9 +1212,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.13/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.0/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.3.13/plugins/mock.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.0/plugins/mock.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1226,10 +1227,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.3.13/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.0/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.3.13/plugins/mock.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.0/plugins/mock.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1336,7 +1337,35 @@ Even if the environment doesn't support `fetch`, you can use a `fetch` polyfill 
 
 ### 3. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?
 
-> Currently in `xior`, when `responseType` is set to `'stream', 'document', 'arraybuffer', 'blob', or 'original'`, Xior will return the original fetch response.
+When `{responseType: 'blob'| 'arraybuffer'}`:
+
+```ts
+xior.get('https://exmaple.com/some/api', { responseType: 'blob' }).then((response) => {
+  console.log(response.data); // response.data is a Blob
+});
+
+// Same with
+fetch('https://exmaple.com/some/api')
+  .then((response) => response.blob())
+  .then((data) => {
+    console.log(data); // is a Blob
+  });
+```
+
+```ts
+xior.get('https://exmaple.com/some/api', { responseType: 'arraybuffer' }).then((response) => {
+  console.log(response.data); // response.data is a ArrayBuffer
+});
+
+// Same with
+fetch('https://exmaple.com/some/api')
+  .then((response) => response.arraybuffer())
+  .then((data) => {
+    console.log(data); // is a ArrayBuffer
+  });
+```
+
+**But when `responseType` set to `'stream', 'document' or 'original'`, Xior will return the original fetch response:**
 
 ```ts
 fetch('https://exmaple.com/some/api').then((response) => {
@@ -1344,8 +1373,8 @@ fetch('https://exmaple.com/some/api').then((response) => {
 });
 
 // same with
-xior.get('https://exmaple.com/some/api', { responseType: 'blob' }).then((res) => {
-  console.log(res.response); // res.data will be undefined
+xior.get('https://exmaple.com/some/api', { responseType: 'stream' }).then((res) => {
+  console.log(res.response); // But res.data will be undefined
 });
 ```
 

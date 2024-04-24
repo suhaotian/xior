@@ -93,9 +93,8 @@ describe('xior polyfill tests', () => {
     });
 
     it('HEAD should work', async () => {
-      const { data, response } = await xiorInstance.head('/head', { params: { a: 1, b: 2 } });
-      assert.strictEqual(data, undefined);
-      assert.strictEqual(await response.text(), '');
+      const { data } = await xiorInstance.head('/head', { params: { a: 1, b: 2 } });
+      assert.strictEqual(data, '');
     });
     it('OPTIONS should work', async () => {
       const { data } = await xiorInstance.options<{

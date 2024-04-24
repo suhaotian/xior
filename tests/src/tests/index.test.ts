@@ -121,9 +121,8 @@ describe('xior tests', () => {
     });
 
     it('HEAD should work', async () => {
-      const { data, response } = await xiorInstance.head('/head', { params: { a: 1, b: 2 } });
-      assert.strictEqual(data, undefined);
-      assert.strictEqual(await response.text(), '');
+      const { data } = await xiorInstance.head('/head', { params: { a: 1, b: 2 } });
+      assert.strictEqual(data, '');
     });
 
     it('OPTIONS should work', async () => {
@@ -390,6 +389,53 @@ describe('xior tests', () => {
     });
   });
 
+  describe('`responseType` should work', () => {
+    it('should work with `responseType: "blob"`', async () => {
+      const xiorInstance = xior.create({ baseURL });
+      const { data: getData } = await xiorInstance.get<Blob>('/get', {
+        responseType: 'blob',
+      });
+      assert.strictEqual(getData instanceof Blob, true);
+
+      const { data: postData } = await xiorInstance.post<Blob>(
+        '/post',
+        {},
+        { responseType: 'blob' }
+      );
+      assert.strictEqual(postData instanceof Blob, true);
+    });
+
+    it('should work with `responseType: "arraybuffer"`', async () => {
+      const xiorInstance = xior.create({ baseURL });
+      const { data: getData } = await xiorInstance.get<ArrayBuffer>('/get', {
+        responseType: 'arraybuffer',
+      });
+      assert.strictEqual(getData instanceof ArrayBuffer, true);
+
+      const { data: postData } = await xiorInstance.post<ArrayBuffer>(
+        '/post',
+        {},
+        { responseType: 'arraybuffer' }
+      );
+      assert.strictEqual(postData instanceof ArrayBuffer, true);
+    });
+
+    it('should work with as expected `responseType: "original"` or `responseType: "stream"`', async () => {
+      const xiorInstance = xior.create({ baseURL });
+      const { data: getData } = await xiorInstance.get<ArrayBuffer>('/get', {
+        responseType: 'original',
+      });
+      assert.strictEqual(getData === undefined, true);
+
+      const { data: postData } = await xiorInstance.post<ArrayBuffer>(
+        '/post',
+        {},
+        { responseType: 'stream' }
+      );
+      assert.strictEqual(postData === undefined, true);
+    });
+  });
+
   describe('custom plugins should work', () => {
     it('should work with custom plugin', async () => {
       const xiorInstance = xior.create({ baseURL });
@@ -531,6 +577,7 @@ describe('xior tests', () => {
         },
         function (error) {
           catchFetchFailedError = error instanceof TypeError;
+          return Promise.reject(error);
         }
       );
       xiorInstance.plugins.use(

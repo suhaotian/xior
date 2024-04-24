@@ -137,11 +137,12 @@ describe('xior error retry plugin tests', () => {
       (config) => {
         return config;
       },
-      () => {
+      (e) => {
         errorCount++;
         if (!S) {
           S = 'S123456';
         }
+        throw e;
       }
     );
 
