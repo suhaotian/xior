@@ -62,12 +62,12 @@ export function joinPath(path1: string, path2: string) {
   return (path1.endsWith('/') ? path1 : path1 + '/') + (path2[0] === '/' ? path2.slice(1) : path2);
 }
 
-export class XiorError extends Error {
+export class XiorError<T = any> extends Error {
   request?: XiorRequestConfig;
   config?: XiorRequestConfig;
   response?: XiorResponse;
 
-  constructor(message: string, request?: XiorRequestConfig, response?: XiorResponse) {
+  constructor(message: string, request?: XiorRequestConfig, response?: XiorResponse<T>) {
     super(message);
     this.name = 'XiorError';
     this.request = request;
