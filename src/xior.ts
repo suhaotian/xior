@@ -26,7 +26,7 @@ export type XiorInstance = xior;
 
 async function getResponseData(
   response: Response,
-  responseType?: 'json' | 'text' | 'stream' | 'document' | 'arraybuffer' | 'blob' | 'original'
+  responseType?: 'json' | 'text' | 'blob' | 'arraybuffer' | 'stream' | 'document' | 'original'
 ) {
   let data: any;
   if (!responseType || !response.ok || ['text', 'json'].includes(responseType)) {
@@ -38,9 +38,9 @@ async function getResponseData(
       } catch (e) {}
     }
   } else if (responseType === 'blob') {
-    data = await response.blob();
+    return response.blob();
   } else if (responseType === 'arraybuffer') {
-    data = await response.arrayBuffer();
+    return response.arrayBuffer();
   }
   return data;
 }
