@@ -1684,8 +1684,8 @@ xior
     },
     responseType: 'blob',
   })
-  .then((res) => res.response.blob())
-  .then((blob) => {
+  .then((res) => {
+    const { data: blob } = res;
     var url = window.URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
