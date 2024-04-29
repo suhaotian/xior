@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.4.1 2024/04/29
+
+- Feat: remove `undefined` value in `params` / `data`
+
 ## v0.4.0 2024/04/24
 
 **Breaking Change**

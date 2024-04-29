@@ -53,4 +53,40 @@ describe('encodeParams()', function () {
     assert.strictEqual(stringify(data.query), stringify(params));
     assert.strictEqual(stringify(data.query), encodeParams(params));
   });
+
+  it('encode object should remove undefined value', () => {
+    const data = { a: '1', c: undefined };
+    assert.strictEqual(encodeParams(data), `a=1`);
+  });
+
+  it('encode nested object should remove undefined value', () => {
+    const data = { a: '1', d: { c: undefined } };
+    assert.strictEqual(encodeParams(data), `a=1`);
+  });
+
+  it('encode nested object should work exactly with server(remove undefined value)', async () => {
+    const instance = xior.create({
+      baseURL,
+      paramsSerializer: encodeParams,
+    });
+    const params = { a: 'b', c: undefined, d: { e: undefined } };
+    const { data } = await instance.get('/get', { params });
+    assert.strictEqual(data.query.hasOwnProperty('a'), true);
+    assert.strictEqual(data.query['a'], 'b');
+    assert.strictEqual(data.query.hasOwnProperty('c'), false);
+    assert.strictEqual(data.query.hasOwnProperty('d'), false);
+  });
+
+  it('nested data object should work exactly with server(remove undefined value)', async () => {
+    const instance = xior.create({
+      baseURL,
+      paramsSerializer: encodeParams,
+    });
+    const objData = { a: 'b', c: undefined, d: { e: undefined } };
+    const { data } = await instance.post('/post', objData);
+    assert.strictEqual(data.body.hasOwnProperty('a'), true);
+    assert.strictEqual(data.body['a'], 'b');
+    assert.strictEqual(data.body.hasOwnProperty('c'), false);
+    assert.strictEqual(data.body['d'].hasOwnProperty('e'), false);
+  });
 });

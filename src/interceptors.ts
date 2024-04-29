@@ -2,6 +2,7 @@
 import { encodeParams, merge } from 'xior/utils';
 
 import type { XiorInterceptorRequestConfig } from './types';
+import { trimUndefined } from './utils';
 
 const appPrefix = 'application/';
 const formUrl = `${appPrefix}x-www-form-urlencoded`;
@@ -45,7 +46,7 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
       newParams = merge({}, data || {}, newParams);
     }
     if (contentType === jsonType) {
-      _data = JSON.stringify(data);
+      _data = JSON.stringify(trimUndefined(data));
     } else if (!isGet && contentType === formUrl && data && typeof data === 'object') {
       _data = paramsSerializer(data);
     }

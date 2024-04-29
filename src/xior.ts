@@ -20,8 +20,8 @@ import type {
   XiorResponseInterceptorConfig,
 } from './types';
 
-const supportAbortController = typeof AbortController !== 'undefined';
 const undefinedValue = undefined;
+const supportAbortController = typeof AbortController !== `${undefinedValue}`;
 export type XiorInstance = xior;
 
 async function getResponseData(
@@ -49,7 +49,7 @@ export class xior {
   static create(options?: XiorRequestConfig): XiorInstance {
     return new xior(options);
   }
-  static VERSION = '0.4.0';
+  static VERSION = '0.4.1';
 
   config?: XiorRequestConfig;
   defaults: XiorInterceptorRequestConfig;

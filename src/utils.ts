@@ -4,38 +4,57 @@ export * from './any-signals';
 export * from './merge';
 export * from './plugins/utils';
 
+const undefinedValue = undefined;
 export function encodeParams<T = any>(
   params: T,
   encodeURI = true,
   parentKey: string | null = null
 ): string {
-  if (params === undefined || params === null) return '';
+  if (params === undefinedValue || params === null) return '';
   const encodedParams = [];
   const encodeURIFunc = encodeURI ? encodeURIComponent : (v: string) => v;
 
   for (const key in params) {
     if (Object.prototype.hasOwnProperty.call(params, key)) {
       const value = (params as any)[key];
-      const encodedKey = parentKey ? `${parentKey}[${encodeURIFunc(key)}]` : encodeURIFunc(key);
+      if (value !== undefinedValue) {
+        const encodedKey = parentKey ? `${parentKey}[${encodeURIFunc(key)}]` : encodeURIFunc(key);
 
-      if (typeof value === 'object') {
-        // If the value is an object or array, recursively encode its contents
-        const result = encodeParams(value, encodeURI, encodedKey);
-        if (result !== '') encodedParams.push(result);
-      } else if (Array.isArray(value)) {
-        // If the value is an array, encode each element individually
-        value.forEach((element, index) => {
-          const arrayKey = `${encodedKey}[${index}]`;
-          encodedParams.push(`${encodeURIFunc(arrayKey)}=${encodeURIFunc(element)}`);
-        });
-      } else {
-        // Otherwise, encode the key-value pair
-        encodedParams.push(`${encodeURIFunc(encodedKey)}=${encodeURIFunc(value)}`);
+        if (typeof value === 'object') {
+          // If the value is an object or array, recursively encode its contents
+          const result = encodeParams(value, encodeURI, encodedKey);
+          if (result !== '') encodedParams.push(result);
+        } else if (Array.isArray(value)) {
+          // If the value is an array, encode each element individually
+          value.forEach((element, index) => {
+            const arrayKey = `${encodedKey}[${index}]`;
+            encodedParams.push(`${encodeURIFunc(arrayKey)}=${encodeURIFunc(element)}`);
+          });
+        } else {
+          // Otherwise, encode the key-value pair
+          encodedParams.push(`${encodeURIFunc(encodedKey)}=${encodeURIFunc(value)}`);
+        }
       }
     }
   }
 
   return encodedParams.join('&');
+}
+
+export function trimUndefined(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(trimUndefined);
+  } else if (obj && typeof obj === 'object') {
+    Object.keys(obj).forEach((key) => {
+      const value = obj[key];
+      if (value === undefinedValue) {
+        delete obj[key];
+      } else {
+        return trimUndefined(value);
+      }
+    });
+  }
+  return obj;
 }
 
 /**
