@@ -22,9 +22,6 @@ A lite request lib based on **fetch** with plugin support and similar API to axi
 
 - [Intro](#intro)
 - [Table of Contents](#table-of-contents)
-- [Why Choose **xior**?](#why-choose-xior)
-  - [Why not just use `axios`?](#why-not-just-use-axios)
-  - [Why choose **xior** over Custom Fetch Wrappers?](#why-choose-xior-over-custom-fetch-wrappers)
 - [Getting Started](#getting-started)
   - [Installing](#installing)
     - [Package manager](#package-manager)
@@ -74,25 +71,6 @@ A lite request lib based on **fetch** with plugin support and similar API to axi
   - [Processing a text file line by line](#processing-a-text-file-line-by-line)
 - [Star History](#star-history)
 - [Thanks](#thanks)
-
-## Why Choose **xior**?
-
-**xior** use the native **fetch API**, offering several advantages:
-
-- **Web Standard:** Fetch is a widely supported web standard, ensuring compatibility across different environments.
-- **Built-in Availability:** Both Node.js and browsers have built-in fetch implementations, eliminating the need for external dependencies.
-- **Edge Compatibility:** Unlike Axios, xior works seamlessly in edge runtimes, making it suitable for serverless functions and Next.js middleware.
-- **Convenient API and Plugin Support:** xior provides a familiar API similar to Axios, while also offering plugin support for customization and extending functionalities.
-
-### Why not just use `axios`?
-
-> If you want proxy support, use `axios`, because `xior` doesn't support proxy feature yet
-
-While popular and convenient, Axios currently lacks native edge runtime support (see: [https://github.com/axios/axios/issues/5523](https://github.com/axios/axios/issues/5523)). This can be an issue for specific use cases like Next.js serverless functions and middleware files, where fetch offers built-in caching and revalidation mechanisms (see: [https://nextjs.org/docs/app/api-reference/functions/fetch](https://nextjs.org/docs/app/api-reference/functions/fetch)).
-
-### Why choose **xior** over Custom Fetch Wrappers?
-
-While you can certainly create your own wrapper library around fetch, **xior** offers a pre-built solution with a familiar API, plugin support for extensibility, and potentially a more streamlined development experience.
 
 ## Getting Started
 
