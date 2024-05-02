@@ -20,11 +20,11 @@ export function encodeParams<T = any>(
       if (value !== undefinedValue) {
         const encodedKey = parentKey ? `${parentKey}[${encodeURIFunc(key)}]` : encodeURIFunc(key);
 
-        if (typeof value === 'object') {
+        if (isObj(value)) {
           // If the value is an object or array, recursively encode its contents
           const result = encodeParams(value, encodeURI, encodedKey);
           if (result !== '') encodedParams.push(result);
-        } else if (Array.isArray(value)) {
+        } else if (isArray(value)) {
           // If the value is an array, encode each element individually
           value.forEach((element, index) => {
             const arrayKey = `${encodedKey}[${index}]`;
@@ -42,10 +42,10 @@ export function encodeParams<T = any>(
 }
 
 export function trimUndefined(obj: any): any {
-  if (Array.isArray(obj)) {
+  if (isArray(obj)) {
     return obj.map(trimUndefined);
-  } else if (obj && typeof obj === 'object') {
-    Object.keys(obj).forEach((key) => {
+  } else if (obj && isObj(obj)) {
+    keys(obj).forEach((key) => {
       const value = obj[key];
       if (value === undefinedValue) {
         delete obj[key];
@@ -107,3 +107,7 @@ export class XiorTimeoutError extends XiorError {
 export function isXiorError(error: any) {
   return error.name === 'XiorError' || error.name === 'XiorTimeoutError';
 }
+
+export const keys: typeof Object.keys = (obj) => Object.keys(obj);
+export const isObj = (obj: any) => typeof obj === 'object';
+export const isArray = ((arr: any) => Array.isArray(arr)) as typeof Array.isArray;

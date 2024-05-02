@@ -2,7 +2,7 @@
 import { encodeParams, merge } from 'xior/utils';
 
 import type { XiorInterceptorRequestConfig } from './types';
-import { trimUndefined } from './utils';
+import { isObj, keys, trimUndefined } from './utils';
 
 const appPrefix = 'application/';
 const formUrl = `${appPrefix}x-www-form-urlencoded`;
@@ -27,7 +27,7 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
   if (data && !(data instanceof FormData)) {
     let contentType = '';
     if (req?.headers) {
-      const contentTypeKey = Object.keys(req.headers).find((key) => {
+      const contentTypeKey = keys(req.headers).find((key) => {
         return key.toLowerCase() === 'content-type';
       });
       if (contentTypeKey) {
@@ -47,12 +47,12 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
     }
     if (contentType === jsonType) {
       _data = JSON.stringify(trimUndefined(data));
-    } else if (!isGet && contentType === formUrl && data && typeof data === 'object') {
+    } else if (!isGet && contentType === formUrl && data && isObj(data)) {
       _data = paramsSerializer(data);
     }
   }
 
-  if (Object.keys(newParams).length > 0) {
+  if (keys(newParams).length > 0) {
     const result = paramsSerializer(newParams, encodeURI);
     _url += _url.includes('?') ? `&${result}` : `?${result}`;
   }
