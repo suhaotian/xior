@@ -1,0 +1,45 @@
+import {
+  XiorError as AxiosError,
+  XiorInstance,
+  XiorResponse,
+  XiorResponseInterceptorConfig,
+  // @ts-ignore
+} from 'xior';
+
+export function defaultShouldRefresh(response: XiorResponse) {
+  return response?.status && [401].includes(response.status);
+}
+export default function setupTokenRefresh(
+  instance: XiorInstance,
+  options: {
+    refreshToken: (error: AxiosError) => Promise<any> | any;
+    shouldRefresh?: (response: XiorResponse) => boolean;
+  }
+) {
+  const shouldRefresh = options?.shouldRefresh || defaultShouldRefresh;
+  let refreshingToken = false;
+  const queue: (() => void)[] = [];
+  instance.interceptors.response.use(
+    async (response: XiorResponseInterceptorConfig) => {
+      return response;
+    },
+    async (error: AxiosError) => {
+      if (error?.response && shouldRefresh(error.response)) {
+        if (refreshingToken) {
+          await new Promise<void>((resolve, reject) => {
+            queue.push(resolve);
+          });
+        } else {
+          refreshingToken = true;
+          try {
+            await options.refreshToken(error);
+          } finally {
+            refreshingToken = false;
+            queue.forEach((r) => r());
+          }
+        }
+      }
+      return Promise.reject(error);
+    }
+  );
+}

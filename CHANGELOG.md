@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.4.2 2024/5/2
+
+- Feat(new plugin): add token refresh plugin
+
 ## v0.4.1 2024/04/29
 
 - Feat: remove `undefined` value in `params` / `data`

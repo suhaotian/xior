@@ -1,6 +1,6 @@
 {
   "name": "xior",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A lite request lib based on fetch with plugin support and similar API to axios.",
   "repository": "suhaotian/xior",
   "bugs": "https://github.com/suhaotian/xior/issues",
@@ -62,6 +62,12 @@
       "require": "./plugins/error-cache/index.cjs",
       "import": "./plugins/error-cache/index.mjs",
       "module": "./plugins/error-cache/index.esm.js"
+    },
+    "./plugins/token-refresh": {
+      "types": "./plugins/token-refresh/index.d.ts",
+      "require": "./plugins/token-refresh/index.cjs",
+      "import": "./plugins/token-refresh/index.mjs",
+      "module": "./plugins/token-refresh/index.esm.js"
     }
   },
   "scripts": {

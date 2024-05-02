@@ -34,7 +34,6 @@ A lite request lib based on **fetch** with plugin support and similar API to axi
   - [Using interceptors](#using-interceptors)
   - [Timeout and Cancel request](#timeout-and-cancel-request)
   - [Encrypt and Decrypt Example](#encrypt-and-decrypt-example)
-  - [Automatically refreshing access token](#automatically-refreshing-access-token)
   - [Tips: Make your SSR(Server-side Rendering) app more stable and faster](#tips-make-your-ssrserver-side-rendering-app-more-stable-and-faster)
 - [Plugins](#plugins)
   - [Error retry plugin](#error-retry-plugin)
@@ -44,7 +43,8 @@ A lite request lib based on **fetch** with plugin support and similar API to axi
   - [Cache plugin](#cache-plugin)
   - [Upload and download progress plugin](#upload-and-download-progress-plugin)
   - [Mock plugin](#mock-plugin)
-  - [Auth refresh token plugin](#auth-refresh-token-plugin)
+  - [Auth refresh token plugin(from community)](#auth-refresh-token-pluginfrom-community)
+  - [Auth refresh token plugin(built-in)](#auth-refresh-token-pluginbuilt-in)
   - [Create your own custom plugin](#create-your-own-custom-plugin)
 - [Helper functions](#helper-functions)
 - [FAQ](#faq)
@@ -99,7 +99,7 @@ yarn add xior
 Use jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.4.1/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.2/dist/xior.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -114,7 +114,7 @@ Use jsDelivr CDN:
 Use unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.4.1/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.2/dist/xior.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -391,82 +391,6 @@ instance.interceptors.response.use((res) => {
 
 > Check test code in `tests/src/tests/encrypt-decrypt/`
 
-### Automatically refreshing access token
-
-We can use some plugins and interceptors to achieve this. The flow would be:
-
-1. In response interceptors, check if status code is session expired, we set the new access token from API
-2. Then throw error, the error will occur the error retry plugin to retry request with the new access token
-
-> The error retry plugin will not retry with `POST` method request in default.
-
-Example code:
-
-```ts
-import axios, { XiorError as AxiosError } from 'xior';
-import errorRetryPlugin from 'xior/plugins/error-retry';
-import dedupePlugin from 'xior/plugins/dedupe';
-import throttlePlugin from 'xior/plugins/throttle';
-
-const http = axios.create({
-  baseURL: 'http://localhost:3000',
-});
-http.plugins.use(errorRetryPlugin());
-http.plugins.use(dedupePlugin()); // Prevent same `GET` requests from occurring simultaneously.
-http.plugins.use(throttlePlugin()); // Throttle same `GET` request in 1000ms
-
-const TOKEN_EXPIRED_STATUS = 403;
-const TOKEN_STORAGE_KEY = 'AUTH_TOKEN';
-http.interceptors.request.use((config) => {
-  // Get token from localStorage
-  const token = localStorage.getItem(TOKEN_STORAGE_KEY);
-  if (token) {
-    config.headers['Authorization'] = 'Bearer ' + token;
-  }
-  return config;
-});
-
-let refreshingToken = false;
-const queue: (() => void)[] = [];
-http.interceptors.response.use(
-  async (response) => {
-    return response;
-  },
-  async (error: AxiosError) => {
-    const token = localStorage.getItem(TOKEN_STORAGE_KEY);
-    if (error.response?.status === TOKEN_EXPIRED_STATUS && token) {
-      if (refreshingToken) {
-        await new Promise<void>((resolve, reject) => {
-          queue.push(resolve);
-        });
-      } else {
-        refreshingToken = true;
-        try {
-          const { data } = await http.post('/api/new_token', {
-            enableDedupe: true, // Use `enableDedupe: true` to enable dedupe request, if is GET method, can ignore
-            enableThrottle: true, // Use `enableThrottle: true` to enable throttle request, if is GET method, can ignore
-          });
-          // Save token
-          localStorage.setItem(TOKEN_STORAGE_KEY, data.token);
-        } catch (e) {
-          // refresh token wrong, remove the old token?
-          localStorage.removeItem(TOKEN_STORAGE_KEY);
-          throw e;
-        } finally {
-          refreshingToken = false;
-          queue.forEach((r) => r());
-        }
-        return Promise.reject(new Error('Token expired, new token refreshed, try again!'));
-      }
-    }
-    // If error, will retry on GET method
-    return Promise.reject(error);
-  }
-);
-```
-
-Or You can use the plugin from community: [Auth refresh token plugin](#auth-refresh-token-plugin).
-
 ### Tips: Make your SSR(Server-side Rendering) app more stable and faster
 
 How we do that? Use the xior's plugins:
@@ -636,9 +560,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.4.1/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.2/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.4.1/plugins/error-retry.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.2/plugins/error-retry.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -651,10 +575,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.4.1/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.2/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.4.1/plugins/error-retry.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.2/plugins/error-retry.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -747,9 +671,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.4.1/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.2/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.4.1/plugins/throttle.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.2/plugins/throttle.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -762,10 +686,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.4.1/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.2/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.4.1/plugins/throttle.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.2/plugins/throttle.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -820,9 +744,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.4.1/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.2/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.4.1/plugins/dedupe.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.2/plugins/dedupe.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -835,10 +759,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.4.1/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.2/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.4.1/plugins/dedupe.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.2/plugins/dedupe.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -900,9 +824,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.4.1/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.2/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.4.1/plugins/error-cache.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.2/plugins/error-cache.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -915,10 +839,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.4.1/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.2/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.4.1/plugins/error-cache.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.2/plugins/error-cache.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1063,9 +987,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.4.1/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.2/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.4.1/plugins/progress.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.2/plugins/progress.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1078,10 +1002,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.4.1/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.2/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.4.1/plugins/progress.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.2/plugins/progress.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1188,9 +1112,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.4.1/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.2/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.4.1/plugins/mock.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.4.2/plugins/mock.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1203,10 +1127,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.4.1/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.2/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.4.1/plugins/mock.umd.js"></script>
+<script src="https://unpkg.com/xior@0.4.2/plugins/mock.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1216,7 +1140,7 @@ Using unpkg CDN:
 </script>
 ```
 
-### Auth refresh token plugin
+### Auth refresh token plugin(from community)
 
 We will use `xior-auth-refresh` plugin from the community: https://github.com/Audiu/xior-auth-refresh
 
@@ -1254,6 +1178,69 @@ xior.get('https://www.example.com/restricted/area').then(/* ... */).catch(/* ...
 ```
 
 More: https://github.com/Audiu/xior-auth-refresh
+
+### Auth refresh token plugin(built-in)
+
+Usage:
+
+```ts
+import xior, { XiorResponse } from 'xior';
+import errorRetry from 'xior/plugins/error-retry';
+import setupTokenRefresh from 'xior/plugins/token-refresh';
+
+const instance = xior.create();
+
+const TOKEN_KEY = 'TOKEN';
+function getToken() {
+  return localStorage.getItem(TOKEN_KEY);
+}
+function setToken(token: string) {
+  return localStorage.setItem(TOKEN_KEY, token);
+}
+function deleteToken() {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+instance.interceptors.request.use((config) => {
+  const token = getToken();
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
+});
+
+function shouldRefresh(response: XiorResponse) {
+  const token = getToken();
+  return Boolean(token && response?.status && [401, 403].includes(response.status));
+}
+instance.plugins.use(
+  errorRetry({
+    enableRetry: (config, error) => {
+      if (error?.response && shouldRefresh(error.response)) {
+        return true;
+      }
+      // return false
+    },
+  })
+);
+setupTokenRefresh(http, {
+  shouldRefresh,
+  async refreshToken(error) {
+    try {
+      const { data } = await http.post('/token/new');
+      if (data.token) {
+        setToken(data.token);
+      } else {
+        throw error;
+      }
+    } catch (e) {
+      // something wrong, delete old token
+      deleteToken();
+      return Promise.reject(error);
+    }
+  },
+});
+```
 
 ### Create your own custom plugin
 

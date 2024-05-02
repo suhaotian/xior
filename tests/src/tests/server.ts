@@ -123,6 +123,34 @@ export async function startServer(port: number) {
     res.status(200).send({ errorCount, count: +(req.body.count || '2') });
   });
 
+  app.post('/token/new', (req, res) => {
+    res.send({ token: 'TOKEN_' + Date.now() });
+  });
+  app.post('/token/check', (req, res) => {
+    if (req.headers.authorization && req.headers.authorization.startsWith('TOKEN_')) {
+      return res.send({ msg: 'ok' });
+    }
+    res.status(403).send('Token expired');
+  });
+  app.post('/token/check2', (req, res) => {
+    if (req.headers.authorization && req.headers.authorization.startsWith('TOKEN_')) {
+      return res.send({ msg: 'ok' });
+    }
+    res.status(401).send('Token expired');
+  });
+  app.post('/token/check3', (req, res) => {
+    if (req.headers.authorization && req.headers.authorization.startsWith('TOKEN_')) {
+      return res.send({ msg: 'ok' });
+    }
+    res.status(403).send('Token expired');
+  });
+  app.post('/token/check4', (req, res) => {
+    if (req.headers.authorization && req.headers.authorization.startsWith('TOKEN_')) {
+      return res.send({ msg: 'ok' });
+    }
+    res.status(401).send('Token expired');
+  });
+
   app.all('/stream/:chunks', function (req, res, next) {
     res.writeHead(200, {
       'Content-Type': 'text/plain',
