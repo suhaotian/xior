@@ -453,7 +453,8 @@ http.get('/api/get-some-big-data', { threshold: 10e3, useCacheFirst: true });
 - [Cache plugin](#cache-plugin)
 - [Upload and download progress plugin](#upload-and-download-progress-plugin)
 - [Mock plugin](#Mock-plugin)
-- [Auth token refreshing plugin]
+- [Auth refresh token plugin(from community)](#auth-refresh-token-pluginfrom-community)
+- [Auth refresh token plugin(built-in)](#auth-refresh-token-pluginbuilt-in)
 
 Usage:
 
