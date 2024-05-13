@@ -93,10 +93,13 @@
     "is-ci": "^3.0.1",
     "typescript": "^5.3.3",
     "@types/node": "^20.11.13",
-    "eslint-config-universe": "^12.0.0",
-    "@tsconfig/recommended": "^1.0.3",
+    "eslint-config-universe": "^12.1.0",
+    "@tsconfig/recommended": "^1.0.6",
+    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "@typescript-eslint/parser": "^7.7.1",
     "@types/mime": "^3.0.4",
     "express": "^4.19.2",
+    "eslint": "^8.38.0",
     "@types/express": "^4.17.21",
     "axios": "^1.6.8",
     "multer": "^1.4.5-lts.1",
@@ -119,7 +122,7 @@
     "bracketSameLine": true
   },
   "eslintConfig": {
-    "extends": "eslint-config-universe",
+    "extends": "universe",
     "ignorePatterns": [
       "node_modules"
     ]
