@@ -1284,6 +1284,7 @@ import {
   joinPath,
   isXiorError,
   trimUndefined,
+  Xior,
 } from 'xior';
 ```
 

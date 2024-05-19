@@ -6,7 +6,7 @@
 
 - Feat(core): The xior class should be CapitalCase like: `Xior`. Fix [issues/18](https://github.com/suhaotian/xior/issues/18)
 
-### Migratiomn
+### Migration
 
 If you always use `import xior from 'xior';`, you can ignore migration code below.
 
