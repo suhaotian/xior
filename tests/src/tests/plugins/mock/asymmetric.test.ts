@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { after, before, describe, it, beforeEach, afterEach } from 'node:test';
-import { xior } from 'xior';
+import { Xior } from 'xior';
 import MockPlugin from 'xior/plugins/mock';
 
 import { startServer } from '../../server';
@@ -16,11 +16,11 @@ after(async () => {
   return close(1);
 });
 
-let instance: xior;
+let instance: Xior;
 let mock: MockPlugin;
 
 beforeEach(function () {
-  instance = xior.create({ baseURL });
+  instance = Xior.create({ baseURL });
   mock = new MockPlugin(instance);
 });
 

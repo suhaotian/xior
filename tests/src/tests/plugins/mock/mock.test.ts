@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { after, before, describe, it } from 'node:test';
-import { xior } from 'xior';
+import { Xior } from 'xior';
 import MockPlugin from 'xior/plugins/mock';
 
 import { startServer } from '../../server';
@@ -17,7 +17,7 @@ after(async () => {
 });
 
 describe('xior mock plugin tests', () => {
-  const instance = xior.create({ baseURL });
+  const instance = Xior.create({ baseURL });
   const mock = new MockPlugin(instance, { delayResponse: 1000, onNoMatch: 'throwException' });
 
   it("should work with `onGet('/reset-error')`", async () => {

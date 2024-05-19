@@ -1,10 +1,10 @@
 import assert from 'node:assert';
 import { describe, before, it } from 'node:test';
-import { xior } from 'xior';
+import { Xior } from 'xior';
 import MockPlugin from 'xior/plugins/mock';
 
 let token = '';
-const instance = xior.create({});
+const instance = Xior.create({});
 const mock = new MockPlugin(instance, { delayResponse: 0 });
 
 instance.interceptors.request.use((config) => {

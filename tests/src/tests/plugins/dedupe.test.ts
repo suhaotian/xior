@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { after, before, describe, it } from 'node:test';
-import { xior } from 'xior';
+import { Xior } from 'xior';
 import xiorDedupePlugin from 'xior/plugins/dedupe';
 
 import { startServer } from '../server';
@@ -17,7 +17,7 @@ after(async () => {
 });
 
 describe('xior dedupe plugin tests', () => {
-  const instance = xior.create({ baseURL });
+  const instance = Xior.create({ baseURL });
   instance.plugins.use(
     xiorDedupePlugin({
       onDedupe(config) {

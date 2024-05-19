@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { describe, it, beforeEach, afterEach } from 'node:test';
-import xior, { xior as XiorInstance } from 'xior';
+import xior, { Xior as XiorInstance } from 'xior';
 import MockPlugin from 'xior/plugins/mock';
 
 let instance: XiorInstance;

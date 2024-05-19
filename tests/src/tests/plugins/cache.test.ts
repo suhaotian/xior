@@ -3,7 +3,7 @@ import { after, before, describe, it } from 'node:test';
 // @ts-ignore
 import stringify from 'qs/lib/stringify';
 import { lru } from 'tiny-lru';
-import { xior, delay } from 'xior';
+import { Xior as xior, delay } from 'xior';
 import xiorCachePlugin from 'xior/plugins/cache';
 
 import { startServer } from '../server';

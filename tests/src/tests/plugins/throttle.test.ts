@@ -2,7 +2,7 @@ import assert from 'node:assert';
 import { after, before, describe, it } from 'node:test';
 // @ts-ignore
 import stringify from 'qs/lib/stringify';
-import { xior, delay } from 'xior';
+import { Xior, delay } from 'xior';
 import xiorThrottlePlugin from 'xior/plugins/throttle';
 
 import { startServer } from '../server';
@@ -19,7 +19,7 @@ after(async () => {
 });
 
 describe('xior throttle plugin tests', () => {
-  const instance = xior.create({ baseURL, paramsSerializer: (params) => stringify(params) });
+  const instance = Xior.create({ baseURL, paramsSerializer: (params) => stringify(params) });
   instance.plugins.use(
     xiorThrottlePlugin({
       threshold: 1000,

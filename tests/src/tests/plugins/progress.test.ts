@@ -2,7 +2,7 @@ import assert from 'node:assert';
 import { after, before, describe, it } from 'node:test';
 // @ts-ignore
 import stringify from 'qs/lib/stringify';
-import { XiorRequestConfig, xior } from 'xior';
+import { XiorRequestConfig, Xior } from 'xior';
 import xiorProgressPlugin, { XiorProgressRequestOptions } from 'xior/plugins/progress';
 
 import { startServer } from '../server';
@@ -19,7 +19,7 @@ after(async () => {
 });
 
 describe('xior progress plugin tests', () => {
-  const instance = xior.create({ baseURL, paramsSerializer: (params) => stringify(params) });
+  const instance = Xior.create({ baseURL, paramsSerializer: (params) => stringify(params) });
   instance.plugins.use(
     xiorProgressPlugin({
       progressDuration: 5 * 1000,

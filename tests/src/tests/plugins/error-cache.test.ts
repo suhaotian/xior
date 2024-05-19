@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { after, before, describe, it } from 'node:test';
-import { xior } from 'xior';
+import { Xior } from 'xior';
 import xiorErrorCachePlugin from 'xior/plugins/error-cache';
 import xiorErrorRetryPlugin from 'xior/plugins/error-retry';
 
@@ -18,7 +18,7 @@ after(async () => {
 });
 
 describe('xior error cache plugin tests', () => {
-  const instance = xior.create({ baseURL });
+  const instance = Xior.create({ baseURL });
   const errorCachePlugin = xiorErrorCachePlugin({
     cacheItems: 100,
   });
@@ -92,7 +92,7 @@ describe('xior error cache plugin tests', () => {
   });
 
   it('should work exactly with `useCacheFirst: true` option', async () => {
-    const instance = xior.create({ baseURL });
+    const instance = Xior.create({ baseURL });
     const errorCachePlugin = xiorErrorCachePlugin({
       useCacheFirst: true,
     });
@@ -115,7 +115,7 @@ describe('xior error cache plugin tests', () => {
   });
 
   it('should only request once with `useCacheFirst: true` option when have multiple same requests', async () => {
-    const instance = xior.create({ baseURL });
+    const instance = Xior.create({ baseURL });
     const errorCachePlugin = xiorErrorCachePlugin({
       useCacheFirst: true,
     });

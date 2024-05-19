@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import { after, before, describe, it } from 'node:test';
 import { stringify } from 'qs';
-import { xior, encodeParams } from 'xior';
+import { Xior, encodeParams } from 'xior';
 
 import { startServer } from './server';
 
@@ -44,7 +44,7 @@ describe('encodeParams()', function () {
   });
 
   it('encode nested object should work with server', async () => {
-    const instance = xior.create({
+    const instance = Xior.create({
       baseURL,
       paramsSerializer: encodeParams,
     });
@@ -65,7 +65,7 @@ describe('encodeParams()', function () {
   });
 
   it('encode nested object should work exactly with server(remove undefined value)', async () => {
-    const instance = xior.create({
+    const instance = Xior.create({
       baseURL,
       paramsSerializer: encodeParams,
     });
@@ -78,7 +78,7 @@ describe('encodeParams()', function () {
   });
 
   it('nested data object should work exactly with server(remove undefined value)', async () => {
-    const instance = xior.create({
+    const instance = Xior.create({
       baseURL,
       paramsSerializer: encodeParams,
     });

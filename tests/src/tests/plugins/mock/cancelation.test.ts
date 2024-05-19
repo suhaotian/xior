@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { after, before, describe, it, beforeEach, afterEach } from 'node:test';
-import { XiorTimeoutError, delay, isXiorError, xior } from 'xior';
+import { XiorTimeoutError, delay, isXiorError, Xior as xior } from 'xior';
 import MockPlugin from 'xior/plugins/mock';
 
 import { startServer } from '../../server';

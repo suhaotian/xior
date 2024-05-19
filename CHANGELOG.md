@@ -1,5 +1,27 @@
 # CHANGELOG 📝
 
+## v0.5.0 2024/5/19
+
+**This is a breaking change:**
+
+- Feat(core): The xior class should be CapitalCase like: `Xior`. Fix [issues/18](https://github.com/suhaotian/xior/issues/18)
+
+### Migratiomn
+
+If you always use `import xior from 'xior';`, you can ignore migration code below.
+
+**Before:**
+
+```ts
+import { xior } from 'xior';
+```
+
+**Now:**
+
+```ts
+import { Xior } from 'xior';
+```
+
 ## v0.4.2 2024/5/2
 
 - Feat(new plugin): add token refresh plugin
