@@ -2,7 +2,7 @@
 
 ## v0.5.1 2024/5/28
 
-- Feat(core): if request config `withCredentials: true`, before useless, now will set fetch config `credentials: true`. Fix [issues/19](https://github.com/suhaotian/xior/issues/19)
+- Feat(core): if request config `withCredentials: true`, before useless, now will set fetch config `credentials: 'include'`. Fix [issues/19](https://github.com/suhaotian/xior/issues/19)
 
 ## v0.5.0 2024/5/19
 
