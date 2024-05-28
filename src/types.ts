@@ -18,6 +18,7 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
   data?: any;
   /** encoded url with params */
   _url?: string;
+  /** @deprecated if `true`, will set `credentials=true`, or you can just use fetch's config `credentials: 'include' | 'omit' | 'same-origin'` */
   withCredentials?: boolean;
   /**
    * some API is get data, but the method is not 'GET',

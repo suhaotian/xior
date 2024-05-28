@@ -6,5 +6,4 @@ export * from './types';
 export * from 'xior/utils';
 
 const xior = Object.assign(Xior.create(), { create: Xior.create, VERSION: Xior.VERSION });
-
 export default xior;

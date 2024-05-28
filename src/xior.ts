@@ -49,7 +49,7 @@ export class Xior {
   static create(options?: XiorRequestConfig): XiorInstance {
     return new Xior(options);
   }
-  static VERSION = '0.5.0';
+  static VERSION = '0.5.1';
 
   config?: XiorRequestConfig;
   defaults: XiorInterceptorRequestConfig;
@@ -150,6 +150,9 @@ export class Xior {
       typeof options === 'string' ? { url: options } : options || {},
       { headers: {}, params: {} }
     );
+    if (requestConfig.withCredentials && !requestConfig.credentials) {
+      requestConfig.credentials = 'include';
+    }
     if (!requestConfig.paramsSerializer) {
       requestConfig.paramsSerializer = encodeParams;
     }
