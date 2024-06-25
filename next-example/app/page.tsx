@@ -3,7 +3,7 @@ import Image from 'next/image';
 import http from './xior-instance';
 
 export default async function Home() {
-  await http.get('https://google.com');
+  await http.get('https://google.com', { next: { revalidate: 3600, tags: ['collection'] } });
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
