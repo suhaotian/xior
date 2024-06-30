@@ -118,7 +118,7 @@ describe('xior error retry plugin tests', () => {
     assert.strictEqual(error?.response?.data.count, 3);
   });
 
-  it("should use the latest request inteceptor's request config when error retry", async () => {
+  it("should use the latest request interceptors's request config when error retry", async () => {
     await xior.get('/reset-error', { baseURL });
 
     const instance = xior.create({ baseURL });

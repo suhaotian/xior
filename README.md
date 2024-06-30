@@ -267,7 +267,7 @@ http.interceptors.request.use((config) => {
   });
 });
 
-// One more inteceptor for request
+// One more interceptors for request
 http.interceptors.request.use((config) => {
   return config;
 });

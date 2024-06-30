@@ -64,7 +64,7 @@ This version is about Axios compatible issue in some cases. Fixing https://githu
 
 - feat(core): add `try catch` to `await fetch(...)`
 
-Now you can capture the request error in response intecetptors, and the error will be `TypeError`:
+Now you can capture the request error in response interceptors, and the error will be `TypeError`:
 
 ```ts
 import xior, { merge } from 'xior';
@@ -139,7 +139,7 @@ http.plugins.use(
 ## v0.3.0 2024/03/24
 
 - fix(core): POST/DELETE/PUT/PATCH methods when `content-type=application/x-www-form-urlencoded`, use formData to in body(previous put in url)
-- refactor(core): default request inteceptor should work before send fetch
+- refactor(core): default request interceptors should work before send fetch
 - refactor(core): remove `_data` in request config
 - refactor(core): remove `encode` in options, use `paramsSerializer` option instead
 - chore(README): add encrypt/decrypt example to README
