@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.5.3
+
+- fix(core): RangeError: Invalid time value. ref [issues/23](https://github.com/suhaotian/xior/issues/23)
+
 ## v0.5.2 2024/7/9
 
 - Fix(core): if params include `Date` value, call `.toISOString()` and utils `encodeParams` support options `allowDot: true` and `arrayFormat: 'indices' | 'repeat' | 'brackets'`(default is `'indices'`). Fix [issues/22](https://github.com/suhaotian/xior/issues/22) and [issues/23](https://github.com/suhaotian/xior/issues/23)

@@ -182,4 +182,8 @@ describe('encodeParams()', function () {
     // assert.strictEqual(stringify(data.query), stringify(params));
     // assert.strictEqual(stringify(data.query), encodeParams(params));
   });
+
+  it('encode with illegal date should not throw error', () => {
+    encodeParams({ d: new Date('illegal') });
+  });
 });
