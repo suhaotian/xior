@@ -19,12 +19,13 @@ export function encodeParams<T = any>(
   const encodedParams = [];
   const encodeURIFn = encodeURI ? encodeURIComponent : (v: string) => v;
   const paramsIsArray = Array.isArray(params);
+  const { arrayFormat, allowDots, serializeDate } = options || {};
   const getKey = (key: string) => {
-    if (options?.allowDots && !paramsIsArray) return `.${key}`;
+    if (allowDots && !paramsIsArray) return `.${key}`;
     if (paramsIsArray) {
-      if (options?.arrayFormat === 'brackets') {
+      if (arrayFormat === 'brackets') {
         return `[]`;
-      } else if (options?.arrayFormat === 'repeat') {
+      } else if (arrayFormat === 'repeat') {
         return ``;
       }
     }
@@ -37,7 +38,7 @@ export function encodeParams<T = any>(
         const encodedKey = parentKey ? `${parentKey}${getKey(key)}` : (key as string);
 
         if (value instanceof Date) {
-          value = options?.serializeDate ? options?.serializeDate(value) : value.toISOString();
+          value = serializeDate ? serializeDate(value) : value.toISOString();
         }
         if (typeof value === 'object') {
           // If the value is an object or array, recursively encode its contents
