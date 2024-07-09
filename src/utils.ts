@@ -19,17 +19,22 @@ export function encodeParams<T = any>(
   const encodedParams = [];
   const encodeURIFn = encodeURI ? encodeURIComponent : (v: string) => v;
   const paramsIsArray = Array.isArray(params);
+  const getKey = (key: string) => {
+    if (options?.allowDots && !paramsIsArray) return `.${key}`;
+    if (paramsIsArray) {
+      if (options?.arrayFormat === 'brackets') {
+        return `[]`;
+      } else if (options?.arrayFormat === 'repeat') {
+        return ``;
+      }
+    }
+    return `[${key}]`;
+  };
   for (const key in params) {
     if (Object.prototype.hasOwnProperty.call(params, key)) {
       let value = (params as any)[key];
       if (value !== undefinedValue) {
-        const encodedKey = encodeKey(
-          parentKey,
-          key,
-          paramsIsArray,
-          options?.arrayFormat,
-          options?.allowDots
-        );
+        const encodedKey = parentKey ? `${parentKey}${getKey(key)}` : (key as string);
 
         if (value instanceof Date) {
           value = options?.serializeDate ? options?.serializeDate(value) : value.toISOString();
@@ -48,29 +53,6 @@ export function encodeParams<T = any>(
 
   return encodedParams.join('&');
 }
-
-const encodeKey = (
-  parentKey: string | null,
-  key: string,
-  isArray: boolean,
-  arrayFormat?: 'indices' | 'brackets' | 'repeat',
-  allowDots?: boolean
-) => {
-  if (!parentKey) return key;
-  // arrayFormat = arrayFormat || 'indices';
-  const getKey = (key: string) => {
-    if (allowDots && !isArray) return `.${key}`;
-    if (isArray) {
-      if (arrayFormat === 'brackets') {
-        return `[]`;
-      } else if (arrayFormat === 'repeat') {
-        return ``;
-      }
-    }
-    return `[${key}]`;
-  };
-  return `${parentKey}${getKey(key)}`;
-};
 
 export function trimUndefined(obj: any): any {
   if (Array.isArray(obj)) {
