@@ -37,7 +37,7 @@ export function encodeParams<T = any>(
       if (value !== undefinedValue) {
         const encodedKey = parentKey ? `${parentKey}${getKey(key)}` : (key as string);
 
-        if (value instanceof Date) {
+        if (!isNaN(value) && value instanceof Date) {
           value = serializeDate ? serializeDate(value) : value.toISOString();
         }
         if (typeof value === 'object') {
