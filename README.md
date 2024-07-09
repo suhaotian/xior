@@ -1,5 +1,5 @@
 [![Build](https://github.com/suhaotian/xior/actions/workflows/check.yml/badge.svg)](https://github.com/suhaotian/xior/actions/workflows/check.yml)
-[![minzipped size](https://badgen.net/badge/gzip/3kb/green)](https://bundlephobia.com/package/xior)
+[![minzipped size](https://badgen.net/badge/gzip/4kb/green)](https://bundlephobia.com/package/xior)
 [![npm version](https://badgen.net/npm/v/xior?color=green)](https://www.npmjs.com/package/xior)
 ![Downloads](https://img.shields.io/npm/dm/xior.svg?style=flat)
 ![typescript](https://badgen.net/badge/icon/typescript?icon=typescript&label&color=blue)
@@ -15,7 +15,7 @@ A lite request lib based on **fetch** with plugin support and similar API to axi
 - 🫡 **Similar axios API**: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`
 - 🤙 Support timeout and cancel requests
 - 🥷 Plugin support: error retry, cache, throttling, dedupe, error cache, mock and easily create custom plugins
-- 🚀 Lightweight (~8KB, Gzip ~3kb)
+- 🚀 Lightweight (~12KB, Gzip ~4kb)
 - 👊 Unit tested and strongly typed 💪
 
 ## Table of Contents
