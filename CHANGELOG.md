@@ -1,5 +1,40 @@
 # CHANGELOG 📝
 
+## v0.5.2 2024/7/9
+
+- Fix(core): if params include `Date` value, call `.toISOString()` and utils `encodeParams` support options `allowDot: true` and `arrayFormat: 'indices' | 'repeat' | 'brackets'`(default is `'indices'`). Fix [issues/22](https://github.com/suhaotian/xior/issues/22) and [issues/23](https://github.com/suhaotian/xior/issues/23)
+
+---
+
+**Code example:**
+
+```ts
+import xior, { encodeParams } from 'xior';
+
+const filter = {
+  ids: [1, 2, 3],
+  dateFrom: new Date(),
+  dateTo: new Date(),
+};
+
+const http = xior.create({
+  paramsSerializer: (params: any) =>
+    encodeParams(params, true, null, {
+      allowDots: false,
+      arrayFormat: 'indices', // 'indices' | 'repeat' | 'brackets'
+      serializeDate: (date) => date.toISOString(),
+    }),
+});
+
+/* 
+'indices': { a: ['b', 'c'] } -> 'a[0]=b&a[1]=c'
+'brackets': { a: ['b', 'c'] } -> 'a[]=b&a[]=c'
+'repeat': { a: ['b', 'c'] } -> 'a=b&a=c'
+*/
+
+http.get('https://example.com', { params: { filter } });
+```
+
 ## v0.5.1 2024/5/28
 
 - Feat(core): if request config `withCredentials: true`, before useless, now will set fetch config `credentials: 'include'`. Fix [issues/19](https://github.com/suhaotian/xior/issues/19)
