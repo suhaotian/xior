@@ -8,31 +8,39 @@ const undefinedValue = undefined;
 export function encodeParams<T = any>(
   params: T,
   encodeURI = true,
-  parentKey: string | null = null
+  parentKey: string | null = null,
+  options?: {
+    allowDots?: boolean;
+    serializeDate?: (value: Date) => string;
+    arrayFormat?: 'indices' | 'repeat' | 'brackets';
+  }
 ): string {
   if (params === undefinedValue || params === null) return '';
   const encodedParams = [];
-  const encodeURIFunc = encodeURI ? encodeURIComponent : (v: string) => v;
-
+  const encodeURIFn = encodeURI ? encodeURIComponent : (v: string) => v;
+  const paramsIsArray = Array.isArray(params);
   for (const key in params) {
     if (Object.prototype.hasOwnProperty.call(params, key)) {
-      const value = (params as any)[key];
+      let value = (params as any)[key];
       if (value !== undefinedValue) {
-        const encodedKey = parentKey ? `${parentKey}[${encodeURIFunc(key)}]` : encodeURIFunc(key);
+        const encodedKey = encodeKey(
+          parentKey,
+          key,
+          paramsIsArray,
+          options?.arrayFormat,
+          options?.allowDots
+        );
 
+        if (value instanceof Date) {
+          value = options?.serializeDate ? options?.serializeDate(value) : value.toISOString();
+        }
         if (typeof value === 'object') {
           // If the value is an object or array, recursively encode its contents
-          const result = encodeParams(value, encodeURI, encodedKey);
+          const result = encodeParams(value, encodeURI, encodedKey, options);
           if (result !== '') encodedParams.push(result);
-        } else if (Array.isArray(value)) {
-          // If the value is an array, encode each element individually
-          value.forEach((element, index) => {
-            const arrayKey = `${encodedKey}[${index}]`;
-            encodedParams.push(`${encodeURIFunc(arrayKey)}=${encodeURIFunc(element)}`);
-          });
         } else {
           // Otherwise, encode the key-value pair
-          encodedParams.push(`${encodeURIFunc(encodedKey)}=${encodeURIFunc(value)}`);
+          encodedParams.push(`${encodeURIFn(encodedKey)}=${encodeURIFn(value)}`);
         }
       }
     }
@@ -40,6 +48,29 @@ export function encodeParams<T = any>(
 
   return encodedParams.join('&');
 }
+
+const encodeKey = (
+  parentKey: string | null,
+  key: string,
+  isArray: boolean,
+  arrayFormat?: 'indices' | 'brackets' | 'repeat',
+  allowDots?: boolean
+) => {
+  if (!parentKey) return key;
+  // arrayFormat = arrayFormat || 'indices';
+  const getKey = (key: string) => {
+    if (allowDots && !isArray) return `.${key}`;
+    if (isArray) {
+      if (arrayFormat === 'brackets') {
+        return `[]`;
+      } else if (arrayFormat === 'repeat') {
+        return ``;
+      }
+    }
+    return `[${key}]`;
+  };
+  return `${parentKey}${getKey(key)}`;
+};
 
 export function trimUndefined(obj: any): any {
   if (Array.isArray(obj)) {

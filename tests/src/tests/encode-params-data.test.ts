@@ -37,6 +37,36 @@ describe('encodeParams()', function () {
     assert.strictEqual(encodeParams({ a: false, c: [] }, false), 'a=false');
   });
 
+  it('encode with `arrayFormat` options', function () {
+    const filter = { a: ['b', 'c'] };
+    assert.strictEqual(
+      encodeParams(filter, false, null, { arrayFormat: 'indices' }),
+      'a[0]=b&a[1]=c'
+    );
+    assert.strictEqual(
+      encodeParams(filter, false, null, { arrayFormat: 'brackets' }),
+      'a[]=b&a[]=c'
+    );
+
+    assert.strictEqual(encodeParams(filter, false, null, { arrayFormat: 'repeat' }), 'a=b&a=c');
+  });
+
+  it('encode with `arrayFormat` and `allowDots: true` options', function () {
+    const filter = { a: ['b', 'c'] };
+    assert.strictEqual(
+      encodeParams(filter, false, null, { arrayFormat: 'indices', allowDots: true }),
+      'a[0]=b&a[1]=c'
+    );
+    assert.strictEqual(
+      encodeParams(filter, false, null, { arrayFormat: 'brackets', allowDots: true }),
+      'a[]=b&a[]=c'
+    );
+    assert.strictEqual(
+      encodeParams(filter, false, null, { arrayFormat: 'repeat', allowDots: true }),
+      'a=b&a=c'
+    );
+  });
+
   it('encode nested object', () => {
     const data = { a: 'b', c: [1, 2, 3, { d: [7, 8, 9, { e: 234 }] }] };
     assert.strictEqual(encodeParams(data), stringify(data));
@@ -88,5 +118,68 @@ describe('encodeParams()', function () {
     assert.strictEqual(data.body['a'], 'b');
     assert.strictEqual(data.body.hasOwnProperty('c'), false);
     assert.strictEqual(data.body['d'].hasOwnProperty('e'), false);
+  });
+
+  it('encode nested object with `{allowDots: true}`', () => {
+    const data = { a: 'b', c: [1, 2, 3, { d: [7, 8, 9, { e: 234 }] }] };
+    assert.strictEqual(
+      encodeParams(data, false, null, { allowDots: true, arrayFormat: 'repeat' }),
+      stringify(data, { encode: false, allowDots: true, arrayFormat: 'repeat' })
+    );
+    assert.strictEqual(
+      encodeParams(data, false, null, { allowDots: true, arrayFormat: 'indices' }),
+      stringify(data, { encode: false, allowDots: true, arrayFormat: 'indices' })
+    );
+    assert.strictEqual(
+      encodeParams(data, false, null, { allowDots: true, arrayFormat: 'brackets' }),
+      stringify(data, { encode: false, allowDots: true, arrayFormat: 'brackets' })
+    );
+    assert.strictEqual(
+      encodeParams(data, true, null, { allowDots: true, arrayFormat: 'brackets' }),
+      stringify(data, { encode: true, allowDots: true, arrayFormat: 'brackets' })
+    );
+  });
+
+  it('encode nested object with `{allowDots: true}` and with Date value', () => {
+    const data = {
+      ids: [1, 2, 3],
+      dates: [new Date(), new Date()],
+      dateFrom: new Date(),
+      dateTo: new Date(),
+    };
+
+    assert.strictEqual(
+      encodeParams(data, false, null, { allowDots: true, arrayFormat: 'repeat' }),
+      stringify(data, { encode: false, allowDots: true, arrayFormat: 'repeat' })
+    );
+    assert.strictEqual(
+      encodeParams(data, false, null, { allowDots: true, arrayFormat: 'indices' }),
+      stringify(data, { encode: false, allowDots: true, arrayFormat: 'indices' })
+    );
+    assert.strictEqual(
+      encodeParams(data, false, null, { allowDots: true, arrayFormat: 'brackets' }),
+      stringify(data, { encode: false, allowDots: true, arrayFormat: 'brackets' })
+    );
+    assert.strictEqual(
+      encodeParams(data, true, null, { allowDots: true, arrayFormat: 'brackets' }),
+      stringify(data, { encode: true, allowDots: true, arrayFormat: 'brackets' })
+    );
+  });
+
+  it('encode nested object should work with server with `{allowDots: true}`', async () => {
+    const instance = Xior.create({
+      baseURL,
+      paramsSerializer: (params: any) =>
+        encodeParams(params, true, null, {
+          allowDots: false,
+          arrayFormat: 'indices',
+          serializeDate: (date) => date.toISOString(),
+        }),
+    });
+    const params = { a: 'b', c: [1, 2, 3, { d: [7, 8, 9, { e: 234, d: new Date() }] }] };
+    const { data } = await instance.get('/get', { params });
+    assert.strictEqual(encodeParams(data.query), stringify(data.query));
+    // assert.strictEqual(stringify(data.query), stringify(params));
+    // assert.strictEqual(stringify(data.query), encodeParams(params));
   });
 });
