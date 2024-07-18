@@ -79,6 +79,23 @@ describe('xior tests', () => {
       assert.strictEqual(data.query.d, '4');
     });
 
+    it('POST should work when body is `URLSearchParams`', async () => {
+      const { data } = await xiorInstance.post<{
+        method: string;
+        body: any;
+        query: Record<string, any>;
+      }>('/post', new URLSearchParams({ a: '1', b: '2' }), {
+        params: { c: 3, d: 4 },
+      });
+      assert.strictEqual(data.method, 'post');
+      assert.strictEqual(Object.keys(data.query).length, 2);
+      assert.strictEqual(Object.keys(data.body).length, 2);
+      assert.strictEqual(data.body.a, '1');
+      assert.strictEqual(data.body.b, '2');
+      assert.strictEqual(data.query.c, '3');
+      assert.strictEqual(data.query.d, '4');
+    });
+
     it('DELETE should work', async () => {
       const { data } = await xiorInstance.delete<{
         method: string;

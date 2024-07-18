@@ -15,13 +15,17 @@ export function likeGET(method = 'GET') {
   return ['HEAD', 'GET', 'OPTIONS'].includes(method);
 }
 
+const supportURLSearchParams = typeof URLSearchParams !== 'undefined';
+
 export default async function defaultRequestInterceptor(req: XiorInterceptorRequestConfig) {
   const paramsSerializer = req.paramsSerializer || encodeParams;
   const encodeURI = req.encodeURI !== false;
   const method = req.method ? req.method.toUpperCase() : 'GET';
   let _url = req.url || '';
   const url = _url;
-  const data = req.data;
+  const isUrlSearchParams =
+    supportURLSearchParams && req.data && req.data instanceof URLSearchParams;
+  const data = isUrlSearchParams ? Object.fromEntries(req.data) : req.data;
   let _data = data;
   const headers = req?.headers || {};
   let newParams = req.params || {};
@@ -41,7 +45,7 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
       }
     }
     if (!contentType) {
-      contentType = isGet ? formUrl : jsonType;
+      contentType = isGet || isUrlSearchParams ? formUrl : jsonType;
       headers[ContentTypeKey] = contentType;
     }
     if (typeof data === 'object') {
