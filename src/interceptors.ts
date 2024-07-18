@@ -8,8 +8,6 @@ const appPrefix = 'application/';
 const formUrl = `${appPrefix}x-www-form-urlencoded`;
 const jsonType = `${appPrefix}json`;
 // const formType = 'multipart/form-data';
-const ContentTypeKey = 'Content-Type';
-const LowerCaseContentTypeKey = ContentTypeKey.toLowerCase();
 
 export function likeGET(method = 'GET') {
   return ['HEAD', 'GET', 'OPTIONS'].includes(method);
@@ -31,23 +29,24 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
   let newParams = req.params || {};
   const isGet = likeGET(method);
   if (data && !(data instanceof FormData)) {
-    let contentType = '';
+    let contentType = '',
+      contentTypeKey = 'content-type';
     if (req?.headers) {
-      const contentTypeKey = Object.keys(req.headers).find((key) => {
-        return key.toLowerCase() === LowerCaseContentTypeKey;
+      const key = Object.keys(req.headers).find((key) => {
+        return key.toLowerCase() === contentTypeKey;
       });
-      if (contentTypeKey) {
-        contentType = req.headers[contentTypeKey];
-        req.headers[ContentTypeKey] = contentType;
-        if (contentTypeKey !== ContentTypeKey) {
-          delete req.headers[contentTypeKey];
-        }
+      if (key) {
+        contentTypeKey = key;
+        contentType = req.headers[key];
       }
     }
-    if (!contentType) {
-      contentType = isGet || isUrlSearchParams ? formUrl : jsonType;
-      headers[ContentTypeKey] = contentType;
+    if (isUrlSearchParams) {
+      contentType = formUrl;
+    } else if (!contentType) {
+      contentType = isGet ? formUrl : jsonType;
     }
+    headers[contentTypeKey] = contentType;
+
     if (typeof data === 'object') {
       if (isGet && req.params) {
         newParams = merge({}, data || {}, newParams);
