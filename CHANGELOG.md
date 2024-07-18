@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.5.4
+
+- feat(core): Support `URLSearchParams` Fix [issues/26](https://github.com/suhaotian/xior/issues/26)
+
 ## v0.5.3
 
 - fix(core): RangeError: Invalid time value. ref [issues/23](https://github.com/suhaotian/xior/issues/23)
