@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.5.5
+
+- Refactor: `content-type` detecting code improve and decrease size
+
 ## v0.5.4
 
 - feat(core): Support `URLSearchParams` Fix [issues/26](https://github.com/suhaotian/xior/issues/26)
