@@ -3,7 +3,6 @@
 [![npm version](https://badgen.net/npm/v/xior?color=green)](https://www.npmjs.com/package/xior)
 ![Downloads](https://img.shields.io/npm/dm/xior.svg?style=flat)
 ![typescript](https://badgen.net/badge/icon/typescript?icon=typescript&label&color=blue)
-![license](https://badgen.net/npm/license/xior?color=blue)
 
 ## Intro
 
