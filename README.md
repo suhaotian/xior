@@ -1,5 +1,5 @@
 [![Build](https://github.com/suhaotian/xior/actions/workflows/check.yml/badge.svg)](https://github.com/suhaotian/xior/actions/workflows/check.yml)
-[![minzipped size](https://deno.bundlejs.com/badge?q=xior@0.5.4&badge=detailed&badge-style=for-the-badge)](https://bundlejs.com/?q=xior%400.5.4)
+[![Size](https://deno.bundlejs.com/badge?q=xior@0.5.4&badge=detailed)](https://bundlejs.com/?q=xior%400.5.4)
 [![npm version](https://badgen.net/npm/v/xior?color=green)](https://www.npmjs.com/package/xior)
 ![Downloads](https://img.shields.io/npm/dm/xior.svg?style=flat)
 ![typescript](https://badgen.net/badge/icon/typescript?icon=typescript&label&color=blue)
