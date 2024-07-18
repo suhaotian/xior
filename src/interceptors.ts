@@ -40,12 +40,10 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
         contentType = req.headers[key];
       }
     }
-    if (isUrlSearchParams) {
-      contentType = formUrl;
-    } else if (!contentType) {
-      contentType = isGet ? formUrl : jsonType;
+    if (!contentType || isUrlSearchParams) {
+      contentType = isGet || isUrlSearchParams ? formUrl : jsonType;
+      headers[contentTypeKey] = contentType;
     }
-    headers[contentTypeKey] = contentType;
 
     if (typeof data === 'object') {
       if (isGet && req.params) {
