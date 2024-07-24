@@ -45,6 +45,7 @@ A lite request lib based on **fetch** with plugin support and similar API to axi
   - [Auth refresh token plugin(from community)](#auth-refresh-token-pluginfrom-community)
   - [Auth refresh token plugin(built-in)](#auth-refresh-token-pluginbuilt-in)
   - [Create your own custom plugin](#create-your-own-custom-plugin)
+  - [Cleanup plugins example](#cleanup-plugins-example)
 - [Helper functions](#helper-functions)
 - [FAQ](#faq)
   - [1. Is **xior** 100% compatiable with `axios`?](#1-is-xior-100-compatiable-with-axios)
@@ -270,6 +271,12 @@ http.interceptors.request.use((config) => {
 http.interceptors.request.use((config) => {
   return config;
 });
+
+// Cleanup interceptors:
+const handler = http.interceptors.request.use((config) => {
+  return config;
+});
+http.interceptors.request.eject(handler);
 ```
 
 Response interceptors:
@@ -294,6 +301,12 @@ http.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Cleanup interceptors:
+const handler = http.interceptors.response.use((res) => {
+  return res;
+});
+http.interceptors.response.eject(handler);
 ```
 
 ### Timeout and Cancel request
@@ -1267,6 +1280,18 @@ instance.plugins.use(function logPlugin(adapter, instance) {
 2. Check built-in plugins get more inspiration:
 
 Check [src/plugins](./src/plugins)
+
+### Cleanup plugins example
+
+```ts
+import xior from 'xior';
+import errorRetryPlugin from 'xior/plugins/error-retry';
+const http = xior.create();
+
+const pluginHandler = http.plugins.use(errorRetryPlugin());
+
+http.plugins.eject(pluginHandler);
+```
 
 ## Helper functions
 
