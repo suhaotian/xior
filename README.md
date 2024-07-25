@@ -272,6 +272,12 @@ http.interceptors.request.use((config) => {
 http.interceptors.request.use((config) => {
   return config;
 });
+
+async function getData() {
+  const { data } = await http.get('/');
+  console.log(data);
+  return data;
+}
 ```
 
 Response interceptors:
@@ -296,6 +302,12 @@ http.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+async function getData() {
+  const { data } = await http.get('/');
+  console.log(data);
+  return data;
+}
 ```
 
 ### Cleanup interceptors
