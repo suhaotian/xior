@@ -31,6 +31,7 @@ A lite request lib based on **fetch** with plugin support and similar API to axi
   - [Get response headers](#get-response-headers)
   - [Upload file](#upload-file)
   - [Using interceptors](#using-interceptors)
+  - [Cleanup interceptors](#cleanup-interceptors)
   - [Timeout and Cancel request](#timeout-and-cancel-request)
   - [Encrypt and Decrypt Example](#encrypt-and-decrypt-example)
   - [Tips: Make your SSR(Server-side Rendering) app more stable and faster](#tips-make-your-ssrserver-side-rendering-app-more-stable-and-faster)
@@ -271,12 +272,6 @@ http.interceptors.request.use((config) => {
 http.interceptors.request.use((config) => {
   return config;
 });
-
-// Cleanup interceptors:
-const handler = http.interceptors.request.use((config) => {
-  return config;
-});
-http.interceptors.request.eject(handler);
 ```
 
 Response interceptors:
@@ -301,12 +296,30 @@ http.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+```
 
-// Cleanup interceptors:
-const handler = http.interceptors.response.use((res) => {
+### Cleanup interceptors
+
+```ts
+import xior from 'xior';
+
+const http = xior.create({});
+
+// Cleanup request interceptors
+const handler1 = http.interceptors.request.use((config) => {
+  return config;
+});
+http.interceptors.request.eject(handler1);
+// Cleanup all request interceptors
+// http.interceptors.request.clear()
+
+// Cleanup response interceptors
+const handler2 = http.interceptors.response.use((res) => {
   return res;
 });
-http.interceptors.response.eject(handler);
+http.interceptors.response.eject(handler2);
+// Cleanup all response interceptors
+// http.interceptors.response.clear()
 ```
 
 ### Timeout and Cancel request
@@ -1289,8 +1302,10 @@ import errorRetryPlugin from 'xior/plugins/error-retry';
 const http = xior.create();
 
 const pluginHandler = http.plugins.use(errorRetryPlugin());
-
 http.plugins.eject(pluginHandler);
+
+// Cleanup all plugins
+// http.plugins.clear()
 ```
 
 ## Helper functions
