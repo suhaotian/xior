@@ -430,7 +430,7 @@ instance.interceptors.response.use((res) => {
 
 ### Tips: Make your SSR(Server-side Rendering) app more stable and faster
 
-How we do that? Use the xior's plugins:
+How we do that? Use xior's plugins:
 
 1. If `GET` data error, at least have chance to retry;
 2. If retry still error, return the cache data(if have) to prevent page crash or show error page;

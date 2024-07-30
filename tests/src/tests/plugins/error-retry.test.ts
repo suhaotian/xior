@@ -150,23 +150,28 @@ describe('xior error retry plugin tests', () => {
       xiorErrorRetryPlugin({
         retryInterval: (count) => count * 500,
         onRetry(config, error, count) {
+          (config as any).isRetry = true;
+          (config as any).retryCount = count;
           console.log(`${config.method} ${config.url} retry ${count} times`);
         },
       })
     );
     let error: XiorError | undefined = undefined;
     let msg = '';
+    let config: XiorRequestConfig = {};
     try {
-      const { data } = await instance.post('/retry-error', { count: 3 }, {
+      const { data, config: _config } = await instance.post('/retry-error', { count: 3 }, {
         retryTimes: 3,
         enableRetry: true,
       } as any);
+      config = _config;
       msg = data.msg;
     } catch (e) {
       if (isXiorError(e)) {
         error = e as XiorError;
       }
     }
+    assert.strictEqual((config as any).isRetry, true);
     assert.strictEqual(errorCount, 1);
     assert.strictEqual(msg, 'ok');
     assert.strictEqual(typeof error === 'undefined', true);
@@ -177,6 +182,10 @@ describe('xior error retry plugin tests', () => {
     instance.plugins.use(
       xiorErrorRetryPlugin({
         retryInterval: 1000,
+        onRetry(config, error, count) {
+          (config as any).isRetry = true;
+          (config as any).retryCount = count;
+        },
       })
     );
     await instance.get('/reset-error');
@@ -197,5 +206,6 @@ describe('xior error retry plugin tests', () => {
     assert.strictEqual(typeof error !== 'undefined', true);
     assert.strictEqual(error?.response?.data.errorCount, 0);
     assert.strictEqual(error?.response?.data.count, 3);
+    assert.strictEqual((error?.response?.config as any)?.isRetry, undefined);
   });
 });
