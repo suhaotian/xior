@@ -193,9 +193,7 @@ export class Xior {
       }, timeout);
       signals.push(controller.signal);
     }
-    if (reqSignal) {
-      signals.push(reqSignal);
-    }
+    if (reqSignal) signals.push(reqSignal);
     signal = signals[0];
     if (signals.length > 1) {
       signal = anySignal(signals, () => {
@@ -203,7 +201,7 @@ export class Xior {
       });
     }
 
-    let finalURL = _url || url || '';
+    let finalURL = _url || url;
     if (requestConfig.baseURL && !isAbsoluteURL(finalURL)) {
       finalURL = joinPath(requestConfig.baseURL, finalURL);
     }
