@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.6.0
+
+- Fix: response interceptors should run after plugins(Fix https://github.com/suhaotian/xior/issues/29)
+
 ## v0.5.5
 
 - Refactor: `content-type` detecting code improve and decrease size

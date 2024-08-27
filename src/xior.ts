@@ -49,7 +49,7 @@ export class Xior {
   static create(options?: XiorRequestConfig): XiorInstance {
     return new Xior(options);
   }
-  static VERSION = '0.5.5';
+  static VERSION = '0.6.0';
 
   config?: XiorRequestConfig;
   defaults: XiorInterceptorRequestConfig;
