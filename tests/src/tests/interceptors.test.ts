@@ -321,4 +321,26 @@ describe('interceptors', function () {
     instance.interceptors.response.clear();
     assert.equal(instance.RESI, 0);
   });
+
+  it('response interceptors should run after plugins', async function () {
+    const instance = xior.create();
+    instance.plugins.use((adapter) => async (request) => {
+      return {
+        status: 200,
+        statusText: 'OK',
+        data: {
+          foo: 'bar',
+        },
+      } as XiorResponse;
+    });
+    let msg = '';
+    instance.interceptors.response.use(function (res) {
+      msg = 'Response Interceptor Is Working!';
+      return res;
+    });
+
+    await instance.request('/get');
+
+    assert.equal(msg, 'Response Interceptor Is Working!');
+  });
 });

@@ -124,6 +124,7 @@ describe('xior error retry plugin tests', () => {
     const instance = xior.create({ baseURL });
 
     let S = '';
+    let responseInterceptorCount = 0;
     let errorCount = 0;
 
     instance.interceptors.request.use((config) => {
@@ -134,8 +135,9 @@ describe('xior error retry plugin tests', () => {
     });
 
     instance.interceptors.response.use(
-      (config) => {
-        return config;
+      (res) => {
+        responseInterceptorCount++;
+        return res;
       },
       (e) => {
         errorCount++;
@@ -173,6 +175,11 @@ describe('xior error retry plugin tests', () => {
     }
     assert.strictEqual((config as any).isRetry, true);
     assert.strictEqual(errorCount, 1);
+    assert.strictEqual(
+      responseInterceptorCount,
+      1,
+      'responseInterceptorCount should run only once'
+    );
     assert.strictEqual(msg, 'ok');
     assert.strictEqual(typeof error === 'undefined', true);
   });

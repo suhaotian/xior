@@ -36,7 +36,7 @@ describe('xior mock plguin basics tests', () => {
   it('calls interceptors', async () => {
     instance.interceptors.response.use(
       function (config) {
-        return config.data;
+        return config;
       },
       function (error) {
         return Promise.reject(error);

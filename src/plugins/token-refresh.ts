@@ -26,7 +26,7 @@ export default function setupTokenRefresh(
     async (error: AxiosError) => {
       if (error?.response && shouldRefresh(error.response)) {
         if (refreshingToken) {
-          await new Promise<void>((resolve, reject) => {
+          await new Promise<void>((resolve) => {
             queue.push(resolve);
           });
         } else {

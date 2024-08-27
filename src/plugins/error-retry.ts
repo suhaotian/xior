@@ -91,6 +91,13 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
           }
           count++;
           if (onRetry) onRetry(config, error as XiorError, count);
+          try {
+            for (const item of instance?.RESI || []) {
+              await item?.onRejected?.(error as XiorError);
+            }
+          } catch (_e) {
+            //
+          }
           return handleRequest(true);
         }
       }

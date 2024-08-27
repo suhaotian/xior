@@ -164,7 +164,18 @@ export class Xior {
     this.P.forEach((plugin) => {
       finalPlugin = plugin(finalPlugin, this);
     });
-    return finalPlugin<T>(requestConfig);
+    let promise = finalPlugin<T>(requestConfig);
+
+    let i = 0;
+    const responseInterceptorChain: any[] = [];
+    this.RESI.forEach(function pushResponseInterceptors(interceptor) {
+      responseInterceptorChain.push(interceptor.fn, interceptor.onRejected);
+    });
+    while (responseInterceptorChain.length > i) {
+      promise = promise.then(responseInterceptorChain[i++], responseInterceptorChain[i++]);
+    }
+
+    return promise;
   }
 
   async fetch<T>(requestConfig: XiorRequestConfig): Promise<XiorResponse<T>> {
@@ -206,8 +217,7 @@ export class Xior {
       finalURL = joinPath(requestConfig.baseURL, finalURL);
     }
 
-    let i = 0;
-    let promise = fetch(finalURL, {
+    return fetch(finalURL, {
       body: isGet ? undefinedValue : _data,
       ...rest,
       signal,
@@ -242,15 +252,6 @@ export class Xior {
         if (timer) clearTimeout(timer);
         (signal as ClearableSignal)?.clear?.();
       });
-    const responseInterceptorChain: any[] = [];
-    this.RESI.forEach(function pushResponseInterceptors(interceptor) {
-      responseInterceptorChain.push(interceptor.fn, interceptor.onRejected);
-    });
-    while (responseInterceptorChain.length > i) {
-      promise = promise.then(responseInterceptorChain[i++], responseInterceptorChain[i++]);
-    }
-
-    return promise;
   }
 
   /** create get method */
