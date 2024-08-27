@@ -25,6 +25,9 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
    * add `isGet: true`, can let the plugins know this is also a `GET` API
    */
   isGet?: boolean;
+
+  /** response interceptors already run? */
+  _RESIRun?: boolean;
 }
 
 export type XiorInterceptorRequestConfig<T = any> = XiorRequestConfig & {

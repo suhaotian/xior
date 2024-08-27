@@ -59,7 +59,17 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
           }
         }
         try {
-          return await adapter(config);
+          let promise = adapter(config);
+          let i = 0;
+          const responseInterceptorChain: any[] = [];
+          instance?.RESI.forEach(function pushResponseInterceptors(interceptor) {
+            responseInterceptorChain.push(interceptor.fn, interceptor.onRejected);
+          });
+          while (responseInterceptorChain.length > i) {
+            promise = promise.then(responseInterceptorChain[i++], responseInterceptorChain[i++]);
+          }
+          config._RESIRun = true;
+          return await promise;
         } catch (error) {
           const isGet = config.method === 'GET' || Boolean(config.isGet);
           const t = typeof enableRetry;
@@ -91,13 +101,6 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
           }
           count++;
           if (onRetry) onRetry(config, error as XiorError, count);
-          try {
-            for (const item of instance?.RESI || []) {
-              await item?.onRejected?.(error as XiorError);
-            }
-          } catch (_e) {
-            //
-          }
           return handleRequest(true);
         }
       }

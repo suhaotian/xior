@@ -166,13 +166,15 @@ export class Xior {
     });
     let promise = finalPlugin<T>(requestConfig);
 
-    let i = 0;
-    const responseInterceptorChain: any[] = [];
-    this.RESI.forEach(function pushResponseInterceptors(interceptor) {
-      responseInterceptorChain.push(interceptor.fn, interceptor.onRejected);
-    });
-    while (responseInterceptorChain.length > i) {
-      promise = promise.then(responseInterceptorChain[i++], responseInterceptorChain[i++]);
+    if (!requestConfig._RESIRun) {
+      let i = 0;
+      const responseInterceptorChain: any[] = [];
+      this.RESI.forEach(function pushResponseInterceptors(interceptor) {
+        responseInterceptorChain.push(interceptor.fn, interceptor.onRejected);
+      });
+      while (responseInterceptorChain.length > i) {
+        promise = promise.then(responseInterceptorChain[i++], responseInterceptorChain[i++]);
+      }
     }
 
     return promise;

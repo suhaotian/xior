@@ -215,4 +215,30 @@ describe('xior error retry plugin tests', () => {
     assert.strictEqual(error?.response?.data.count, 3);
     assert.strictEqual((error?.response?.config as any)?.isRetry, undefined);
   });
+
+  it('Custom response interceptors throw error should retry default', async () => {
+    const instance = xior.create({ baseURL });
+    instance.interceptors.response.use((res) => {
+      return Promise.reject(new XiorError('Something wrong', res.config, res));
+    });
+    instance.plugins.use(
+      xiorErrorRetryPlugin({
+        retryInterval: 200,
+        onRetry(config, error, count) {
+          console.log('onRetry error', error);
+          (config as any).isRetry = true;
+          (config as any).retryCount = count;
+        },
+      })
+    );
+    let error: XiorError | undefined = undefined;
+    try {
+      await instance.get('/reset-error');
+    } catch (e) {
+      error = e as XiorError;
+    }
+    assert.strictEqual(typeof error !== 'undefined', true);
+    assert.strictEqual((error?.response?.config as any)?.isRetry, true);
+    assert.strictEqual((error?.response?.config as any)?.retryCount, 2);
+  });
 });
