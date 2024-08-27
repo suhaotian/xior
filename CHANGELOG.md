@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.6.1
+
+- Fix: response interceptors should run only once with error-retry plugin
+
 ## v0.6.0
 
 - Fix: response interceptors should run after plugins(Fix https://github.com/suhaotian/xior/issues/29)
