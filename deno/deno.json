@@ -7,9 +7,9 @@
     "./plugins/error-retry": "./plugins/error-retry.ts",
     "./plugins/throttle": "./plugins/throttle.ts",
     "./plugins/dedupe": "./plugins/dedupe.ts",
-    "./plugins/cache": "./plugins/cache.ts",
+    "./plugins/cache": "./plugins/cache/index.ts",
     "./plugins/progress": "./plugins/progress.ts",
-    "./plugins/mock": "./plugins/mock.ts",
+    "./plugins/mock": "./plugins/mock/index.ts",
     "./plugins/error-cache": "./plugins/error-cache.ts",
     "./plugins/token-refresh": "./plugins/token-refresh.ts"
   },
