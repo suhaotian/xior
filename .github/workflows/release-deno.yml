@@ -27,8 +27,16 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
 
-      - name: Install and Update ./src/*.ts for deno
-        run: npm install && node scripts/replace-files-for-deno.mjs
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Update ./src/*.ts for deno
+        run: node scripts/replace-files-for-deno.mjs
 
       - name: Move files to ./deno folder
         run: cp ./deno/deno.json README.md Mock-plugin.md CHANGELOG.md ./src/ && rm -f package.json
