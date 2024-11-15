@@ -112,7 +112,8 @@
     "promise-polyfill": "^8.3.0",
     "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4",
-    "change-case": "^5.4.4"
+    "change-case": "^5.4.4",
+    "typedoc": "^0.26.11"
   },
   "prettier": {
     "printWidth": 100,
