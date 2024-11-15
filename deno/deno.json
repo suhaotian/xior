@@ -1,5 +1,6 @@
 {
   "name": "@suhaotian/xior",
+  "license": "mit",
   "version": "0.1.0",
   "exports": {
     ".": "./index.ts",
