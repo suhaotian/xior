@@ -7,15 +7,23 @@ async function start() {
 
   await Promise.all(
     files.map(async (item) => {
-      const content = await fs.readFile(item, 'utf8');
-      return fs.writeFile(item, content.replace(/'xior\/utils'/g, "'./utils'"));
+      let content = await fs.readFile(item, 'utf8');
+      content = content.replace(/'xior\/utils'/g, "'./utils'");
+      content = content.replace(/from '\.(.*)';/g, (a, b, c) => {
+        return "from '." + b + ".ts';";
+      });
+      return fs.writeFile(item, content);
     })
   );
 
   await Promise.all(
     pluginFiles.map(async (item) => {
-      const content = await fs.readFile(item, 'utf8');
-      return fs.writeFile(item, content.replace(/'xior\/utils'/g, "'../utils'"));
+      let content = await fs.readFile(item, 'utf8');
+      content = content.replace(/'xior\/utils'/g, "'../utils'");
+      content = content.replace(/from '\.(.*)';/g, (a, b, c) => {
+        return "from '." + b + ".ts';";
+      });
+      return fs.writeFile(item, content);
     })
   );
 }
