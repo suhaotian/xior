@@ -1,0 +1,16 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "./src/index.ts",
+    "./src/utils.ts",
+    "./src/plugins/dedupe.ts",
+    "./src/plugins/error-retry.ts",
+    "./src/plugins/error-cache.ts",
+    "./src/plugins/progress.ts",
+    "./src/plugins/throttle.ts",
+    "./src/plugins/token-refresh.ts",
+    "./src/plugins/cache/index.ts",
+    "./src/plugins/mock/index.ts",
+  ],
+  "out": "doc"
+}
