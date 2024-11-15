@@ -42,4 +42,4 @@ jobs:
         run: cp ./deno/deno.json README.md Mock-plugin.md CHANGELOG.md ./src/ && rm -f package.json
 
       - name: Publish package to JSR of deno
-        run: cd src && ls && npx jsr publish --allow-slow-types
+        run: cd src && ls && npx jsr publish --allow-slow-types --allow-dirty
