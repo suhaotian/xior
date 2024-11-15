@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - deno-jsr
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      id-token: write
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Move files to ./deno folder
+        run: cp ./deno/deno.json README.md Mock-plugin.md CHANGELOG.md ./src/ && rm -f package.json
+
+      - name: Publish package to JSR of deno
+        run: cd src && ls && npx jsr publish
