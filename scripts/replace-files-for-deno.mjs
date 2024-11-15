@@ -13,6 +13,7 @@ async function start() {
       content = content.replace(/from '\.(.*)';/g, (a, b, c) => {
         return "from '." + b + ".ts';";
       });
+      content = content.replace(/from 'xior';/g, "from './index.ts'");
       return fs.writeFile(item, content);
     })
   );
@@ -24,6 +25,7 @@ async function start() {
       content = content.replace(/from '\.(.*)';/g, (a, b, c) => {
         return "from '." + b + ".ts';";
       });
+      content = content.replace(/from 'xior';/g, "from '../index.ts'");
       return fs.writeFile(item, content);
     })
   );
@@ -36,6 +38,7 @@ async function start() {
       content = content.replace(/from '\.(.*)';/g, (a, b, c) => {
         return "from '." + b + ".ts';";
       });
+      content = content.replace(/from 'xior';/g, "from '../../index.ts'");
       return fs.writeFile(item, content);
     })
   );
