@@ -49,9 +49,7 @@ export default function xiorDedupePlugin(options: XiorDedupeOptions = {}): XiorP
         return adapter(config);
       }
       const key = buildSortedURL(
-        config.url && isAbsoluteURL(config.url)
-          ? config.url
-          : joinPath(config.baseURL || '', config.url || ''),
+        config.url && isAbsoluteURL(config.url) ? config.url : joinPath(config.baseURL, config.url),
         { a: config.data, b: config.params },
         paramsSerializer as (obj: Record<string, any>) => string
       );

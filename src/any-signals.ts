@@ -14,7 +14,7 @@ export function anySignal(
 ): ClearableSignal {
   const controller = new globalThis.AbortController();
 
-  function onAbort(reason: Error) {
+  function onAbort(reason?: Error) {
     controller.abort(reason);
     clear();
   }

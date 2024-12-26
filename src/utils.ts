@@ -64,7 +64,7 @@ export function trimUndefined(obj: any): any {
       if (value === undefinedValue) {
         delete obj[key];
       } else {
-        return trimUndefined(value);
+        trimUndefined(value);
       }
     });
   }
@@ -90,7 +90,8 @@ export function isAbsoluteURL(url: string) {
  * joinPath('/a/', '/b') -> '/a/b'
  * joinPath('/a', '/b') -> '/a/b'
  */
-export function joinPath(path1: string, path2: string) {
+export function joinPath(path1?: string, path2?: string) {
+  if (!path1) return path2 || '';
   if (!path2) return path1;
   return (path1.endsWith('/') ? path1 : path1 + '/') + (path2[0] === '/' ? path2.slice(1) : path2);
 }

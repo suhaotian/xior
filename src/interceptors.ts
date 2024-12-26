@@ -23,9 +23,9 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
   const url = _url;
   const isUrlSearchParams =
     supportURLSearchParams && req.data && req.data instanceof URLSearchParams;
-  const data = isUrlSearchParams ? Object.fromEntries(req.data) : req.data;
+  const data = isUrlSearchParams ? Object.fromEntries(req.data.entries()) : req.data;
   let _data = data;
-  const headers = req?.headers || {};
+  const headers = req?.headers ? { ...req.headers } : {};
   let newParams = req.params || {};
   const isGet = likeGET(method);
   if (data && !(data instanceof FormData)) {

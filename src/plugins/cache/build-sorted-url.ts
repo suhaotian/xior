@@ -1,18 +1,16 @@
 export default function buildSortedURL(
   url: string,
-  data: any,
+  data: Record<string, any> | null,
   paramsSerializer: (obj: Record<string, any>) => string
-) {
-  let builtURL = data ? paramsSerializer(data) : '';
-  if (builtURL) {
-    builtURL = url + (url.includes('?') ? '&' : '?') + builtURL;
-  }
+): string {
+  const serializedParams = data ? paramsSerializer(data) : '';
+  const separator = url.includes('?') ? '&' : '?';
+  const builtURL = serializedParams ? `${url}${separator}${serializedParams}` : url;
+
   const [urlPath, queryString] = builtURL.split('?');
 
-  if (queryString) {
-    const paramsPair = queryString.split('&');
-    return `${urlPath}?${paramsPair.sort().join('&')}`;
-  }
+  if (!queryString) return builtURL;
 
-  return builtURL || url;
+  const sortedParams = queryString.split('&').sort().join('&');
+  return `${urlPath}?${sortedParams}`;
 }

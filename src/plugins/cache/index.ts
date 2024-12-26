@@ -68,7 +68,7 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
         const index = buildSortedURL(
           config.url && isAbsoluteURL(config.url)
             ? config.url
-            : joinPath(config.baseURL || '', config.url || ''),
+            : joinPath(config.baseURL, config.url),
           { a: config.data, b: config.params },
           paramsSerializer as (obj: Record<string, any>) => string
         );
