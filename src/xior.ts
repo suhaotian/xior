@@ -1,15 +1,3 @@
-import {
-  ClearableSignal,
-  XiorTimeoutError,
-  anySignal,
-  isAbsoluteURL,
-  XiorError,
-  merge,
-  joinPath,
-  encodeParams,
-  // @ts-ignore
-} from 'xior/utils';
-
 import defaultRequestInterceptor from './interceptors';
 import type {
   XiorInterceptorOptions,
@@ -19,6 +7,16 @@ import type {
   XiorResponse,
   XiorResponseInterceptorConfig,
 } from './types';
+import {
+  ClearableSignal,
+  XiorTimeoutError,
+  anySignal,
+  isAbsoluteURL,
+  XiorError,
+  merge,
+  joinPath,
+  encodeParams,
+} from './utils';
 
 const undefinedValue = undefined;
 const supportAbortController = typeof AbortController !== `${undefinedValue}`;

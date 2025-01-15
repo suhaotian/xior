@@ -1,6 +1,6 @@
 import { lru } from 'tiny-lru';
 // @ts-ignore
-import { isAbsoluteURL, joinPath, buildSortedURL } from 'xior/utils';
+import { isAbsoluteURL, joinPath, buildSortedURL } from 'xior';
 
 import { ICacheLike } from './cache/utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../types';

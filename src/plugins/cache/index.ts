@@ -1,6 +1,6 @@
 import { lru } from 'tiny-lru';
 // @ts-ignore
-import { buildSortedURL, isAbsoluteURL, joinPath } from 'xior/utils';
+import { buildSortedURL, isAbsoluteURL, joinPath } from 'xior';
 
 import { ICacheLike } from './utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../../types';
@@ -28,6 +28,7 @@ declare module 'xior' {
   interface XiorResponse {
     fromCache?: boolean;
     cacheTime?: number;
+    cacheKey?: string;
   }
 }
 
@@ -62,17 +63,18 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
         enabled = t === 'undefined' ? isGet : Boolean(enableCache);
       }
 
+      let key = '';
       if (enabled) {
         const cache: ICacheLike<XiorPromise> = defaultCache;
 
-        const index = buildSortedURL(
+        key = buildSortedURL(
           config.url && isAbsoluteURL(config.url)
             ? config.url
             : joinPath(config.baseURL, config.url),
           { a: config.data, b: config.params },
           paramsSerializer as (obj: Record<string, any>) => string
         );
-        let responsePromise = cache.get(index);
+        let responsePromise = cache.get(key);
 
         if (!responsePromise || forceUpdate) {
           responsePromise = (async () => {
@@ -80,15 +82,15 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
               return await adapter(config);
             } catch (reason) {
               if ('delete' in cache) {
-                cache.delete(index);
+                cache.delete(key);
               } else {
-                cache.del(index);
+                cache.del(key);
               }
               throw reason;
             }
           })();
 
-          cache.set(index, responsePromise);
+          cache.set(key, responsePromise);
 
           return responsePromise;
         }
@@ -96,6 +98,8 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
         return responsePromise.then((res) => {
           (res as any).fromCache = true;
           (res as any).cacheTime = Date.now();
+          (res as any).cacheKey = key;
+
           return res;
         });
       }

@@ -1,5 +1,5 @@
 // @ts-ignore
-import { joinPath, isAbsoluteURL, buildSortedURL } from 'xior/utils';
+import { joinPath, isAbsoluteURL, buildSortedURL } from 'xior';
 
 import type { XiorPlugin, XiorRequestConfig } from '../types';
 

@@ -1,8 +1,5 @@
-// @ts-ignore
-import { encodeParams, merge } from 'xior/utils';
-
 import type { XiorInterceptorRequestConfig } from './types';
-import { trimUndefined } from './utils';
+import { trimUndefined, encodeParams, merge } from './utils';
 
 const appPrefix = 'application/';
 const formUrl = `${appPrefix}x-www-form-urlencoded`;

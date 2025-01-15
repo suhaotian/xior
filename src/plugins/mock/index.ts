@@ -9,7 +9,7 @@ import {
   joinPath,
   merge,
   // @ts-ignore
-} from 'xior/utils';
+} from 'xior';
 
 import { MockHeaders, StatusOrCallback, RequestOptions, RequestData, VERBS } from './types';
 import type {

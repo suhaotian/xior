@@ -1,5 +1,5 @@
 // @ts-ignore
-import { XiorError, delay } from 'xior/utils';
+import { XiorError, delay } from 'xior';
 
 import { XiorInterceptorRequestConfig, XiorPlugin, XiorRequestConfig } from '../types';
 
