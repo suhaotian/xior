@@ -1,5 +1,10 @@
 # CHANGELOG 📝
 
+## v0.6.2
+
+- Refactor: minor improvment
+- Refactor: use `'./utils'` instead of `'xior/utils'`, fix [Unable to resolve module xior/utils #34](https://github.com/suhaotian/xior/issues/34)
+
 ## v0.6.1
 
 - Fix: response interceptors should run only once with error-retry plugin

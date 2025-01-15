@@ -47,7 +47,7 @@ export class Xior {
   static create(options?: XiorRequestConfig): XiorInstance {
     return new Xior(options);
   }
-  static VERSION = '0.6.1';
+  static VERSION = '0.6.2';
 
   config?: XiorRequestConfig;
   defaults: XiorInterceptorRequestConfig;
