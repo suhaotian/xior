@@ -30,6 +30,12 @@ declare module 'xior' {
     cacheTime?: number;
     cacheKey?: string;
   }
+
+  interface XiorResponseInterceptorConfig {
+    fromCache?: boolean;
+    cacheTime?: number;
+    cacheKey?: string;
+  }
 }
 
 export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlugin {
@@ -79,7 +85,9 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
         if (!responsePromise || forceUpdate) {
           responsePromise = (async () => {
             try {
-              return await adapter(config);
+              const res = await adapter(config);
+              if (res) (res as any).cacheKey = key;
+              return res;
             } catch (reason) {
               if ('delete' in cache) {
                 cache.delete(key);
@@ -98,7 +106,7 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
         return responsePromise.then((res) => {
           (res as any).fromCache = true;
           (res as any).cacheTime = Date.now();
-          (res as any).cacheKey = key;
+          if (key) (res as any).cacheKey = key;
 
           return res;
         });

@@ -1,8 +1,13 @@
 # CHANGELOG 📝
 
+## v0.6.3
+
+- Refactor: Add `cacheKey` to cache plugin for persistent cache
+- Tests: Add persistent cache test
+
 ## v0.6.2
 
-- Refactor: minor improvment
+- Refactor: minor improvement
 - Refactor: use `'./utils'` instead of `'xior/utils'`, fix [Unable to resolve module xior/utils #34](https://github.com/suhaotian/xior/issues/34)
 
 ## v0.6.1
@@ -11,7 +16,7 @@
 
 ## v0.6.0
 
-- Fix: response interceptors should run after plugins(Fix https://github.com/suhaotian/xior/issues/29)
+- Fix: response interceptors should run after plugins (Fix https://github.com/suhaotian/xior/issues/29)
 
 ## v0.5.5
 
@@ -27,7 +32,7 @@
 
 ## v0.5.2 2024/7/9
 
-- Fix(core): if params include `Date` value, call `.toISOString()` and utils `encodeParams` support options `allowDot: true` and `arrayFormat: 'indices' | 'repeat' | 'brackets'`(default is `'indices'`). Fix [issues/22](https://github.com/suhaotian/xior/issues/22) and [issues/23](https://github.com/suhaotian/xior/issues/23)
+- Fix(core): if params include `Date` value, call `.toISOString()` and utils `encodeParams` support options `allowDot: true` and `arrayFormat: 'indices' | 'repeat' | 'brackets'` (default is `'indices'`). Fix [issues/22](https://github.com/suhaotian/xior/issues/22) and [issues/23](https://github.com/suhaotian/xior/issues/23)
 
 ---
 
@@ -100,12 +105,12 @@ import { Xior } from 'xior';
 
 This version is about Axios compatible issue in some cases. Fixing https://github.com/suhaotian/xior/issues/12 and https://github.com/suhaotian/xior/issues/15.
 
-- Feat(core): when `responseType: 'blob' | 'arrarybuffer'` then the `resposne.data` is `Blob` and `ArrayBuffer`, no need `response.blob()` or `response.arraybuffer()` anymore.
-- Fix(interceptors): make sure the multiple response interceptors chain behaviour same as axios's interceptors.
+- Feat(core): when `responseType: 'blob' | 'arraybuffer'` then the `response.data` is `Blob` and `ArrayBuffer`, no need `response.blob()` or `response.arraybuffer()` anymore.
+- Fix(interceptors): make sure the multiple response interceptors chain behavior same as axios's interceptors.
 
 ## v0.3.13 2024/04/21
 
-- Feat(plugin): add custom paramaters of LRU in plugins: cache, error-cache, throttle
+- Feat(plugin): add custom parameters of LRU in plugins: cache, error-cache, throttle
 - Feat(plugin): add `cacheTime` to cache plugin
 
 ## v0.3.12 2024/04/13
@@ -198,7 +203,7 @@ http.plugins.use(
 
 ## v0.3.0 2024/03/24
 
-- fix(core): POST/DELETE/PUT/PATCH methods when `content-type=application/x-www-form-urlencoded`, use formData to in body(previous put in url)
+- fix(core): POST/DELETE/PUT/PATCH methods when `content-type=application/x-www-form-urlencoded`, use formData to in body (previous put in url)
 - refactor(core): default request interceptors should work before send fetch
 - refactor(core): remove `_data` in request config
 - refactor(core): remove `encode` in options, use `paramsSerializer` option instead
@@ -212,7 +217,7 @@ http.plugins.use(
 ## v0.2.5 2024/03/20
 
 - fix(plugin): fix `error-retry` plugin default options override bugs
-- fix(plugin): `requestConfig` with plugins should always get latest config from `requestinterceptors`
+- fix(plugin): `requestConfig` with plugins should always get latest config from `request interceptors`
 
 ## v0.2.4
 
@@ -227,13 +232,13 @@ http.plugins.use(
 
 - fix(plugin): fix `error-retry` plugin, `TypeError` should retry too
 - feat(plugin): `error-retry` plugin, `retryInterval` can be `function` too, and add `onRetry` to options
-- chore(core): minor improvment
+- chore(core): minor improvement
 
 ## v0.2.1 2024/03/17
 
 - feat(core): support direct call `xior.get/post..` similar to `axios.get/post..` API, no need create instance at first
 - fix(core): `DELETE` and `OPTIONS` method's data option should be url encoded format like `GET` / `HEAD`
-- feat: add `UMD`(Universal Module Definition) format bundle(now you can directly load xior in browser)
+- feat: add `UMD` (Universal Module Definition) format bundle (now you can directly load xior in browser)
 - feat: add `VERSION` to `xior`, now you can get current version of xior by: `import xior from 'xior'; console.log(xior.VERSION)`
 - feat(new plugin): add `error-cache` plugin
 - feat(new plugin): add `dedupe` plugin
@@ -295,7 +300,7 @@ instance.options('/options_api_path', { params: { a: 1, text: 'this is data' } }
 
 ## v0.1.1 2024-03-04
 
-- Fix: compatiable `delete` method with axios, and `delete` method shouldn't have body
+- Fix: compatible `delete` method with axios, and `delete` method shouldn't have body
 - Chore: remove unused code in core module
 
 **Breaking change:**
@@ -319,15 +324,15 @@ http.delete('/', { params: { a: 1, b: 2 } });
 
 ## v0.0.9 2024-02-29
 
-- fix(plugins): resolve import plugins not found file error in expo(react-native) project
+- fix(plugins): resolve import plugins not found file error in expo (react-native) project
 
 ## v0.0.8 2024-02-29
 
-- feat(core): compatiable axios's options: `paramsSerializer` and `withCredentials`
+- feat(core): compatible axios's options: `paramsSerializer` and `withCredentials`
 
 ## v0.0.7 2024-02-27
 
-- feat(core): suport nested object paramaters in default
+- feat(core): support nested object parameters in default
 - feat(plugin): implemented **error retry**, **cache**, **throttle**, and upload/download **progress** plugins
 - fix(build): resolved Bunchee build output error with Vite projects.
 - chore(doc): updated README.md
@@ -344,7 +349,7 @@ http.delete('/', { params: { a: 1, b: 2 } });
 
 ## v0.0.4
 
-- feat: support url as first paramter in xiorInstance.request('/url')
+- feat: support url as first parameter in xiorInstance.request('/url')
 - feat: Removed first parameter `url` from `xiorInstance.request`
 
 ## v0.0.3

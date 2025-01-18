@@ -1,5 +1,5 @@
 [![Build](https://github.com/suhaotian/xior/actions/workflows/check.yml/badge.svg)](https://github.com/suhaotian/xior/actions/workflows/check.yml)
-[![Size](https://deno.bundlejs.com/badge?q=xior@0.6.2&badge=detailed)](https://bundlejs.com/?q=xior%400.6.2)
+[![Size](https://deno.bundlejs.com/badge?q=xior@0.6.3&badge=detailed)](https://bundlejs.com/?q=xior%400.6.3)
 [![npm version](https://badgen.net/npm/v/xior?color=green)](https://www.npmjs.com/package/xior)
 ![Downloads](https://img.shields.io/npm/dm/xior.svg?style=flat)
 ![typescript](https://badgen.net/badge/icon/typescript?icon=typescript&label&color=blue)
@@ -41,6 +41,7 @@ A lite request lib based on **fetch** with plugin support and similar API to axi
   - [Request dedupe plugin](#request-dedupe-plugin)
   - [Error cache plugin](#error-cache-plugin)
   - [Cache plugin](#cache-plugin)
+  - [Persist cache data](#persist-cache-data)
   - [Upload and download progress plugin](#upload-and-download-progress-plugin)
   - [Mock plugin](#mock-plugin)
   - [Auth refresh token plugin(from community)](#auth-refresh-token-pluginfrom-community)
@@ -95,12 +96,12 @@ yarn add xior
 
 #### Use CDN
 
-> Since v0.2.1, xior support UMD format
+> Since v0.2.1, xior supports UMD format
 
 Use jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.2/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/dist/xior.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -115,7 +116,7 @@ Use jsDelivr CDN:
 Use unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.6.2/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.6.3/dist/xior.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -131,7 +132,7 @@ Use unpkg CDN:
 import xior from 'xior';
 
 export const xiorInstance = xior.create({
-  baseURL: 'https://apiexampledomian.com/api',
+  baseURL: 'https://apiexampledomain.com/api',
   headers: {
     // put your common custom headers here
   },
@@ -187,7 +188,7 @@ async function run() {
 import xior from 'xior';
 
 export const xiorInstance = xior.create({
-  baseURL: 'https://apiexampledomian.com/api',
+  baseURL: 'https://apiexampledomain.com/api',
 });
 
 function setAccessToken(token: string) {
@@ -207,7 +208,7 @@ function removeUserToken() {
 import xior from 'xior';
 
 const xiorInstance = xior.create({
-  baseURL: 'https://apiexampledomian.com/api',
+  baseURL: 'https://apiexampledomain.com/api',
 });
 
 const { data, headers } = await xiorInstance.get('/');
@@ -598,9 +599,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.2/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.2/plugins/error-retry.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/plugins/error-retry.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -613,10 +614,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.6.2/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.6.3/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.6.2/plugins/error-retry.umd.js"></script>
+<script src="https://unpkg.com/xior@0.6.3/plugins/error-retry.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -709,9 +710,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.2/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.2/plugins/throttle.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/plugins/throttle.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -724,10 +725,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.6.2/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.6.3/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.6.2/plugins/throttle.umd.js"></script>
+<script src="https://unpkg.com/xior@0.6.3/plugins/throttle.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -782,9 +783,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.2/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.2/plugins/dedupe.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/plugins/dedupe.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -797,10 +798,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.6.2/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.6.3/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.6.2/plugins/dedupe.umd.js"></script>
+<script src="https://unpkg.com/xior@0.6.3/plugins/dedupe.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -862,9 +863,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.2/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.2/plugins/error-cache.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/plugins/error-cache.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -877,10 +878,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.6.2/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.6.3/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.6.2/plugins/error-cache.umd.js"></script>
+<script src="https://unpkg.com/xior@0.6.3/plugins/error-cache.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -942,7 +943,7 @@ http.post('/users', { enableCache: true }); // make real http request
 const res = await http.post('/users', { enableCache: true }); // get cache from previous request
 if (res.fromCache) {
   // if `fromCache` is true, means data from cache!
-  console.log('data from cache!', res.cacheTime);
+  console.log('data from cache!', res.cacheKey, res.cacheTime);
 }
 ```
 
@@ -973,6 +974,12 @@ const cacheA = lru(100);
 // a actual request made and cached due to force update configured
 http.get('/users', { enableCache: true, defaultCache: cacheA, forceUpdate: true });
 ```
+
+### Persist cache data
+
+How to persist cache data to the filesystem to prevent loss after a server restart?
+
+For more details, refer to this GitHub issue: [GitHub issue 33](https://github.com/suhaotian/xior/issues/33)
 
 ### Upload and download progress plugin
 
@@ -1025,9 +1032,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.2/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.2/plugins/progress.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/plugins/progress.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1040,10 +1047,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.6.2/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.6.3/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.6.2/plugins/progress.umd.js"></script>
+<script src="https://unpkg.com/xior@0.6.3/plugins/progress.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1150,9 +1157,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.2/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.2/plugins/mock.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/plugins/mock.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1165,10 +1172,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.6.2/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.6.3/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.6.2/plugins/mock.umd.js"></script>
+<script src="https://unpkg.com/xior@0.6.3/plugins/mock.umd.js"></script>
 
 <!-- Usage -->
 <script>
