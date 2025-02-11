@@ -6,14 +6,14 @@
 
 ## Intro
 
-A lite request lib based on **fetch** with plugin support and similar API to axios.
+A lite http request lib based on **fetch** with plugin support and similar API to axios.
 
 **Features:**
 
 - 🔥 Use **fetch**
 - 🫡 **Similar axios API**: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`
-- 🤙 Support timeout and cancel requests
-- 🥷 Plugin support: error retry, cache, throttling, dedupe, error cache, mock and easily create custom plugins
+- 🤙 Supports timeout, canceling requests, and nested query encoding
+- 🥷 Supports plugins: error retry, cache, throttling, deduplication, error cache, mock, and custom plugins
 - 🚀 Lightweight (~8KB, Gzip ~3kb)
 - 👊 Unit tested and strongly typed 💪
 
@@ -149,8 +149,8 @@ GET
 async function run() {
   const { data } = await xiorInstance.get('/');
 
-  // with params
-  const { data: data2 } = await xiorInstance.get('/', { params: { a: 1, b: 2 } });
+  // with params and support nested params
+  const { data: data2 } = await xiorInstance.get('/', { params: { a: 1, b: 2, c: { d: 1 } } });
 
   // with headers
   const { data: data3 } = await xiorInstance.get('/', {
