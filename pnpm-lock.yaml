@@ -67,8 +67,8 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2
       lfs-auto-track:
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^1.1.1
+        version: 1.1.1
       lint-staged:
         specifier: ^15.2.7
         version: 15.2.7
@@ -2815,6 +2815,11 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  husky@9.1.7:
+    resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -3138,8 +3143,8 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
-  lfs-auto-track@1.1.0:
-    resolution: {integrity: sha512-l4EkG1C91owCEMzO3sz3/+pqdj+YDfHFgnDZUFqoUSXINCWdIK5m25P2v9hLrHi9DXrFX36jxeehomSThMSuxg==}
+  lfs-auto-track@1.1.1:
+    resolution: {integrity: sha512-EXx2OYXq8iWJz1DkbGYJIF0qE7io0qtg6AdTpLx/kZUsewHkkv/kfi+CK8A9dRFiQbuVgfcm9ArZRTug87bJ0g==}
     hasBin: true
 
   lilconfig@2.1.0:
@@ -7606,6 +7611,8 @@ snapshots:
 
   husky@9.1.1: {}
 
+  husky@9.1.7: {}
+
   iconv-lite@0.4.24:
     dependencies:
       safer-buffer: 2.1.2
@@ -7921,8 +7928,9 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  lfs-auto-track@1.1.0:
+  lfs-auto-track@1.1.1:
     dependencies:
+      husky: 9.1.7
       mime: 3.0.0
 
   lilconfig@2.1.0: {}

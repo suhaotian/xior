@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   check:
-    name: Build
+    name: Tests & Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
