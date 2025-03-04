@@ -1,4 +1,4 @@
-import { XiorInstance, Fetch } from './xior';
+import { XiorInstance, type Fetch } from './xior';
 
 export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
   /** fetch?: @type Fetch  */

@@ -4,9 +4,17 @@
   "scripts": {
     "build:lib": "rm -rf lib && tsc --project tsconfig.json",
     "test": "pnpm build:lib && node --test ./lib",
-    "test:cache": "pnpm build:lib && node --test ./lib/plugins/persist-cache.test.js"
+    "test:cache": "pnpm build:lib && node --test ./lib/plugins/persist-cache.test.js",
+    "test:undici-fetch": "pnpm build:lib && node --test ./lib/undici-fetch.test.js",
+    "test:node-fetch": "pnpm build:lib && node --test ./lib/node-fetch.test.js"
   },
   "devDependencies": {
-    "xior": "workspace:*"
+    "xior": "workspace:*",
+    "node-fetch": "^2.7.0",
+    "undici": "^7.4.0",
+    "qs": "^6.14.0",
+    "@types/qs": "^6.9.18",
+    "@types/node-fetch": "^2.6.12",
+    "form-data": "^4.0.2"
   }
 }

@@ -89,6 +89,16 @@ export async function startServer(port: number) {
     });
   });
 
+  app.post('/form-data', upload.none(), (req, res) => {
+    console.log(req.url, req.headers['content-type']);
+    res.send({
+      // file: req.file,
+      query: req.query,
+      body: req.body,
+      headers: req.headers,
+    });
+  });
+
   let errorCount = 0;
   app.get('/reset-error', (req, res) => {
     errorCount = 0;
