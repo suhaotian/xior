@@ -1,7 +1,6 @@
 import assert from 'node:assert';
 import { after, before, describe, it } from 'node:test';
-// @ts-ignore
-import stringify from 'qs/lib/stringify';
+import { stringify } from 'qs';
 import { lru } from 'tiny-lru';
 import { Xior as xior, delay } from 'xior';
 import xiorCachePlugin from 'xior/plugins/cache';

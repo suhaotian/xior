@@ -5,8 +5,7 @@ import 'isomorphic-unfetch';
 import assert from 'node:assert';
 import { readFile } from 'node:fs/promises';
 import { before, after, describe, it } from 'node:test';
-// @ts-ignore
-import stringify from 'qs/lib/stringify';
+import { stringify } from 'qs';
 import xior, { merge } from 'xior';
 
 import { startServer } from './server';

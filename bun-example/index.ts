@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-// @ts-ignore
-import stringify from 'qs/lib/stringify';
+import { stringify } from 'qs';
 import xior, { merge, delay, buildSortedURL, encodeParams } from 'xior';
 import cachePlugin from 'xior/plugins/cache';
 import errorRetryPlugin from 'xior/plugins/error-retry';

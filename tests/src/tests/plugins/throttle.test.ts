@@ -1,7 +1,6 @@
 import assert from 'node:assert';
 import { after, before, describe, it } from 'node:test';
-// @ts-ignore
-import stringify from 'qs/lib/stringify';
+import { stringify } from 'qs';
 import { Xior, delay } from 'xior';
 import xiorThrottlePlugin from 'xior/plugins/throttle';
 

@@ -1,7 +1,6 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-// @ts-ignore
-import stringify from 'qs/lib/stringify';
+import { stringify } from 'qs';
 import { buildSortedURL } from 'xior';
 
 describe('build-sorted-url tests', () => {

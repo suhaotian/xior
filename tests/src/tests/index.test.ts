@@ -1,8 +1,7 @@
 import assert from 'node:assert';
 import { readFile, writeFile } from 'node:fs/promises';
 import { before, after, describe, it } from 'node:test';
-// @ts-ignore
-import stringify from 'qs/lib/stringify';
+import { stringify } from 'qs';
 import { isXiorError, merge, Xior } from 'xior';
 import errorRetryPlugin from 'xior/plugins/error-retry';
 
