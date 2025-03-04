@@ -51,7 +51,7 @@ A lite http request lib based on **fetch** with plugin support and similar API t
 - [Helper functions](#helper-functions)
 - [FAQ](#faq)
   - [1. Is **xior** 100% compatiable with `axios`?](#1-is-xior-100-compatiable-with-axios)
-  - [2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, or Nuxt.js?](#2-can-i-use-xior-in-projects-like-bun-expo-react-native-remixjs-nextjs-vue-or-nuxtjs)
+  - [2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, Nuxt.js or Tauri?](#2-can-i-use-xior-in-projects-like-bun-expo-react-native-remixjs-nextjs-vue-nuxtjs-or-tauri)
   - [3. How can I use custom fetch implementation or How to support **proxy** feature?](#3-how-can-i-use-custom-fetch-implementation-or-how-to-support-proxy-feature)
   - [4. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?](#4-how-do-i-handle-responses-with-types-like-stream-document-arraybuffer-or-blob)
   - [5. How do I support older browsers?](#5-how-do-i-support-older-browsers)
@@ -1355,14 +1355,16 @@ import {
 
 **No**, but **xior** offers a similar API like axios: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`.
 
-### 2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, or Nuxt.js?
+### 2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, Nuxt.js or Tauri?
 
 **Yes**, **xior** works anywhere where the native `fetch` API is supported.
 Even if the environment doesn't support `fetch`, you can use a `fetch` polyfill like for older browsers.
 
+For `Tauri`: check [3. How can I use custom fetch implementation or How to support **proxy** feature?](https://github.com/suhaotian/xior?tab=readme-ov-file#3-how-can-i-use-custom-fetch-implementation-or-how-to-support-proxy-feature)
+
 ### 3. How can I use custom fetch implementation or How to support **proxy** feature?
 
-To support **proxy** feature or custom fetch implementation, we can use `node-fetch` or node `undici` module's fetch implementation to replace the built-in `fetch`.
+To support **proxy** feature or custom fetch implementation, we can use `node-fetch`, node `undici`, or `@tauri-apps/plugin-http` module's fetch implementation to replace the built-in `fetch`.
 
 For example **undici**:
 
@@ -1421,7 +1423,7 @@ const xiorInstance = xior.create({
 });
 ```
 
-**Or you can use `@tauri-apps/plugin-http`'s fetch implementaion in Tauri.**:
+**Use `@tauri-apps/plugin-http`'s fetch implementaion in Tauri**:
 
 ```ts
 import { fetch } from '@tauri-apps/plugin-http';
