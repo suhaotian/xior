@@ -18,7 +18,10 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
    */
   responseType?: 'json' | 'text' | 'stream' | 'document' | 'arraybuffer' | 'blob' | 'original';
   data?: any;
-  /** encoded url with params */
+  /**
+   * @deprecated Internal use only
+   * encoded url with params
+   */
   _url?: string;
   /** @deprecated if `true`, will set `credentials=true`, or you can just use fetch's config `credentials: 'include' | 'omit' | 'same-origin'` */
   withCredentials?: boolean;
@@ -28,8 +31,11 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
    */
   isGet?: boolean;
 
-  /** response interceptors already run? */
-  _RESIRun?: boolean;
+  /**
+   * @deprecated Internal use only
+   * response interceptors already run?
+   */
+  _did?: boolean;
 }
 
 export type XiorInterceptorRequestConfig<T = any> = XiorRequestConfig & {

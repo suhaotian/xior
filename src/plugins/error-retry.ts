@@ -68,7 +68,7 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
           while (responseInterceptorChain.length > i) {
             promise = promise.then(responseInterceptorChain[i++], responseInterceptorChain[i++]);
           }
-          config._RESIRun = true;
+          config._did = true;
           return await promise;
         } catch (error) {
           const isGet = config.method === 'GET' || Boolean(config.isGet);

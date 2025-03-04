@@ -31,9 +31,7 @@ export function anySignal(
         onAbort(signal.reason);
       };
       unsubscribe.push(() => {
-        if (signal?.removeEventListener != null) {
-          signal.removeEventListener('abort', cb);
-        }
+        signal.removeEventListener?.('abort', cb);
       });
       signal.addEventListener('abort', cb);
     }

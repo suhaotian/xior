@@ -11,7 +11,7 @@ import {
   ClearableSignal,
   XiorTimeoutError,
   anySignal,
-  isAbsoluteURL,
+  isAbsoluteURL as isA,
   XiorError,
   merge,
   joinPath,
@@ -157,13 +157,13 @@ export class Xior {
       requestConfig = await item(requestConfig as XiorInterceptorRequestConfig);
     }
 
-    let finalPlugin = this.fetch.bind(this);
+    let finalPlugin = this.f.bind(this);
     this.P.forEach((plugin) => {
       finalPlugin = plugin(finalPlugin, this);
     });
     let promise = finalPlugin<T>(requestConfig);
 
-    if (!requestConfig._RESIRun) {
+    if (!requestConfig._did) {
       let i = 0;
       const responseInterceptorChain: any[] = [];
       this.RESI.forEach(function pushResponseInterceptors(interceptor) {
@@ -177,7 +177,7 @@ export class Xior {
     return promise;
   }
 
-  async fetch<T>(requestConfig: XiorRequestConfig): Promise<XiorResponse<T>> {
+  async f<T>(requestConfig: XiorRequestConfig): Promise<XiorResponse<T>> {
     const {
       url,
       method,
@@ -213,7 +213,7 @@ export class Xior {
     }
 
     let finalURL = _url || url;
-    if (requestConfig.baseURL && !isAbsoluteURL(finalURL)) {
+    if (requestConfig.baseURL && !isA(finalURL)) {
       finalURL = joinPath(requestConfig.baseURL, finalURL);
     }
 
