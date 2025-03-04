@@ -1,5 +1,14 @@
 # CHANGELOG 📝
 
+## v0.7.0
+
+- Feat: Add `fetch` option; now we can use `node-fetch` and `undici` as replacements for the built-in fetch to support the **proxy** feature, or you can easily use other fetch implementations. [How can I use custom fetch implementation or How to support **proxy** feature?](https://github.com/suhaotian/xior?tab=readme-ov-file#3-how-can-i-use-custom-fetch-implementation-or-how-to-support-proxy-feature)
+- Tests: Add tests for `node-fetch` and `undici` replacements.
+- Refactor: Minor improvement.
+- Build: Add sourcemap output by default with updated `bunchee` version.
+- README: Update README about `fetch` option.
+- Good to Know: Change internal properties `._RSIRun` to `_did` and `.fetch` to `._`.
+
 ## v0.6.3
 
 - Refactor: Add `cacheKey` to cache plugin for persistent cache

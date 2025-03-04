@@ -13,3 +13,4 @@ utils/
 !tests/src/tests/utils
 doc
 *.tsbuildinfo
+tauri-app

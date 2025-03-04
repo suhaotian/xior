@@ -1,5 +1,5 @@
 [![Build](https://github.com/suhaotian/xior/actions/workflows/check.yml/badge.svg)](https://github.com/suhaotian/xior/actions/workflows/check.yml)
-[![Size](https://deno.bundlejs.com/badge?q=xior@0.6.3&badge=detailed)](https://bundlejs.com/?q=xior%400.6.3)
+[![Size](https://deno.bundlejs.com/badge?q=xior@0.7.0&badge=detailed)](https://bundlejs.com/?q=xior%400.7.0)
 [![npm version](https://badgen.net/npm/v/xior?color=green)](https://www.npmjs.com/package/xior)
 ![Downloads](https://img.shields.io/npm/dm/xior.svg?style=flat)
 ![typescript](https://badgen.net/badge/icon/typescript?icon=typescript&label&color=blue)
@@ -52,7 +52,8 @@ A lite http request lib based on **fetch** with plugin support and similar API t
 - [FAQ](#faq)
   - [1. Is **xior** 100% compatiable with `axios`?](#1-is-xior-100-compatiable-with-axios)
   - [2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, or Nuxt.js?](#2-can-i-use-xior-in-projects-like-bun-expo-react-native-remixjs-nextjs-vue-or-nuxtjs)
-  - [3. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?](#3-how-do-i-handle-responses-with-types-like-stream-document-arraybuffer-or-blob)
+  - [3. How can I use custom fetch implementation or How to support **proxy** feature?](#3-how-can-i-use-custom-fetch-implementation-or-how-to-support-proxy-feature)
+  - [4. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?](#4-how-do-i-handle-responses-with-types-like-stream-document-arraybuffer-or-blob)
   - [5. How do I support older browsers?](#5-how-do-i-support-older-browsers)
   - [6. Why is xior named "xior"?](#6-why-is-xior-named-xior)
   - [7. Where can I ask additional questions?](#7-where-can-i-ask-additional-questions)
@@ -101,7 +102,7 @@ yarn add xior
 Use jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.7.0/dist/xior.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -116,7 +117,7 @@ Use jsDelivr CDN:
 Use unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.6.3/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.7.0/dist/xior.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -599,9 +600,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.7.0/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/plugins/error-retry.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.7.0/plugins/error-retry.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -614,10 +615,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.6.3/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.7.0/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.6.3/plugins/error-retry.umd.js"></script>
+<script src="https://unpkg.com/xior@0.7.0/plugins/error-retry.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -710,9 +711,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.7.0/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/plugins/throttle.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.7.0/plugins/throttle.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -725,10 +726,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.6.3/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.7.0/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.6.3/plugins/throttle.umd.js"></script>
+<script src="https://unpkg.com/xior@0.7.0/plugins/throttle.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -783,9 +784,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.7.0/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/plugins/dedupe.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.7.0/plugins/dedupe.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -798,10 +799,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.6.3/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.7.0/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.6.3/plugins/dedupe.umd.js"></script>
+<script src="https://unpkg.com/xior@0.7.0/plugins/dedupe.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -863,9 +864,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.7.0/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/plugins/error-cache.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.7.0/plugins/error-cache.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -878,10 +879,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.6.3/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.7.0/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.6.3/plugins/error-cache.umd.js"></script>
+<script src="https://unpkg.com/xior@0.7.0/plugins/error-cache.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1032,9 +1033,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.7.0/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/plugins/progress.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.7.0/plugins/progress.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1047,10 +1048,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.6.3/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.7.0/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.6.3/plugins/progress.umd.js"></script>
+<script src="https://unpkg.com/xior@0.7.0/plugins/progress.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1157,9 +1158,9 @@ Use CDN:
 Using jsDelivr CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/dist/xior.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.7.0/dist/xior.umd.js"></script>
 <!-- Load plugin -->
-<script src="https://cdn.jsdelivr.net/npm/xior@0.6.3/plugins/mock.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xior@0.7.0/plugins/mock.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1172,10 +1173,10 @@ Using jsDelivr CDN:
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/xior@0.6.3/dist/xior.umd.js"></script>
+<script src="https://unpkg.com/xior@0.7.0/dist/xior.umd.js"></script>
 
 <!-- Load plugin -->
-<script src="https://unpkg.com/xior@0.6.3/plugins/mock.umd.js"></script>
+<script src="https://unpkg.com/xior@0.7.0/plugins/mock.umd.js"></script>
 
 <!-- Usage -->
 <script>
@@ -1359,7 +1360,85 @@ import {
 **Yes**, **xior** works anywhere where the native `fetch` API is supported.
 Even if the environment doesn't support `fetch`, you can use a `fetch` polyfill like for older browsers.
 
-### 3. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?
+### 3. How can I use custom fetch implementation or How to support **proxy** feature?
+
+To support **proxy** feature or custom fetch implementation, we can use `node-fetch` or node `undici` module's fetch implementation to replace the built-in `fetch`.
+
+For example **undici**:
+
+```sh
+npm install undici
+```
+
+```ts
+import { fetch as undiciFetch, FormData, Agent, type RequestInit as RequestInit_ } from 'undici';
+
+/** For TypeScript types **/
+declare global {
+  interface RequestInit extends RequestInit_ {}
+}
+
+/** Create Agent **/
+const agent = new Agent({
+  connections: 10,
+});
+
+const xiorInstance = xior.create({
+  baseURL,
+  fetch: undiciFetch,
+  dispatcher: agent,
+});
+```
+
+For example **node-fetch**:
+
+```sh
+# For ESM module
+npm install node-fetch
+
+# For CommonJS module
+# npm install node-fetch@v2.7.0
+# npm install @types/node-fetch -D
+```
+
+```ts
+import nodeFetch, { RequestInit as RequestInit_ } from 'node-fetch';
+
+/** For TypeScript types **/
+declare global {
+  interface RequestInit extends RequestInit_ {}
+}
+
+/** Create Agent **/
+const agent = new Agent({
+  connections: 10,
+});
+
+const xiorInstance = xior.create({
+  baseURL,
+  fetch: nodeFetch,
+  dispatcher: agent,
+});
+```
+
+**Or you can use `@tauri-apps/plugin-http`'s fetch implementaion in Tauri.**:
+
+```ts
+import { fetch } from '@tauri-apps/plugin-http';
+import xior from 'xior';
+
+export const http = xior.create({
+  baseURL: 'https://www.tauri.app',
+  fetch,
+});
+
+async function test() {
+  const { data } = await http.get('/');
+  return data;
+}
+```
+
+### 4. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?
 
 When `{responseType: 'blob'| 'arraybuffer'}`:
 

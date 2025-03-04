@@ -9,3 +9,4 @@ packages:
   # No "extends" key found
   - '!./package.json'
   - '!./bun-example'
+  - '!tauri-app'

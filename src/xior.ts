@@ -48,7 +48,7 @@ export class Xior {
   static create(options?: XiorRequestConfig): XiorInstance {
     return new Xior(options);
   }
-  static VERSION = '0.6.3';
+  static VERSION = '0.7.0';
 
   config?: XiorRequestConfig;
   defaults: XiorInterceptorRequestConfig;
@@ -157,7 +157,7 @@ export class Xior {
       requestConfig = await item(requestConfig as XiorInterceptorRequestConfig);
     }
 
-    let finalPlugin = this.f.bind(this);
+    let finalPlugin = this._.bind(this);
     this.P.forEach((plugin) => {
       finalPlugin = plugin(finalPlugin, this);
     });
@@ -177,7 +177,8 @@ export class Xior {
     return promise;
   }
 
-  async f<T>(requestConfig: XiorRequestConfig): Promise<XiorResponse<T>> {
+  /** @deprecated for internal use only */
+  async _<T>(requestConfig: XiorRequestConfig): Promise<XiorResponse<T>> {
     const {
       url,
       method,
