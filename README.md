@@ -1405,6 +1405,8 @@ npm install node-fetch
 
 ```ts
 import nodeFetch, { RequestInit as RequestInit_ } from 'node-fetch';
+import http from 'node:http';
+import https from 'node:https';
 
 /** For TypeScript types **/
 declare global {
@@ -1412,14 +1414,24 @@ declare global {
 }
 
 /** Create Agent **/
-const agent = new Agent({
-  connections: 10,
+const httpAgent = new http.Agent({
+  keepAlive: true,
+});
+const httpsAgent = new https.Agent({
+  keepAlive: true,
 });
 
 const xiorInstance = xior.create({
   baseURL,
   fetch: nodeFetch,
-  dispatcher: agent,
+  // agent: httpAgent,
+  agent(_parsedURL) {
+    if (_parsedURL.protocol === 'http:') {
+      return httpAgent;
+    } else {
+      return httpsAgent;
+    }
+  },
 });
 ```
 
