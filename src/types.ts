@@ -1,6 +1,8 @@
-import { XiorInstance } from './xior';
+import { XiorInstance, Fetch } from './xior';
 
 export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
+  /** fetch?: @type Fetch  */
+  fetch?: (input: any, init?: any) => Promise<any>;
   url?: string;
   headers?: Record<string, any>;
   baseURL?: string;

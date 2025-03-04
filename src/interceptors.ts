@@ -1,5 +1,5 @@
 import type { XiorInterceptorRequestConfig } from './types';
-import { trimUndefined, encodeParams, merge } from './utils';
+import { trimUndefined, encodeParams, merge, keys } from './utils';
 
 const appPrefix = 'application/';
 const formUrl = `${appPrefix}x-www-form-urlencoded`;
@@ -15,7 +15,7 @@ const supportURLSearchParams = typeof URLSearchParams !== 'undefined';
 export default async function defaultRequestInterceptor(req: XiorInterceptorRequestConfig) {
   const paramsSerializer = req.paramsSerializer || encodeParams;
   const encodeURI = req.encodeURI !== false;
-  const method = req.method ? req.method.toUpperCase() : 'GET';
+  const method = req.method && req.method.toUpperCase();
   let _url = req.url || '';
   const url = _url;
   const isUrlSearchParams =
@@ -25,11 +25,12 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
   const headers = req?.headers ? { ...req.headers } : {};
   let newParams = req.params || {};
   const isGet = likeGET(method);
-  if (data && !(data instanceof FormData)) {
+  const isFormData = typeof data?.append === 'function';
+  if (data && !isFormData) {
     let contentType = '',
       contentTypeKey = 'content-type';
     if (req?.headers) {
-      const key = Object.keys(req.headers).find((key) => {
+      const key = keys(req.headers).find((key) => {
         return key.toLowerCase() === contentTypeKey;
       });
       if (key) {
@@ -44,7 +45,7 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
 
     if (typeof data === 'object') {
       if (isGet && req.params) {
-        newParams = merge({}, data || {}, newParams);
+        newParams = merge({}, data, newParams);
       }
       if (contentType === jsonType) {
         _data = JSON.stringify(trimUndefined(data));
@@ -54,7 +55,7 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
     }
   }
 
-  if (Object.keys(newParams).length > 0) {
+  if (keys(newParams).length > 0) {
     const result = paramsSerializer(newParams, encodeURI);
     _url += _url.includes('?') ? `&${result}` : `?${result}`;
   }

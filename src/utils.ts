@@ -35,7 +35,7 @@ export function encodeParams<T = any>(
     if (Object.prototype.hasOwnProperty.call(params, key)) {
       let value = (params as any)[key];
       if (value !== undefinedValue) {
-        const encodedKey = parentKey ? `${parentKey}${getKey(key)}` : (key as string);
+        const encodedKey = parentKey ? `${parentKey}${getKey(key)}` : encodeURIFn(key as string);
 
         if (!isNaN(value) && value instanceof Date) {
           value = serializeDate ? serializeDate(value) : value.toISOString();
@@ -55,11 +55,15 @@ export function encodeParams<T = any>(
   return encodedParams.join('&');
 }
 
+export function keys(o: object) {
+  return Object.keys(o);
+}
+
 export function trimUndefined(obj: any): any {
   if (Array.isArray(obj)) {
     return obj.map(trimUndefined);
   } else if (obj && typeof obj === 'object') {
-    Object.keys(obj).forEach((key) => {
+    keys(obj).forEach((key) => {
       const value = obj[key];
       if (value === undefinedValue) {
         delete obj[key];
@@ -99,7 +103,7 @@ export function joinPath(path1?: string, path2?: string) {
 export class XiorError<T = any> extends Error {
   request?: XiorRequestConfig;
   config?: XiorRequestConfig;
-  response?: XiorResponse;
+  response?: XiorResponse<T>;
 
   constructor(message: string, request?: XiorRequestConfig, response?: XiorResponse<T>) {
     super(message);
@@ -109,16 +113,14 @@ export class XiorError<T = any> extends Error {
     this.response = response;
   }
 }
-export class XiorTimeoutError extends XiorError {
-  constructor(message: string, request?: XiorRequestConfig, response?: XiorResponse) {
-    super(message);
+
+export class XiorTimeoutError<T = any> extends XiorError<T> {
+  constructor(message: string, request?: XiorRequestConfig, response?: XiorResponse<T>) {
+    super(message, request, response);
     this.name = 'XiorTimeoutError';
-    this.request = request;
-    this.config = request;
-    this.response = response;
   }
 }
 
 export function isXiorError(error: any) {
-  return error.name === 'XiorError' || error.name === 'XiorTimeoutError';
+  return error?.name === 'XiorError' || error?.name === 'XiorTimeoutError';
 }

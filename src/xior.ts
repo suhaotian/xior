@@ -21,6 +21,7 @@ import {
 const undefinedValue = undefined;
 const supportAbortController = typeof AbortController !== `${undefinedValue}`;
 export type XiorInstance = Xior;
+export type Fetch = typeof fetch;
 
 async function getResponseData(
   response: Response,
@@ -140,13 +141,11 @@ export class Xior {
     };
   }
 
-  async request<T>(options?: XiorRequestConfig | string) {
+  async request<T>(options: XiorRequestConfig | string) {
     let requestConfig: XiorRequestConfig = merge(
-      {},
       this.config || {},
-      this.defaults || {},
-      typeof options === 'string' ? { url: options } : options || {},
-      { headers: {}, params: {} }
+      this.defaults,
+      typeof options === 'string' ? { url: options } : options
     );
     if (requestConfig.withCredentials && !requestConfig.credentials) {
       requestConfig.credentials = 'include';
@@ -189,6 +188,7 @@ export class Xior {
       _data,
       _url,
       isGet,
+      fetch: _fetch,
       ...rest
     } = await defaultRequestInterceptor(requestConfig as XiorInterceptorRequestConfig);
     requestConfig._url = _url;
@@ -217,7 +217,7 @@ export class Xior {
       finalURL = joinPath(requestConfig.baseURL, finalURL);
     }
 
-    return fetch(finalURL, {
+    return ((_fetch as Fetch) || fetch)(finalURL, {
       body: isGet ? undefinedValue : _data,
       ...rest,
       signal,

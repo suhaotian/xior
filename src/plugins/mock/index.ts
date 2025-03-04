@@ -18,6 +18,7 @@ import type {
   XiorRequestConfig,
   XiorResponse,
 } from '../../types';
+import { keys } from '../../utils';
 import { XiorInstance } from '../../xior';
 
 export interface MockOptions {
@@ -71,7 +72,7 @@ export default class MockPlugin {
         const delayTime = handler[ReplyDelayLength - 1] || this.options?.delayResponse;
 
         if (handler.length === ReplyOnceLength) {
-          Object.keys(this.handlers).forEach((method) => {
+          keys(this.handlers).forEach((method) => {
             let index = this.handlers[method]?.indexOf(handler);
             index = index === undefined ? -1 : index;
             if (index > -1) {
@@ -450,7 +451,7 @@ export default class MockPlugin {
               };
             })()
           : new Headers();
-      Object.keys(handler[4]).forEach((key) => {
+      keys(handler[4]).forEach((key) => {
         headers.append(key, handler[4][key]);
       });
       handler[4] = headers;
@@ -493,7 +494,7 @@ export default class MockPlugin {
       const handlerHeaders = { ...(handler[1].headers || {}) };
 
       if (config.headers?.['Content-Type']) {
-        const contentType = Object.keys(handlerHeaders).find(
+        const contentType = keys(handlerHeaders).find(
           (key) => key.toLowerCase() === 'content-type'
         );
         if (!contentType) {
@@ -580,7 +581,7 @@ function turnObjToHeaders(objHeaders: Record<string, string>) {
           };
         })()
       : new Headers();
-  Object.keys(objHeaders).forEach((key) => {
+  keys(objHeaders).forEach((key) => {
     headers.append(key, objHeaders[key]);
   });
   return headers;

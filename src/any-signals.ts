@@ -12,7 +12,7 @@ export function anySignal(
   signals: (AbortSignal | undefined | null)[],
   cleanCb?: Function
 ): ClearableSignal {
-  const controller = new globalThis.AbortController();
+  const controller = new AbortController();
 
   function onAbort(reason?: Error) {
     controller.abort(reason);
@@ -40,9 +40,7 @@ export function anySignal(
   }
 
   function clear() {
-    unsubscribe.forEach((cb) => {
-      cb();
-    });
+    unsubscribe.forEach((cb) => cb());
     cleanCb?.();
   }
 
