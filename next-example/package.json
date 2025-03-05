@@ -15,7 +15,7 @@
     "xior": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "typescript": "^5.8.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
