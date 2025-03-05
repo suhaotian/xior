@@ -1,5 +1,6 @@
+import { keys, o, f, O } from './shorts';
 import type { XiorInterceptorRequestConfig } from './types';
-import { trimUndefined, encodeParams, merge, keys, o, f, O } from './utils';
+import { trimUndefined, encodeParams, merge } from './utils';
 
 const appPrefix = 'application/';
 const formUrl = `${appPrefix}x-www-form-urlencoded`;
