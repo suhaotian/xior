@@ -12,13 +12,13 @@ import {
 } from 'xior';
 
 import { MockHeaders, StatusOrCallback, RequestOptions, RequestData, VERBS } from './types';
+import { keys } from '../../shorts';
 import type {
   XiorInterceptorRequestConfig,
   XiorPlugin,
   XiorRequestConfig,
   XiorResponse,
 } from '../../types';
-import { keys } from '../../utils';
 import { XiorInstance } from '../../xior';
 
 export interface MockOptions {

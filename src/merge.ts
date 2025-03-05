@@ -1,5 +1,7 @@
 /** From @voodoocreation/ts-deepmerge: https://github.com/voodoocreation/ts-deepmerge/blob/master/src/index.ts */
 
+import { isArray, keys, O, op, o, f } from './shorts';
+
 type TAllKeys<T> = T extends any ? keyof T : never;
 
 type TIndexValue<T, K extends PropertyKey, D = never> = T extends any
@@ -24,23 +26,16 @@ type TMerged<T> = [T] extends [any[]]
       ? TPartialKeys<{ [K in TAllKeys<T>]: TMerged<TIndexValue<T, K>> }, never>
       : T;
 
-export const O = Object;
-export const o = 'object';
-export const f = 'function';
-export const keys = O.keys;
-export const isArray = Array.isArray;
-
-const Prototype = O.prototype;
 const getPrototypeOf = O.getPrototypeOf;
 // istanbul ignore next
 const isObject = (obj: any) => {
   if (obj !== null && typeof obj === o) {
     if (typeof getPrototypeOf === f) {
       const prototype = getPrototypeOf(obj);
-      return prototype === Prototype || prototype === null;
+      return prototype === op || prototype === null;
     }
 
-    return Prototype.toString.call(obj) === `[${o} Object]`;
+    return op.toString.call(obj) === `[${o} Object]`;
   }
 
   return false;

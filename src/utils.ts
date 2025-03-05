@@ -1,4 +1,4 @@
-import { isArray, keys, O, o } from './merge';
+import { isArray, keys, o, op } from './shorts';
 import type { XiorRequestConfig, XiorResponse } from './types';
 export * from './any-signals';
 export * from './merge';
@@ -32,7 +32,7 @@ export function encodeParams<T = any>(
     return `[${key}]`;
   };
   for (const key in params) {
-    if (O.prototype.hasOwnProperty.call(params, key)) {
+    if (op.hasOwnProperty.call(params, key)) {
       let value = (params as any)[key];
       if (value !== undefinedValue) {
         const encodedKey = parentKey ? `${parentKey}${getKey(key)}` : encodeURIFn(key as string);

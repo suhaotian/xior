@@ -1,4 +1,4 @@
-import { O } from './merge';
+import { O } from './shorts';
 import { Xior } from './xior';
 
 export * from './xior';
