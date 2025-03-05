@@ -73,6 +73,7 @@ A lite http request lib based on **fetch** with plugin support and similar API t
   - [Sending a request with credentials included](#sending-a-request-with-credentials-included)
   - [Uploading a file](#uploading-a-file)
   - [Processing a text file line by line](#processing-a-text-file-line-by-line)
+- [API Reference](#api-reference)
 - [Star History](#star-history)
 - [Thanks](#thanks)
 
@@ -2186,6 +2187,10 @@ async function run() {
 
 run();
 ```
+
+## API Reference
+
+https://suhaotian.github.io/xior/
 
 ## Star History
 
