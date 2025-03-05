@@ -11,7 +11,7 @@ import {
   ClearableSignal,
   XiorTimeoutError,
   anySignal,
-  isAbsoluteURL as isA,
+  isAbsoluteURL,
   XiorError,
   merge,
   joinPath,
@@ -214,7 +214,7 @@ export class Xior {
     }
 
     let finalURL = _url || url;
-    if (requestConfig.baseURL && !isA(finalURL)) {
+    if (requestConfig.baseURL && !isAbsoluteURL(finalURL)) {
       finalURL = joinPath(requestConfig.baseURL, finalURL);
     }
 
