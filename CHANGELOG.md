@@ -1,5 +1,11 @@
 # CHANGELOG 📝
 
+## v0.7.1
+
+- Chore: remove `ts-deepmerge` from `dependencies`
+- Docs: update README to fix about `node-fetch` agent example code
+- Refactor: minor reduce size
+
 ## v0.7.0
 
 - Feat: Add `fetch` option; now we can use `node-fetch` and `undici` as replacements for the built-in fetch to support the **proxy** feature, or you can easily use other fetch implementations. [How can I use custom fetch implementation or How to support **proxy** feature?](https://github.com/suhaotian/xior?tab=readme-ov-file#3-how-can-i-use-custom-fetch-implementation-or-how-to-support-proxy-feature)

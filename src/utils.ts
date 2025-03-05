@@ -96,6 +96,8 @@ export function joinPath(path1?: string, path2?: string) {
   return (path1.endsWith('/') ? path1 : path1 + '/') + (path2[0] === '/' ? path2.slice(1) : path2);
 }
 
+const XE = 'XiorError';
+const XTE = 'XiorTimeoutError';
 export class XiorError<T = any> extends Error {
   request?: XiorRequestConfig;
   config?: XiorRequestConfig;
@@ -103,7 +105,7 @@ export class XiorError<T = any> extends Error {
 
   constructor(message: string, request?: XiorRequestConfig, response?: XiorResponse<T>) {
     super(message);
-    this.name = 'XiorError';
+    this.name = XE;
     this.request = request;
     this.config = request;
     this.response = response;
@@ -113,10 +115,10 @@ export class XiorError<T = any> extends Error {
 export class XiorTimeoutError<T = any> extends XiorError<T> {
   constructor(message: string, request?: XiorRequestConfig, response?: XiorResponse<T>) {
     super(message, request, response);
-    this.name = 'XiorTimeoutError';
+    this.name = XTE;
   }
 }
 
 export function isXiorError(error: any) {
-  return error?.name === 'XiorError' || error?.name === 'XiorTimeoutError';
+  return error?.name === XE || error?.name === XTE;
 }

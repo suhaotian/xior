@@ -24,8 +24,8 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
   const headers = req?.headers ? { ...req.headers } : {};
   let newParams = req.params || {};
   const isGet = likeGET(method);
-  const isFormData = typeof data?.append === f; // f: 'function'
-  if (data && !isFormData) {
+  // const isFormData = typeof data?.append === f; // f: 'function'
+  if (data && !(typeof data.append === f)) {
     let contentType = '',
       contentTypeKey = 'content-type';
     if (req?.headers) {
