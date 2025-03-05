@@ -1,5 +1,5 @@
+import { isArray, keys, O, o } from './merge';
 import type { XiorRequestConfig, XiorResponse } from './types';
-
 export * from './any-signals';
 export * from './merge';
 export * from './plugins/utils';
@@ -18,7 +18,7 @@ export function encodeParams<T = any>(
   if (params === undefinedValue || params === null) return '';
   const encodedParams = [];
   const encodeURIFn = encodeURI ? encodeURIComponent : (v: string) => v;
-  const paramsIsArray = Array.isArray(params);
+  const paramsIsArray = isArray(params);
   const { arrayFormat, allowDots, serializeDate } = options || {};
   const getKey = (key: string) => {
     if (allowDots && !paramsIsArray) return `.${key}`;
@@ -32,7 +32,7 @@ export function encodeParams<T = any>(
     return `[${key}]`;
   };
   for (const key in params) {
-    if (Object.prototype.hasOwnProperty.call(params, key)) {
+    if (O.prototype.hasOwnProperty.call(params, key)) {
       let value = (params as any)[key];
       if (value !== undefinedValue) {
         const encodedKey = parentKey ? `${parentKey}${getKey(key)}` : encodeURIFn(key as string);
@@ -40,7 +40,7 @@ export function encodeParams<T = any>(
         if (!isNaN(value) && value instanceof Date) {
           value = serializeDate ? serializeDate(value) : value.toISOString();
         }
-        if (typeof value === 'object') {
+        if (typeof value === o) {
           // If the value is an object or array, recursively encode its contents
           const result = encodeParams(value, encodeURI, encodedKey, options);
           if (result !== '') encodedParams.push(result);
@@ -55,14 +55,10 @@ export function encodeParams<T = any>(
   return encodedParams.join('&');
 }
 
-export function keys(o: object) {
-  return Object.keys(o);
-}
-
 export function trimUndefined(obj: any): any {
-  if (Array.isArray(obj)) {
+  if (isArray(obj)) {
     return obj.map(trimUndefined);
-  } else if (obj && typeof obj === 'object') {
+  } else if (obj && typeof obj === o) {
     keys(obj).forEach((key) => {
       const value = obj[key];
       if (value === undefinedValue) {

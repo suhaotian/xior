@@ -1,10 +1,9 @@
 import type { XiorInterceptorRequestConfig } from './types';
-import { trimUndefined, encodeParams, merge, keys } from './utils';
+import { trimUndefined, encodeParams, merge, keys, o, f, O } from './utils';
 
 const appPrefix = 'application/';
 const formUrl = `${appPrefix}x-www-form-urlencoded`;
 const jsonType = `${appPrefix}json`;
-// const formType = 'multipart/form-data';
 
 export function likeGET(method = 'GET') {
   return ['HEAD', 'GET', 'OPTIONS'].includes(method);
@@ -13,19 +12,19 @@ export function likeGET(method = 'GET') {
 const supportURLSearchParams = typeof URLSearchParams !== 'undefined';
 
 export default async function defaultRequestInterceptor(req: XiorInterceptorRequestConfig) {
-  const paramsSerializer = req.paramsSerializer || encodeParams;
+  const ps = req.paramsSerializer || encodeParams;
   const encodeURI = req.encodeURI !== false;
   const method = req.method && req.method.toUpperCase();
   let _url = req.url || '';
   const url = _url;
   const isUrlSearchParams =
     supportURLSearchParams && req.data && req.data instanceof URLSearchParams;
-  const data = isUrlSearchParams ? Object.fromEntries(req.data.entries()) : req.data;
+  const data = isUrlSearchParams ? O.fromEntries(req.data.entries()) : req.data;
   let _data = data;
   const headers = req?.headers ? { ...req.headers } : {};
   let newParams = req.params || {};
   const isGet = likeGET(method);
-  const isFormData = typeof data?.append === 'function';
+  const isFormData = typeof data?.append === f; // f: 'function'
   if (data && !isFormData) {
     let contentType = '',
       contentTypeKey = 'content-type';
@@ -43,20 +42,21 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
       headers[contentTypeKey] = contentType;
     }
 
-    if (typeof data === 'object') {
+    // typeof data === 'object'
+    if (typeof data === o) {
       if (isGet && req.params) {
-        newParams = merge({}, data, newParams);
+        newParams = merge(data, newParams);
       }
       if (contentType === jsonType) {
         _data = JSON.stringify(trimUndefined(data));
       } else if (!isGet && contentType === formUrl) {
-        _data = paramsSerializer(data);
+        _data = ps(data);
       }
     }
   }
 
   if (keys(newParams).length > 0) {
-    const result = paramsSerializer(newParams, encodeURI);
+    const result = ps(newParams, encodeURI);
     _url += _url.includes('?') ? `&${result}` : `?${result}`;
   }
 

@@ -1364,7 +1364,7 @@ For `Tauri`: check [3. How can I use custom fetch implementation or How to suppo
 
 ### 3. How can I use custom fetch implementation or How to support **proxy** feature?
 
-To support **proxy** feature or custom fetch implementation, we can use `node-fetch`, node `undici`, or `@tauri-apps/plugin-http` module's fetch implementation to replace the built-in `fetch`.
+To support **proxy** feature or custom fetch implementation, we can use `node-fetch`, nodejs `undici`, or `@tauri-apps/plugin-http` module's fetch implementation to replace the built-in `fetch`.
 
 For example **undici**:
 

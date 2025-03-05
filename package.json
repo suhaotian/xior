@@ -82,8 +82,7 @@
     "checksize": "pnpm --filter=vite-example build"
   },
   "dependencies": {
-    "ts-deepmerge": "^7.0.0",
-    "tiny-lru": "^11.2.5"
+    "tiny-lru": "^11.2.11"
   },
   "devDependencies": {
     "xior": "workspace:*",

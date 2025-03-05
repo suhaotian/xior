@@ -8,6 +8,7 @@ import {
   isXiorError,
   joinPath,
   trimUndefined,
+  merge,
 } from 'xior';
 
 describe('utils tests', () => {
@@ -81,6 +82,40 @@ describe('utils tests', () => {
       assert.strictEqual(result.hasOwnProperty('c'), true);
       assert.strictEqual(result['c'].hasOwnProperty('d'), true);
       assert.strictEqual(result['c']['d'].hasOwnProperty('e'), false);
+    });
+  });
+
+  describe('utils.merge tests', () => {
+    it('should work with simple object', () => {
+      const a = { a: 1 };
+      const b = { b: 2 };
+      const c = { c: 3 };
+      const d = merge(a, b, c);
+      assert.strictEqual(d.a, 1);
+      assert.strictEqual(d.b, 2);
+      assert.strictEqual(d.c, 3);
+
+      assert.strictEqual(Object.keys(d).length, 3, '`d` is new object');
+      assert.strictEqual(Object.keys(d).join(','), 'a,b,c', '`d` is new object');
+
+      assert.strictEqual(Object.keys(a).length, 1, '`a` still is the old object');
+      assert.strictEqual(Object.keys(a)[0], 'a', '`a` still is the old object');
+    });
+
+    it('should work with nested object', () => {
+      const a = { a: { a: 1 } };
+      const b = { b: { b: 2 } };
+      const c = { c: { c: 3, a: 2 }, a: { a: 2 } };
+      const d = merge(a, b, c);
+      assert.strictEqual(d.a.a, 2);
+      assert.strictEqual(d.b.b, 2);
+      assert.strictEqual(d.c.c, 3);
+
+      assert.strictEqual(Object.keys(d).length, 3, '`d` is new object');
+      assert.strictEqual(Object.keys(d).join(','), 'a,b,c', '`d` is new object');
+
+      assert.strictEqual(Object.keys(a).length, 1, '`a` still is the old object');
+      assert.strictEqual(Object.keys(a)[0], 'a', '`a` still is the old object');
     });
   });
 });

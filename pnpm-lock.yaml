@@ -9,11 +9,8 @@ importers:
   .:
     dependencies:
       tiny-lru:
-        specifier: ^11.2.5
-        version: 11.2.5
-      ts-deepmerge:
-        specifier: ^7.0.0
-        version: 7.0.0
+        specifier: ^11.2.11
+        version: 11.2.11
     devDependencies:
       '@tsconfig/recommended':
         specifier: ^1.0.7
@@ -4443,8 +4440,8 @@ packages:
   thenify@3.3.1:
     resolution: {integrity: sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==}
 
-  tiny-lru@11.2.5:
-    resolution: {integrity: sha512-JpqM0K33lG6iQGKiigcwuURAKZlq6rHXfrgeL4/I8/REoyJTGU+tEMszvT/oTRVHG2OiylhGDjqPp1jWMlr3bw==}
+  tiny-lru@11.2.11:
+    resolution: {integrity: sha512-27BIW0dIWTYYoWNnqSmoNMKe5WIbkXsc0xaCQHd3/3xT2XMuMJrzHdrO9QBFR14emBz1Bu0dOAs2sCBBrvgPQA==}
     engines: {node: '>=12'}
 
   tinybench@2.6.0:
@@ -4492,10 +4489,6 @@ packages:
     engines: {node: '>=16'}
     peerDependencies:
       typescript: '>=4.2.0'
-
-  ts-deepmerge@7.0.0:
-    resolution: {integrity: sha512-WZ/iAJrKDhdINv1WG6KZIGHrZDar6VfhftG1QJFpVbOYZMYJLJOvZOo1amictRXVdBXZIgBHKswMTXzElngprA==}
-    engines: {node: '>=14.13.1'}
 
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
@@ -9483,7 +9476,7 @@ snapshots:
     dependencies:
       any-promise: 1.3.0
 
-  tiny-lru@11.2.5: {}
+  tiny-lru@11.2.11: {}
 
   tinybench@2.6.0: {}
 
@@ -9519,8 +9512,6 @@ snapshots:
   ts-api-utils@1.3.0(typescript@5.3.3):
     dependencies:
       typescript: 5.3.3
-
-  ts-deepmerge@7.0.0: {}
 
   ts-interface-checker@0.1.13: {}
 
