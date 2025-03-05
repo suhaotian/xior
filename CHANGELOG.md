@@ -1,5 +1,10 @@
 # CHANGELOG 📝
 
+## v0.7.2
+
+- Refactor: Don't exports unnecessary internal properties
+- Chore: update README.md
+
 ## v0.7.1
 
 - Chore: remove `ts-deepmerge` from `dependencies`
