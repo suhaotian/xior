@@ -53,7 +53,7 @@ jobs:
         run: pnpm install
 
       - name: Generate docs
-        run: pnpm typedoc
+        run: pnpm typedoc && node typedoc/write-popover.mjs
                 
       - name: Setup Pages
         uses: actions/configure-pages@v5
