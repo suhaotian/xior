@@ -25,15 +25,15 @@ export function anySignal(
       onAbort(signal.reason);
       break;
     }
-
+    const abort = 'abort';
     if (signal?.addEventListener != null) {
       const cb = () => {
         onAbort(signal.reason);
       };
       unsubscribe.push(() => {
-        signal.removeEventListener?.('abort', cb);
+        signal.removeEventListener?.(abort, cb);
       });
-      signal.addEventListener('abort', cb);
+      signal.addEventListener(abort, cb);
     }
   }
 

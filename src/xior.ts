@@ -1,4 +1,5 @@
 import defaultRequestInterceptor from './interceptors';
+import { HEAD, POST, PUT, PATCH, DELETE, OPTIONS, GET, text, json, undefinedValue } from './shorts';
 import type {
   XiorInterceptorOptions,
   XiorInterceptorRequestConfig,
@@ -18,7 +19,6 @@ import {
   encodeParams,
 } from './utils';
 
-const undefinedValue = undefined;
 const supportAbortController = typeof AbortController !== `${undefinedValue}`;
 export type XiorInstance = Xior;
 export type Fetch = typeof fetch;
@@ -28,9 +28,9 @@ async function getResponseData(
   responseType?: 'json' | 'text' | 'blob' | 'arraybuffer' | 'stream' | 'document' | 'original'
 ) {
   let data: any;
-  if (!responseType || !response.ok || ['text', 'json'].includes(responseType)) {
+  if (!responseType || !response.ok || [text, json].includes(responseType)) {
     data = await response.text();
-    if (data && responseType !== 'text') {
+    if (data && responseType !== text) {
       try {
         data = JSON.parse(data);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -276,7 +276,7 @@ export class Xior {
       data?: any;
     }
   ) {
-    return this.cG<T>('GET')(url, options);
+    return this.cG<T>(GET)(url, options);
   }
   head<T = any>(
     url: string,
@@ -285,23 +285,23 @@ export class Xior {
       data?: any;
     }
   ) {
-    return this.cG<T>('HEAD')(url, options);
+    return this.cG<T>(HEAD)(url, options);
   }
 
   post<T = any>(url: string, data?: any, options?: XiorRequestConfig) {
-    return this.cP<T>('POST')(url, data, options);
+    return this.cP<T>(POST)(url, data, options);
   }
 
   put<T = any>(url: string, data?: any, options?: XiorRequestConfig) {
-    return this.cP<T>('PUT')(url, data, options);
+    return this.cP<T>(PUT)(url, data, options);
   }
 
   patch<T = any>(url: string, data?: any, options?: XiorRequestConfig) {
-    return this.cP<T>('PATCH')(url, data, options);
+    return this.cP<T>(PATCH)(url, data, options);
   }
 
   delete<T = any>(url: string, options?: XiorRequestConfig) {
-    return this.cG<T>('DELETE')(url, options);
+    return this.cG<T>(DELETE)(url, options);
   }
 
   options<T = any>(
@@ -311,6 +311,6 @@ export class Xior {
       data?: any;
     }
   ) {
-    return this.cG<T>('OPTIONS')(url, options);
+    return this.cG<T>(OPTIONS)(url, options);
   }
 }
