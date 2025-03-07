@@ -1,5 +1,10 @@
 # CHANGELOG 📝
 
+## v0.7.4
+
+- Fix(plugins): For the `errorRetry` plugin, if `enableRetry` is a function returning `undefined` or is `undefined`, it only retries GET requests and skips POST requests; same with other plugins adjustments.
+- Chore: Add https://www.jsdocs.io/package/xior to README's API Reference section
+
 ## v0.7.3
 
 - Refactor: minor improve size
