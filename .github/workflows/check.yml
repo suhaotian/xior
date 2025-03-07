@@ -45,6 +45,12 @@ jobs:
       - name: Run next example build
         run: pnpm --filter=next-example build
 
+      - name: Run webpack react build
+        run: pnpm --filter=my-react-app build
+
+      - name: Run vue-cli build check
+        run: pnpm --filter=vue-cli-app build
+
       - uses: oven-sh/setup-bun@v1
       - name: Run bun example
         run: cd bun-example && bun install && bun index.ts && bun build index.ts > /tmp/tmp.js
