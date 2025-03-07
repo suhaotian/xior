@@ -1,9 +1,10 @@
-import { isArray, keys, o, op, undefinedValue } from './shorts';
+import { isArray, keys, o, op } from './shorts';
 import type { XiorRequestConfig, XiorResponse } from './types';
 export * from './any-signals';
 export * from './merge';
 export * from './plugins/utils';
 
+const undefinedValue = undefined;
 export function encodeParams<T = any>(
   params: T,
   encodeURI = true,
