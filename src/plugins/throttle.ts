@@ -80,15 +80,17 @@ export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): X
 
       const isGet = config.method === 'GET' || config.isGet;
 
-      const t = typeof enableThrottle;
+      const typeOfEnable = typeof enableThrottle;
+      const enableIsFunction = typeOfEnable === 'function';
 
       let enabled: boolean | undefined = undefined;
-      if (t === 'function') {
+      if (enableIsFunction) {
         enabled = (enableThrottle as (config: XiorRequestConfig) => boolean | undefined)(config);
       }
 
       if (enabled === undefined) {
-        enabled = t === 'undefined' ? isGet : Boolean(enableThrottle);
+        enabled =
+          enableIsFunction || typeOfEnable === 'undefined' ? isGet : Boolean(enableThrottle);
       }
 
       if (enabled) {

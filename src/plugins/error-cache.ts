@@ -53,14 +53,15 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
       } = config as XiorErrorCacheOptions & XiorRequestConfig;
 
       const isGet = config.method === 'GET' || config.isGet;
+      const typeOfEnable = typeof enableCache;
+      const enableIsFunction = typeOfEnable === 'function';
 
-      const t = typeof enableCache;
       let enabled: boolean | undefined = undefined;
-      if (t === 'function') {
+      if (enableIsFunction) {
         enabled = (enableCache as (config: XiorRequestConfig) => boolean | undefined)(config);
       }
       if (enabled === undefined) {
-        enabled = t === 'undefined' ? isGet : Boolean(enableCache);
+        enabled = enableIsFunction || typeOfEnable === 'undefined' ? isGet : Boolean(enableCache);
       }
 
       if (!enabled) return adapter(config);

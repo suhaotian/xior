@@ -216,6 +216,35 @@ describe('xior error retry plugin tests', () => {
     assert.strictEqual((error?.response?.config as any)?.isRetry, undefined);
   });
 
+  it('shouldn\t error retry with `enableRetry: config => undefined` with POST method', async () => {
+    const instance = xior.create({ baseURL });
+    instance.plugins.use(
+      xiorErrorRetryPlugin({
+        retryInterval: 1000,
+        onRetry(config, error, count) {
+          (config as any).isRetry = true;
+          (config as any).retryCount = count;
+        },
+      })
+    );
+    await instance.get('/reset-error');
+    let error: XiorError | undefined = undefined;
+    try {
+      await instance.post('/retry-error-401', { count: 3 }, {
+        // retryTimes: 2,
+        enableRetry: (config: XiorRequestConfig, error: XiorError) => {},
+      } as any);
+    } catch (e) {
+      if (isXiorError(e)) {
+        error = e as XiorError;
+      }
+    }
+    assert.strictEqual(typeof error !== 'undefined', true);
+    assert.strictEqual(error?.response?.data.errorCount, 0);
+    assert.strictEqual(error?.response?.data.count, 3);
+    assert.strictEqual((error?.response?.config as any)?.isRetry, undefined);
+  });
+
   it('Custom response interceptors throw error should retry default', async () => {
     const instance = xior.create({ baseURL });
     instance.interceptors.response.use((res) => {

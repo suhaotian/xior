@@ -31,11 +31,9 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
     enableRetry: _enableRetry,
     onRetry: _onRetry,
   } = {
-    ...{
-      retryTimes: 2,
-      retryInterval: 3000,
-    },
-    ...(options || {}),
+    retryTimes: 2,
+    retryInterval: 3000,
+    ...options,
   };
 
   return function (adapter, instance) {
@@ -47,7 +45,6 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
         onRetry = _onRetry,
       } = config as ErrorRetryOptions;
 
-      let timeUp = false;
       let count = 0;
 
       async function handleRequest(isRetry = false) {
@@ -60,7 +57,7 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
           let promise = adapter(config);
           let i = 0;
           const responseInterceptorChain: any[] = [];
-          instance?.RESI.forEach(function pushResponseInterceptors(interceptor) {
+          instance?.RESI?.forEach(function pushResponseInterceptors(interceptor) {
             responseInterceptorChain.push(interceptor.fn, interceptor.onRejected);
           });
           while (responseInterceptorChain.length > i) {
@@ -70,10 +67,11 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
           return await promise;
         } catch (error) {
           const isGet = config.method === 'GET' || Boolean(config.isGet);
-          const t = typeof enableRetry;
+          const typeOfEnable = typeof enableRetry;
+          const enableIsFunction = typeOfEnable === 'function';
 
           let enabled: boolean | undefined = undefined;
-          if (t === 'function') {
+          if (enableIsFunction) {
             enabled = (
               enableRetry as (
                 config: XiorRequestConfig,
@@ -82,22 +80,28 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
             )(config, error as XiorError);
           }
           if (enabled === undefined) {
-            enabled = t === 'undefined' ? isGet : Boolean(enableRetry);
+            enabled =
+              enableIsFunction || typeOfEnable === 'undefined' ? isGet : Boolean(enableRetry);
           }
 
-          timeUp = retryTimes === count;
-          if (timeUp || !enabled) {
+          // Check if we've reached the retry limit
+          if (count >= retryTimes || !enabled) {
             throw error;
           }
+
+          // Increment count before calculating delay time
+          count++;
 
           const delayTime =
             typeof retryInterval === 'function'
               ? retryInterval(count, config as XiorInterceptorRequestConfig, error as XiorError)
               : retryInterval;
-          if (delayTime && delayTime > 0 && count > 0) {
+
+          // Apply delay only when needed
+          if (delayTime && delayTime > 0) {
             await delay(delayTime);
           }
-          count++;
+
           if (onRetry) onRetry(config, error as XiorError, count);
           return handleRequest(true);
         }
