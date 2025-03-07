@@ -274,6 +274,9 @@ importers:
       vue:
         specifier: ^2.6.14
         version: 2.7.16
+      xior:
+        specifier: file:..
+        version: 'file:'
     devDependencies:
       '@babel/core':
         specifier: ^7.12.16
