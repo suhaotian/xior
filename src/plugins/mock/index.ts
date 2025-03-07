@@ -1,3 +1,11 @@
+import { MockHeaders, StatusOrCallback, RequestOptions, RequestData, VERBS } from './types';
+import { keys } from '../../shorts';
+import type {
+  XiorInterceptorRequestConfig,
+  XiorPlugin,
+  XiorRequestConfig,
+  XiorResponse,
+} from '../../types';
 import {
   ClearableSignal,
   XiorError,
@@ -8,17 +16,7 @@ import {
   encodeParams,
   joinPath,
   merge,
-  // @ts-ignore
-} from 'xior';
-
-import { MockHeaders, StatusOrCallback, RequestOptions, RequestData, VERBS } from './types';
-import { keys } from '../../shorts';
-import type {
-  XiorInterceptorRequestConfig,
-  XiorPlugin,
-  XiorRequestConfig,
-  XiorResponse,
-} from '../../types';
+} from '../../utils';
 import { XiorInstance } from '../../xior';
 
 export interface MockOptions {

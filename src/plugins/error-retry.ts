@@ -1,7 +1,5 @@
-// @ts-ignore
-import { XiorError, delay } from 'xior';
-
 import { XiorInterceptorRequestConfig, XiorPlugin, XiorRequestConfig } from '../types';
+import { XiorError, delay } from '../utils';
 
 export type ErrorRetryOptions = {
   /** retry times, default: 2 */

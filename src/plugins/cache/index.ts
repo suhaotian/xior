@@ -1,9 +1,8 @@
 import { lru } from 'tiny-lru';
-// @ts-ignore
-import { buildSortedURL, isAbsoluteURL, joinPath } from 'xior';
 
 import { ICacheLike } from './utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../../types';
+import { buildSortedURL, isAbsoluteURL, joinPath } from '../../utils';
 
 type XiorPromise = Promise<XiorResponse>;
 

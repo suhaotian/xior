@@ -1,10 +1,6 @@
-import {
-  XiorError as AxiosError,
-  XiorInstance,
-  XiorResponse,
-  XiorResponseInterceptorConfig,
-  // @ts-ignore
-} from 'xior';
+import type { XiorResponse, XiorResponseInterceptorConfig } from '../types';
+import type { XiorError as AxiosError } from '../utils';
+import type { XiorInstance } from '../xior';
 
 export function defaultShouldRefresh(response: XiorResponse) {
   return response?.status && [401].includes(response.status);
