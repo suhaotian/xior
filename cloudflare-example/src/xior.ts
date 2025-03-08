@@ -13,3 +13,5 @@ http.plugins.use(cachePlugin());
 http.plugins.use(uploadDownloadProgressPlugin());
 
 const mock = new MockPlugin(http, { onNoMatch: 'passthrough' });
+
+http.get('https://google.com');

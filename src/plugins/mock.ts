@@ -1,11 +1,11 @@
-import { MockHeaders, StatusOrCallback, RequestOptions, RequestData, VERBS } from './types';
-import { keys } from '../../shorts';
+import { MockHeaders, StatusOrCallback, RequestOptions, RequestData, VERBS } from './mock/types';
+import { keys } from '../shorts';
 import type {
   XiorInterceptorRequestConfig,
   XiorPlugin,
   XiorRequestConfig,
   XiorResponse,
-} from '../../types';
+} from '../types';
 import {
   ClearableSignal,
   XiorError,
@@ -16,8 +16,8 @@ import {
   encodeParams,
   joinPath,
   merge,
-} from '../../utils';
-import { XiorInstance } from '../../xior';
+} from '../utils';
+import { XiorInstance } from '../xior';
 
 export interface MockOptions {
   delayResponse?: number;

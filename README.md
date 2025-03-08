@@ -2203,7 +2203,7 @@ Without the support of these resources, xior wouldn't be possible:
 - [axios](https://github.com/axios/axios)
 - [axios-extensions](https://github.com/kuitos/axios-extensions)
 - [axios-mock-adapter](https://github.com/ctimmerm/axios-mock-adapter)
-- [ts-deepmerge](https://github.com/voodoocreation/ts-deepmerge)
+- ~~[ts-deepmerge](https://github.com/voodoocreation/ts-deepmerge)~~
 - [tiny-lru](https://github.com/avoidwork/tiny-lru)
-- [bunchee](https://github.com/huozhi/bunchee)
+- ~~[bunchee](https://github.com/huozhi/bunchee)~~ [tsup](https://tsup.egoist.dev)
 - [fetch MDN docs](https://developer.mozilla.org/en-US/docs/Web/API/fetch)

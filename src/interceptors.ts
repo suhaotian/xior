@@ -1,16 +1,16 @@
-import { keys, o, f, O } from './shorts';
+import { keys, o, f, O, json, GET, HEAD, OPTIONS, undefinedValue } from './shorts';
 import type { XiorInterceptorRequestConfig } from './types';
 import { trimUndefined, encodeParams, merge } from './utils';
 
 const appPrefix = 'application/';
 const formUrl = `${appPrefix}x-www-form-urlencoded`;
-const jsonType = `${appPrefix}json`;
+const jsonType = `${appPrefix}${json}`;
 
-export function likeGET(method = 'GET') {
-  return ['HEAD', 'GET', 'OPTIONS'].includes(method);
+export function likeGET(method = GET) {
+  return [HEAD, GET, OPTIONS].includes(method);
 }
 
-const supportURLSearchParams = typeof URLSearchParams !== 'undefined';
+const supportURLSearchParams = typeof URLSearchParams !== `${undefinedValue}`;
 
 export default async function defaultRequestInterceptor(req: XiorInterceptorRequestConfig) {
   const ps = req.paramsSerializer || encodeParams;

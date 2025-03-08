@@ -1,5 +1,7 @@
 /** Code Ref: https://github.com/jacobheun/any-signal/pull/40/files */
 
+import { abort, addEventListener } from './shorts';
+
 export interface ClearableSignal extends AbortSignal {
   clear: () => void;
 }
@@ -26,14 +28,14 @@ export function anySignal(
       break;
     }
 
-    if (signal?.addEventListener != null) {
+    if (signal?.[addEventListener]) {
       const cb = () => {
         onAbort(signal.reason);
       };
       unsubscribe.push(() => {
-        signal.removeEventListener?.('abort', cb);
+        signal.removeEventListener?.(abort, cb);
       });
-      signal.addEventListener('abort', cb);
+      signal[addEventListener](abort, cb);
     }
   }
 

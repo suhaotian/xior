@@ -1,6 +1,6 @@
 /** From @voodoocreation/ts-deepmerge: https://github.com/voodoocreation/ts-deepmerge/blob/master/src/index.ts */
 
-import { isArray, keys, O, op, o, f } from './shorts';
+import { isArray, keys, O, op, o, f, p } from './shorts';
 
 type TAllKeys<T> = T extends any ? keyof T : never;
 
@@ -52,7 +52,7 @@ export const merge = <T extends IObject[]>(...objects: T): TMerged<T[number]> =>
     }
 
     keys(current).forEach((key) => {
-      if (['__proto__', 'constructor', 'prototype'].includes(key)) {
+      if (['__proto__', 'constructor', p].includes(key)) {
         return;
       }
 

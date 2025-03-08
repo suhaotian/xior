@@ -5,76 +5,122 @@
   "repository": "suhaotian/xior",
   "bugs": "https://github.com/suhaotian/xior/issues",
   "homepage": "https://github.com/suhaotian/xior",
-  "main": "./dist/index.cjs",
-  "types": "./dist/types/index.d.ts",
-  "require": "./dist/index.cjs",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.mjs",
-      "module": "./dist/index.esm.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
     "./utils": {
-      "types": "./utils/index.d.ts",
-      "require": "./utils/index.cjs",
-      "import": "./utils/index.mjs",
-      "module": "./utils/index.esm.js"
+      "import": {
+        "types": "./utils.mts",
+        "default": "./utils.mjs"
+      },
+      "require": {
+        "types": "./utils.ts",
+        "default": "./utils.js"
+      }
     },
     "./plugins/error-retry": {
-      "types": "./plugins/error-retry/index.d.ts",
-      "require": "./plugins/error-retry/index.cjs",
-      "import": "./plugins/error-retry/index.mjs",
-      "module": "./plugins/error-retry/index.esm.js"
+      "import": {
+        "types": "./plugins/error-retry.mts",
+        "default": "./plugins/error-retry.mjs"
+      },
+      "require": {
+        "types": "./plugins/error-retry.ts",
+        "default": "./plugins/error-retry.js"
+      }
     },
     "./plugins/throttle": {
-      "types": "./plugins/throttle/index.d.ts",
-      "require": "./plugins/throttle/index.cjs",
-      "import": "./plugins/throttle/index.mjs",
-      "module": "./plugins/throttle/index.esm.js"
+      "import": {
+        "types": "./plugins/throttle.mts",
+        "default": "./plugins/throttle.mjs"
+      },
+      "require": {
+        "types": "./plugins/throttle.ts",
+        "default": "./plugins/throttle.js"
+      }
     },
     "./plugins/dedupe": {
-      "types": "./plugins/dedupe/index.d.ts",
-      "require": "./plugins/dedupe/index.cjs",
-      "import": "./plugins/dedupe/index.mjs",
-      "module": "./plugins/dedupe/index.esm.js"
+      "import": {
+        "types": "./plugins/dedupe.mts",
+        "default": "./plugins/dedupe.mjs"
+      },
+      "require": {
+        "types": "./plugins/dedupe.ts",
+        "default": "./plugins/dedupe.js"
+      }
     },
     "./plugins/cache": {
-      "types": "./plugins/cache/index.d.ts",
-      "require": "./plugins/cache/index.cjs",
-      "import": "./plugins/cache/index.mjs",
-      "module": "./plugins/cache/index.esm.js"
+      "import": {
+        "types": "./plugins/cache.mts",
+        "default": "./plugins/cache.mjs"
+      },
+      "require": {
+        "types": "./plugins/cache.ts",
+        "default": "./plugins/cache.js"
+      }
     },
     "./plugins/progress": {
-      "types": "./plugins/progress/index.d.ts",
-      "require": "./plugins/progress/index.cjs",
-      "import": "./plugins/progress/index.mjs",
-      "module": "./plugins/progress/index.esm.js"
+      "import": {
+        "types": "./plugins/progress.mts",
+        "default": "./plugins/progress.mjs"
+      },
+      "require": {
+        "types": "./plugins/progress.ts",
+        "default": "./plugins/progress.js"
+      }
     },
     "./plugins/mock": {
-      "types": "./plugins/mock/index.d.ts",
-      "require": "./plugins/mock/index.cjs",
-      "import": "./plugins/mock/index.mjs",
-      "module": "./plugins/mock/index.esm.js"
+      "import": {
+        "types": "./plugins/mock.mts",
+        "default": "./plugins/mock.mjs"
+      },
+      "require": {
+        "types": "./plugins/mock.ts",
+        "default": "./plugins/mock.js"
+      }
     },
     "./plugins/error-cache": {
-      "types": "./plugins/error-cache/index.d.ts",
-      "require": "./plugins/error-cache/index.cjs",
-      "import": "./plugins/error-cache/index.mjs",
-      "module": "./plugins/error-cache/index.esm.js"
+      "import": {
+        "types": "./plugins/error-cache.mts",
+        "default": "./plugins/error-cache.mjs"
+      },
+      "require": {
+        "types": "./plugins/error-cache.ts",
+        "default": "./plugins/error-cache.js"
+      }
     },
     "./plugins/token-refresh": {
-      "types": "./plugins/token-refresh/index.d.ts",
-      "require": "./plugins/token-refresh/index.cjs",
-      "import": "./plugins/token-refresh/index.mjs",
-      "module": "./plugins/token-refresh/index.esm.js"
+      "import": {
+        "types": "./plugins/token-refresh.mts",
+        "default": "./plugins/token-refresh.mjs"
+      },
+      "require": {
+        "types": "./plugins/token-refresh.ts",
+        "default": "./plugins/token-refresh.js"
+      }
     }
   },
+  "browserslist": [
+    "last 1 version",
+    "> 1%"
+  ],
   "scripts": {
-    "build": "bunchee -m",
+    "build": "tsup",
     "build:lib": "rm -rf lib && tsc --project tsconfig.json",
     "build:umd": "pnpm build:lib && pnpm webpack --config ./scripts/webpack.config.mjs",
-    "test": "bunchee && pnpm --filter=xior-tests test",
+    "test": "tsup && pnpm --filter=xior-tests test",
     "checktype": "tsc --noEmit",
     "start-publish": "pnpm build && pnpm build:umd && node scripts/purge-pkg-for-publish.mjs && npm publish --access public --no-git-checks --provenance --registry=https://registry.npmjs.org",
     "push": "git push && git lfs push --all origin",
@@ -105,14 +151,14 @@
     "@types/multer": "^1.4.11",
     "qs": "^6.14.0",
     "@types/qs": "^6.9.18",
-    "bunchee": "^6.4.0",
     "lfs-auto-track": "^1.1.1",
     "isomorphic-unfetch": "^4.0.2",
     "promise-polyfill": "^8.3.0",
     "webpack": "^5.98.0",
     "webpack-cli": "^6.0.1",
     "change-case": "^5.4.4",
-    "typedoc": "^0.27.9"
+    "typedoc": "^0.27.9",
+    "tsup": "^8.4.0"
   },
   "prettier": {
     "printWidth": 100,
@@ -142,7 +188,12 @@
   "files": [
     "dist",
     "plugins",
-    "utils",
+    "./*.js",
+    "./*.mjs",
+    "./*.d.*",
+    "./xior*",
+    "./chunk*",
+    "README.md",
     "Mock-plugin.md"
   ],
   "keywords": [

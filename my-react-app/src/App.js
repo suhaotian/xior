@@ -1,6 +1,20 @@
+import { delay } from 'xior';
+
 import logo from './logo.svg';
+
 import './App.css';
 
+export const a = async () => {
+  await delay(1000);
+  console.log('hello xior.js');
+};
+class B {
+  constructor() {
+    this.a = 123;
+  }
+}
+a();
+console.log('class test', new B(), process.env.NODE_ENV);
 function App() {
   return (
     <div className="App">
