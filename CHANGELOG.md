@@ -4,7 +4,7 @@
 
 - Fix(plugins): For the `errorRetry` plugin, if `enableRetry` is a function returning `undefined` or is `undefined`, it only retries GET requests and skips POST requests; same with other plugins adjustments.
 - Chore: Add https://www.jsdocs.io/package/xior to README's API Reference section
-- Chore(build): switc to `tsup` bundler from `bunchee`, reduce the output size!!
+- Chore(build): switc to `tsup` bundler from `bunchee`, reduce the output size from 7KB(GZIP 3KB) to 5KB(GZIP 2.5KB)!!
 
 ## v0.7.3
 
