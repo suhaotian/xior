@@ -17,6 +17,6 @@ export default defineConfig({
   splitting: true,
   format: ['esm', 'cjs'],
   minify: true,
-  target: 'esnext',
+  target: 'es2015',
   dts: true,
 });

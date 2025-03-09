@@ -16,14 +16,13 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
   const ps = req.paramsSerializer || encodeParams;
   const encodeURI = req.encodeURI !== false;
   const method = req.method && req.method.toUpperCase();
-  let _url = req.url || '';
+  let _url = req.url;
   const url = _url;
-  const isUrlSearchParams =
-    supportURLSearchParams && req.data && req.data instanceof URLSearchParams;
+  const isUrlSearchParams = supportURLSearchParams && req.data instanceof URLSearchParams;
   const data = isUrlSearchParams ? O.fromEntries(req.data.entries()) : req.data;
   let _data = data;
   const headers = req?.headers ? { ...req.headers } : {};
-  let newParams = req.params || {};
+  let newParams = req.params;
   const isGet = likeGET(method);
   // const isFormData = typeof data?.append === f; // f: 'function'
   if (data && !(typeof data.append === f)) {

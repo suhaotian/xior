@@ -44,10 +44,12 @@ async function getResponseData(
   return data;
 }
 
+const createXior = (options?: XiorRequestConfig): XiorInstance => {
+  return new Xior(options);
+};
+
 export class Xior {
-  static create(options?: XiorRequestConfig): XiorInstance {
-    return new Xior(options);
-  }
+  static create = createXior;
   static VERSION = '0.7.4';
 
   config?: XiorRequestConfig;
