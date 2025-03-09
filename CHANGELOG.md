@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.7.6
+
+- Fix: when `params` is undefined, throw `TypeError [Error]: Cannot convert undefined or null to object`
+
 ## v0.7.5
 
 - Fix(build): Change target from exnext to es2015, because in some boilerplates(expo, vue-cli), will throw error `**Static class blocks are not enabled. Please add `@babel/plugin-transform-class-static-block` to your configuration.`
