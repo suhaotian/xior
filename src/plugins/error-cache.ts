@@ -3,6 +3,7 @@ import { lru } from 'tiny-lru';
 import { ICacheLike } from './utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../types';
 import { XiorError, joinPath, isAbsoluteURL, buildSortedURL } from '../utils';
+import { f, GET, undefinedValue } from '../shorts';
 
 export type XiorErrorCacheOptions = {
   /**
@@ -52,16 +53,17 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
         paramsSerializer,
       } = config as XiorErrorCacheOptions & XiorRequestConfig;
 
-      const isGet = config.method === 'GET' || config.isGet;
+      const isGet = config.method === GET || config.isGet;
       const typeOfEnable = typeof enableCache;
-      const enableIsFunction = typeOfEnable === 'function';
+      const enableIsFunction = typeOfEnable === f;
 
-      let enabled: boolean | undefined = undefined;
+      let enabled: boolean | undefined = undefinedValue;
       if (enableIsFunction) {
         enabled = (enableCache as (config: XiorRequestConfig) => boolean | undefined)(config);
       }
-      if (enabled === undefined) {
-        enabled = enableIsFunction || typeOfEnable === 'undefined' ? isGet : Boolean(enableCache);
+      if (enabled === undefinedValue) {
+        enabled =
+          enableIsFunction || typeOfEnable === `${undefinedValue}` ? isGet : Boolean(enableCache);
       }
 
       if (!enabled) return adapter(config);

@@ -3,6 +3,7 @@ import { lru } from 'tiny-lru';
 import { ICacheLike } from './cache/utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../types';
 import { isAbsoluteURL, joinPath, buildSortedURL } from '../utils';
+import { GET, f, undefinedValue } from '../shorts';
 
 type XiorPromise = Promise<XiorResponse>;
 
@@ -78,19 +79,21 @@ export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): X
         onThrottle = _onThrottle,
       } = config as XiorThrottleOptions & XiorRequestConfig;
 
-      const isGet = config.method === 'GET' || config.isGet;
+      const isGet = config.method === GET || config.isGet;
 
       const typeOfEnable = typeof enableThrottle;
-      const enableIsFunction = typeOfEnable === 'function';
+      const enableIsFunction = typeOfEnable === f;
 
-      let enabled: boolean | undefined = undefined;
+      let enabled: boolean | undefined = undefinedValue;
       if (enableIsFunction) {
         enabled = (enableThrottle as (config: XiorRequestConfig) => boolean | undefined)(config);
       }
 
-      if (enabled === undefined) {
+      if (enabled === undefinedValue) {
         enabled =
-          enableIsFunction || typeOfEnable === 'undefined' ? isGet : Boolean(enableThrottle);
+          enableIsFunction || typeOfEnable === `${undefinedValue}`
+            ? isGet
+            : Boolean(enableThrottle);
       }
 
       if (enabled) {

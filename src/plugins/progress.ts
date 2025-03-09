@@ -37,7 +37,7 @@ export default function xiorProgressPlugin(options: XiorProgressOptions = {}): X
         onUploadProgress,
         onDownloadProgress,
       } = config as XiorProgressRequestOptions;
-      // const percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
+
       let interval: ReturnType<typeof setInterval> | undefined;
       if (onUploadProgress || onDownloadProgress) {
         const total = 1000;
@@ -46,7 +46,8 @@ export default function xiorProgressPlugin(options: XiorProgressOptions = {}): X
         const step = total / (progressDuration / 300);
         interval = setInterval(() => {
           if (progress >= 99) {
-            return clearInterval(interval);
+            clearInterval(interval);
+            return;
           }
           loaded += Math.random() * step;
           progress = Math.floor((loaded / total) * 100);
@@ -59,27 +60,48 @@ export default function xiorProgressPlugin(options: XiorProgressOptions = {}): X
             event.progress = 99;
             event.loaded = 0.99 * total;
           }
-          onUploadProgress?.(event);
-          onDownloadProgress?.(event);
+
+          // Fixed: Separate callbacks for upload and download progress
+          if (onUploadProgress) {
+            onUploadProgress({ ...event, upload: true });
+          }
+          if (onDownloadProgress) {
+            onDownloadProgress({ ...event, download: true });
+          }
         }, 300);
       }
+
       try {
         const res = await adapter(config);
+
+        if (interval) {
+          clearInterval(interval);
+          interval = undefined;
+        }
+
         if (onUploadProgress || onDownloadProgress) {
           const event: XiorProgressEvent = {
             total: 1000,
             loaded: 1000,
             progress: 100,
           };
-          onUploadProgress?.(event);
-          onDownloadProgress?.(event);
+
+          // Fixed: Separate final callbacks for upload and download progress
+          if (onUploadProgress) {
+            onUploadProgress({ ...event, upload: true });
+          }
+          if (onDownloadProgress) {
+            onDownloadProgress({ ...event, download: true });
+          }
         }
 
         return res;
       } catch (e) {
+        // Clean up interval if there's an error
+        if (interval) {
+          clearInterval(interval);
+        }
         throw e;
-      } finally {
-        if (interval) clearInterval(interval);
       }
     };
   };

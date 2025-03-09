@@ -1,3 +1,4 @@
+import { f, GET, undefinedValue } from '../shorts';
 import { XiorInterceptorRequestConfig, XiorPlugin, XiorRequestConfig } from '../types';
 import { XiorError, delay } from '../utils';
 
@@ -66,11 +67,11 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
           config._did = true;
           return await promise;
         } catch (error) {
-          const isGet = config.method === 'GET' || Boolean(config.isGet);
+          const isGet = config.method === GET || Boolean(config.isGet);
           const typeOfEnable = typeof enableRetry;
-          const enableIsFunction = typeOfEnable === 'function';
+          const enableIsFunction = typeOfEnable === f;
 
-          let enabled: boolean | undefined = undefined;
+          let enabled: boolean | undefined = undefinedValue;
           if (enableIsFunction) {
             enabled = (
               enableRetry as (
@@ -79,9 +80,11 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
               ) => boolean | undefined
             )(config, error as XiorError);
           }
-          if (enabled === undefined) {
+          if (enabled === undefinedValue) {
             enabled =
-              enableIsFunction || typeOfEnable === 'undefined' ? isGet : Boolean(enableRetry);
+              enableIsFunction || typeOfEnable === `${undefinedValue}`
+                ? isGet
+                : Boolean(enableRetry);
           }
 
           // Check if we've reached the retry limit
@@ -93,8 +96,12 @@ export default function xiorErrorRetryPlugin(options: ErrorRetryOptions = {}): X
           count++;
 
           const delayTime =
-            typeof retryInterval === 'function'
-              ? retryInterval(count, config as XiorInterceptorRequestConfig, error as XiorError)
+            typeof retryInterval === f
+              ? (retryInterval as Function)(
+                  count,
+                  config as XiorInterceptorRequestConfig,
+                  error as XiorError
+                )
               : retryInterval;
 
           // Apply delay only when needed

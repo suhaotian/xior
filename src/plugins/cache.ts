@@ -3,6 +3,7 @@ import { lru } from 'tiny-lru';
 import { ICacheLike } from './cache/utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../types';
 import { buildSortedURL, isAbsoluteURL, joinPath } from '../utils';
+import { f, GET, undefinedValue } from '../shorts';
 
 type XiorPromise = Promise<XiorResponse>;
 
@@ -57,16 +58,17 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
         forceUpdate?: boolean;
       } & XiorRequestConfig;
 
-      const isGet = config.method === 'GET' || config.isGet;
+      const isGet = config.method === GET || config.isGet;
       const typeOfEnable = typeof enableCache;
-      const enableIsFunction = typeOfEnable === 'function';
+      const enableIsFunction = typeOfEnable === f;
 
-      let enabled: boolean | undefined = undefined;
+      let enabled: boolean | undefined = undefinedValue;
       if (enableIsFunction) {
         enabled = (enableCache as (config: XiorRequestConfig) => boolean | undefined)(config);
       }
-      if (enabled === undefined) {
-        enabled = enableIsFunction || typeOfEnable === 'undefined' ? isGet : Boolean(enableCache);
+      if (enabled === undefinedValue) {
+        enabled =
+          enableIsFunction || typeOfEnable === `${undefinedValue}` ? isGet : Boolean(enableCache);
       }
 
       let key = '';

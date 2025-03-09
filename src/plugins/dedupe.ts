@@ -1,3 +1,4 @@
+import { f, GET, undefinedValue } from '../shorts';
 import type { XiorPlugin, XiorRequestConfig } from '../types';
 import { joinPath, isAbsoluteURL, buildSortedURL } from '../utils';
 
@@ -32,16 +33,17 @@ export default function xiorDedupePlugin(options: XiorDedupeOptions = {}): XiorP
         onDedupe = _onDedupe,
       } = config as XiorDedupeOptions & XiorRequestConfig;
 
-      const isGet = config.method === 'GET' || config.isGet;
+      const isGet = config.method === GET || config.isGet;
       const typeOfEnable = typeof enableDedupe;
-      const enableIsFunction = typeOfEnable === 'function';
+      const enableIsFunction = typeOfEnable === f;
 
-      let enabled: boolean | undefined = undefined;
+      let enabled: boolean | undefined = undefinedValue;
       if (enableIsFunction) {
         enabled = (enableDedupe as (config: XiorRequestConfig) => boolean | undefined)(config);
       }
-      if (enabled === undefined) {
-        enabled = enableIsFunction || typeOfEnable === 'undefined' ? isGet : Boolean(enableDedupe);
+      if (enabled === undefinedValue) {
+        enabled =
+          enableIsFunction || typeOfEnable === `${undefinedValue}` ? isGet : Boolean(enableDedupe);
       }
 
       if (!enabled) {
