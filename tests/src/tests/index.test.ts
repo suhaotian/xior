@@ -40,6 +40,16 @@ describe('xior tests', () => {
       assert.strictEqual(data.query.b, '2');
     });
 
+    it('GET should work when `params` is `undefined`', async () => {
+      const { data } = await xiorInstance.get<{
+        method: string;
+        body: object;
+        query: Record<string, any>;
+      }>('/get', { params: undefined });
+      assert.strictEqual(data.method, 'get');
+      assert.strictEqual(Object.keys(data.body).length, 0);
+    });
+
     it('POST should work', async () => {
       const { data } = await xiorInstance.post<{
         method: string;
@@ -52,6 +62,16 @@ describe('xior tests', () => {
       assert.strictEqual(data.body.b, 2);
       assert.strictEqual(data.query.a, '1');
       assert.strictEqual(data.query.b, '2');
+    });
+
+    it('POST should work when `params` or `body` is `undefined`', async () => {
+      const { data } = await xiorInstance.post<{
+        method: string;
+        body: Record<string, any>;
+        query: Record<string, any>;
+      }>('/post', undefined, { params: undefined });
+      assert.strictEqual(data.method, 'post');
+      assert.strictEqual(Object.keys(data.body).length, 0);
     });
 
     it("POST should work with body when header's `content-type: application/x-www-form-urlencoded`", async () => {

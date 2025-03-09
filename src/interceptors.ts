@@ -44,7 +44,7 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
 
     // typeof data === 'object'
     if (typeof data === o) {
-      if (isGet && req.params) {
+      if (isGet && newParams) {
         newParams = merge(data, newParams);
       }
       if (contentType === jsonType) {
@@ -55,7 +55,7 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
     }
   }
 
-  if (keys(newParams).length > 0) {
+  if (newParams && keys(newParams).length > 0) {
     const result = ps(newParams, encodeURI);
     _url += _url.includes('?') ? `&${result}` : `?${result}`;
   }
