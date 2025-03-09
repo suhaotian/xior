@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.7.5
+
+- Fix(build): Change target from exnext to es2015, because in some boilerplates(expo, vue-cli), will throw error `**Static class blocks are not enabled. Please add `@babel/plugin-transform-class-static-block` to your configuration.`
+
 ## v0.7.4
 
 - Fix(plugins): For the `errorRetry` plugin, if `enableRetry` is a function returning `undefined` or is `undefined`, it only retries GET requests and skips POST requests; same with other plugins adjustments.
@@ -11,7 +15,7 @@
 - Refactor: minor improve size
 - Plugins: use relative path to import utils and types
 
-## v0.7.2
+## v0.7
 
 - Refactor: Don't exports unnecessary internal properties
 - Chore: update README.md
