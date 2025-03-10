@@ -1,4 +1,4 @@
-import { keys, o, f, O, json, GET, HEAD, OPTIONS, undefinedValue } from './shorts';
+import { keys, o, f, O, json, GET, HEAD, OPTIONS, undefinedValue, qs } from './shorts';
 import type { XiorInterceptorRequestConfig } from './types';
 import { trimUndefined, encodeParams, merge } from './utils';
 
@@ -13,7 +13,7 @@ export function likeGET(method = GET) {
 const supportURLSearchParams = typeof URLSearchParams !== `${undefinedValue}`;
 
 export default async function defaultRequestInterceptor(req: XiorInterceptorRequestConfig) {
-  const ps = req.paramsSerializer || encodeParams;
+  const stringifyParams = req[qs] || encodeParams;
   const encodeURI = req.encodeURI !== false;
   const method = req.method && req.method.toUpperCase();
   let _url = req.url;
@@ -50,13 +50,13 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
       if (contentType === jsonType) {
         _data = JSON.stringify(trimUndefined(data));
       } else if (!isGet && contentType === formUrl) {
-        _data = ps(data);
+        _data = stringifyParams(data);
       }
     }
   }
 
   if (newParams && keys(newParams).length > 0) {
-    const result = ps(newParams, encodeURI);
+    const result = stringifyParams(newParams, encodeURI);
     _url += _url.includes('?') ? `&${result}` : `?${result}`;
   }
 

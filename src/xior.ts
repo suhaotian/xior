@@ -1,5 +1,18 @@
 import defaultRequestInterceptor from './interceptors';
-import { DELETE, GET, HEAD, json, OPTIONS, PATCH, POST, PUT, text, undefinedValue } from './shorts';
+import {
+  DELETE,
+  GET,
+  HEAD,
+  json,
+  OPTIONS,
+  PATCH,
+  POST,
+  PUT,
+  text,
+  undefinedValue,
+  qs,
+  status,
+} from './shorts';
 import type {
   XiorInterceptorOptions,
   XiorInterceptorRequestConfig,
@@ -149,11 +162,13 @@ export class Xior {
       this.defaults,
       typeof options === 'string' ? { url: options } : options
     );
-    if (requestConfig.withCredentials && !requestConfig.credentials) {
-      requestConfig.credentials = 'include';
+    const credentials = 'credentials';
+    if (requestConfig.withCredentials && !requestConfig[credentials]) {
+      requestConfig[credentials] = 'include';
     }
-    if (!requestConfig.paramsSerializer) {
-      requestConfig.paramsSerializer = encodeParams;
+    // qs: 'paramsSerializer'
+    if (!requestConfig[qs]) {
+      requestConfig[qs] = encodeParams;
     }
     for (const item of this.REQI) {
       requestConfig = await item(requestConfig as XiorInterceptorRequestConfig);
@@ -216,8 +231,9 @@ export class Xior {
     }
 
     let finalURL = _url || url;
-    if (requestConfig.baseURL && !isAbsoluteURL(finalURL)) {
-      finalURL = joinPath(requestConfig.baseURL, finalURL);
+    const baseURL = 'baseURL';
+    if (requestConfig[baseURL] && !isAbsoluteURL(finalURL)) {
+      finalURL = joinPath(requestConfig[baseURL], finalURL);
     }
 
     return ((_fetch as Fetch) || fetch)(finalURL, {
@@ -235,15 +251,15 @@ export class Xior {
           response,
           config: requestConfig as XiorInterceptorRequestConfig,
           request: requestConfig as XiorInterceptorRequestConfig,
-          status: response.status,
+          [status]: response[status],
           statusText: response.statusText,
           headers: response.headers,
         };
         if (!response.ok) {
           const error = new XiorError(
-            !response.status
+            !response[status]
               ? `Network error`
-              : `Request failed with status code ${response.status}`,
+              : `Request failed with status code ${response[status]}`,
             requestConfig,
             commonRes
           );
@@ -257,14 +273,14 @@ export class Xior {
       });
   }
 
-  /** create get method */
+  /** create get like method */
   cG<T>(method: string) {
     return (url: string, options?: XiorRequestConfig) => {
       return this.request<T>(options ? { ...options, method, url } : { method, url });
     };
   }
 
-  /** create post method */
+  /** create post like method */
   cP<T>(method: string) {
     return (url: string, data?: any, options?: XiorRequestConfig) => {
       return this.request<T>(options ? { ...options, method, url, data } : { method, url, data });
