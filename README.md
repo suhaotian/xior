@@ -52,7 +52,7 @@ A lite http request lib based on **fetch** with plugin support and similar API t
 - [Helper functions](#helper-functions)
 - [FAQ](#faq)
   - [1. Is **xior** 100% compatiable with `axios`?](#1-is-xior-100-compatiable-with-axios)
-  - [2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, Nuxt.js or Tauri?](#2-can-i-use-xior-in-projects-like-bun-expo-react-native-remixjs-nextjs-vue-nuxtjs-or-tauri)
+  - [2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, Nuxt.js, Tauri or `NervJS/Taro`?](#2-can-i-use-xior-in-projects-like-bun-expo-react-native-remixjs-nextjs-vue-nuxtjs-tauri-or-nervjstaro)
   - [3. How can I use custom fetch implementation or How to support **proxy** feature?](#3-how-can-i-use-custom-fetch-implementation-or-how-to-support-proxy-feature)
   - [4. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?](#4-how-do-i-handle-responses-with-types-like-stream-document-arraybuffer-or-blob)
   - [5. How do I support older browsers?](#5-how-do-i-support-older-browsers)
@@ -1359,7 +1359,7 @@ import {
 
 **No**, but **xior** offers a similar API like axios: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`.
 
-### 2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, Nuxt.js or Tauri?
+### 2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, Nuxt.js, Tauri or `NervJS/Taro`?
 
 **Yes**, **xior** works anywhere where the native `fetch` API is supported.
 Even if the environment doesn't support `fetch`, you can use a `fetch` polyfill like for older browsers.
@@ -1447,6 +1447,27 @@ import xior from 'xior';
 
 export const http = xior.create({
   baseURL: 'https://www.tauri.app',
+  fetch,
+});
+
+async function test() {
+  const { data } = await http.get('/');
+  return data;
+}
+```
+
+For `Taro`:
+
+```ts
+import { fetch } from 'taro-fetch-polyfill';
+import xior from 'xior';
+
+// fetch('https://api.github.com')
+//     .then(response => response.json())
+//     .then(console.log);
+
+export const http = xior.create({
+  baseURL: 'https://github.com/NervJS/taro',
   fetch,
 });
 
