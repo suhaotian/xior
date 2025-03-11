@@ -1,5 +1,5 @@
 import { MockHeaders, StatusOrCallback, RequestOptions, RequestData, VERBS } from './mock/types';
-import { keys } from '../shorts';
+import { keys, nullValue } from '../shorts';
 import type {
   XiorInterceptorRequestConfig,
   XiorPlugin,
@@ -444,7 +444,7 @@ export default class MockPlugin {
                   obj[key] = value + '';
                 },
                 get(key: string) {
-                  return obj[key] || null;
+                  return obj[key] || nullValue;
                 },
               };
             })()
@@ -574,7 +574,7 @@ function turnObjToHeaders(objHeaders: Record<string, string>) {
               obj[key] = value + '';
             },
             get(key: string) {
-              return obj[key] || null;
+              return obj[key] || nullValue;
             },
           };
         })()

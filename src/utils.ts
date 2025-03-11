@@ -1,4 +1,4 @@
-import { isArray, keys, o, op, undefinedValue } from './shorts';
+import { isArray, keys, nullValue, o, op, undefinedValue } from './shorts';
 import type { XiorRequestConfig, XiorResponse } from './types';
 export * from './any-signals';
 export * from './merge';
@@ -7,14 +7,14 @@ export * from './plugins/utils';
 export function encodeParams<T = any>(
   params: T,
   encodeURI = true,
-  parentKey: string | null = null,
+  parentKey: string | null = nullValue,
   options?: {
     allowDots?: boolean;
     serializeDate?: (value: Date) => string;
     arrayFormat?: 'indices' | 'repeat' | 'brackets';
   }
 ): string {
-  if (params === undefinedValue || params === null) return '';
+  if (params === undefinedValue || params === nullValue) return '';
   const encodedParams = [];
   const encodeURIFn = encodeURI ? encodeURIComponent : (v: string) => v;
   const paramsIsArray = isArray(params);

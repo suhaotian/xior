@@ -1,4 +1,4 @@
-import { keys, o, f, O, json, GET, HEAD, OPTIONS, undefinedValue, qs } from './shorts';
+import { keys, o, f, O, json, GET, HEAD, OPTIONS, undefinedValue, qs, h, m } from './shorts';
 import type { XiorInterceptorRequestConfig } from './types';
 import { trimUndefined, encodeParams, merge } from './utils';
 
@@ -15,26 +15,26 @@ const supportURLSearchParams = typeof URLSearchParams !== `${undefinedValue}`;
 export default async function defaultRequestInterceptor(req: XiorInterceptorRequestConfig) {
   const stringifyParams = req[qs] || encodeParams;
   const encodeURI = req.encodeURI !== false;
-  const method = req.method && req.method.toUpperCase();
+  const method = req[m] && req[m].toUpperCase();
   let _url = req.url;
   const url = _url;
   const isUrlSearchParams = supportURLSearchParams && req.data instanceof URLSearchParams;
   const data = isUrlSearchParams ? O.fromEntries(req.data.entries()) : req.data;
   let _data = data;
-  const headers = req?.headers ? { ...req.headers } : {};
+  const headers = req?.[h] ? { ...req[h] } : {};
   let newParams = req.params;
   const isGet = likeGET(method);
   // const isFormData = typeof data?.append === f; // f: 'function'
   if (data && !(typeof data.append === f)) {
     let contentType = '',
       contentTypeKey = 'content-type';
-    if (req?.headers) {
-      const key = keys(req.headers).find((key) => {
+    if (req?.[h]) {
+      const key = keys(req[h]).find((key) => {
         return key.toLowerCase() === contentTypeKey;
       });
       if (key) {
         contentTypeKey = key;
-        contentType = req.headers[key];
+        contentType = req[h][key];
       }
     }
     if (!contentType || isUrlSearchParams) {
@@ -67,7 +67,7 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
     data,
     url,
     method,
-    headers,
+    [h]: headers,
     isGet,
   };
 }

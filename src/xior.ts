@@ -12,6 +12,7 @@ import {
   undefinedValue,
   qs,
   status,
+  h,
 } from './shorts';
 import type {
   XiorInterceptorOptions,
@@ -42,6 +43,9 @@ async function getResponseData(
 ) {
   let data: any;
   if (!responseType || !response.ok || [text, json].includes(responseType)) {
+    const contentLength = response[h].get('Content-Length');
+    if (contentLength === '0') return '';
+
     data = await response[text]();
     if (data && responseType !== text) {
       try {
@@ -72,7 +76,7 @@ export class Xior {
     this.config = options;
     this.defaults = {
       params: {},
-      headers: {},
+      [h]: {},
     } as XiorInterceptorRequestConfig;
   }
 
@@ -253,7 +257,7 @@ export class Xior {
           request: requestConfig as XiorInterceptorRequestConfig,
           [status]: response[status],
           statusText: response.statusText,
-          headers: response.headers,
+          [h]: response[h],
         };
         if (!response.ok) {
           const error = new XiorError(

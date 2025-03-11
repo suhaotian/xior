@@ -16,17 +16,22 @@ export const qs = 'paramsSerializer';
 export const addEventListener = 'addEventListener';
 /** "status" */
 export const status = 'status';
+/** "headers" */
+export const h = 'headers';
 /** Object */
 export const O = Object;
 /** undefined */
 export const undefinedValue = undefined;
+/** null */
+export const nullValue = null;
 /** Object.prototype */
 export const op = O[p];
 /** Object.keys */
 export const keys = O.keys;
 /** Array.isArray */
 export const isArray = Array.isArray;
-
+/** "method" */
+export const m = 'method';
 /** "HEAD" */
 export const HEAD = 'HEAD';
 /** "GET" */
