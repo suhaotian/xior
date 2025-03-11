@@ -1364,7 +1364,7 @@ import {
 **Yes**, **xior** works anywhere where the native `fetch` API is supported.
 Even if the environment doesn't support `fetch`, you can use a `fetch` polyfill like for older browsers.
 
-For `Tauri`: check [3. How can I use custom fetch implementation or How to support **proxy** feature?](https://github.com/suhaotian/xior?tab=readme-ov-file#3-how-can-i-use-custom-fetch-implementation-or-how-to-support-proxy-feature)
+For `Tauri` or `Taro`: check [3. How can I use custom fetch implementation or How to support **proxy** feature?](https://github.com/suhaotian/xior?tab=readme-ov-file#3-how-can-i-use-custom-fetch-implementation-or-how-to-support-proxy-feature)
 
 ### 3. How can I use custom fetch implementation or How to support **proxy** feature?
 
