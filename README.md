@@ -1553,6 +1553,22 @@ If you have any questions, feel free to create issues.
 
 ## Migrate from `axios` to **xior**
 
+**The most common change is replacing `axios` with `xior` and checking if the TypeScript types pass**:
+
+```ts
+import axios, {
+  XiorError as AxiosError,
+  isXiorError as isAxiosError,
+  XiorRequestConfig as AxiosRequestConfig,
+  XiorResponse as AxiosResponse,
+} from 'xior';
+
+const instance = axios.create({
+  baseURL: '...',
+  timeout: 20e3,
+});
+```
+
 ### GET
 
 axios:
