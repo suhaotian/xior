@@ -503,15 +503,14 @@ instance.interceptors.response.use((res) => {
 
 ### Tips: Make your SSR(Server-side Rendering) app more stable and faster
 
-How we do that? Use xior's plugins:
+**How do we achieve this?** By using Xior's plugins:
 
-1. If `GET` data error, at least have chance to retry;
-2. If retry still error, return the cache data(if have) to prevent page crash or show error page;
-3. Dedupe the `GET` requests
-4. Throttle the `GET` requests
-5. Return cache data first and run the fetching data task on the background
-
-Example code:
+1. If a `GET` request fails, allow retries for a second chance at success.
+2. If retries still fail, return cached data (if available) to prevent page crashes or error pages.
+3. Deduplicate `GET` requests to avoid redundant calls.
+4. Throttle `GET` requests to control request frequency.
+5. For large data that isn’t needed in real-time (like i18n JSON files), serve cached data first and fetch updates in the background.
+   Example code:
 
 ```ts
 import xior, { XiorError as AxiosError } from 'xior';
