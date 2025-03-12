@@ -1,5 +1,11 @@
 # CHANGELOG 📝
 
+## v0.7.7
+
+- Feat: when `headers.get('Content-Length')` is `'0'`, don't parse body
+- Chore: remove `export { type A }`'s `type ` in `*.d.ts` after build(some old typescript doesn't support this syntax)
+- Chore: Improve README and make minor code improvements
+
 ## v0.7.6
 
 - Fix: when `params` is undefined, throw `TypeError [Error]: Cannot convert undefined or null to object`
