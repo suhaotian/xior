@@ -34,7 +34,7 @@ A lite http request lib based on **fetch** with plugin support and similar API t
   - [Cleanup interceptors](#cleanup-interceptors)
   - [Timeout and Cancel request](#timeout-and-cancel-request)
   - [Proxy or use custom fetch implementations](#proxy-or-use-custom-fetch-implementations)
-  - [Custom data parse](#custom-data-parse)
+  - [Custom data parser](#custom-data-parser)
   - [Encrypt and Decrypt Example](#encrypt-and-decrypt-example)
   - [Tips: Make your SSR(Server-side Rendering) app more stable and faster](#tips-make-your-ssrserver-side-rendering-app-more-stable-and-faster)
 - [Plugins](#plugins)
@@ -382,7 +382,7 @@ controller.abort(new CancelRequestError()); // abort request with custom error
 
 See [3. How can I use custom fetch implementation or How to support **proxy** feature?](#3-how-can-i-use-custom-fetch-implementation-or-how-to-support-proxy-feature)
 
-### Custom data parse
+### Custom data parser
 
 In `xior`, the default response parser is this:
 
@@ -396,7 +396,7 @@ if (data) {
 return data;
 ```
 
-But maybe we don't want do this way, we want parse the data based on the `content-type` from `response`'s headers, so we can do this way:
+But maybe we don't want to do it this way; instead, we want to parse the data based on the `content-type` from `response`'s headers. So, we can do it this way:
 
 ```ts
 import axios from 'xior';
