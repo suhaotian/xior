@@ -34,6 +34,7 @@ A lite http request lib based on **fetch** with plugin support and similar API t
   - [Cleanup interceptors](#cleanup-interceptors)
   - [Timeout and Cancel request](#timeout-and-cancel-request)
   - [Proxy or use custom fetch implementations](#proxy-or-use-custom-fetch-implementations)
+  - [Custom data parse](#custom-data-parse)
   - [Encrypt and Decrypt Example](#encrypt-and-decrypt-example)
   - [Tips: Make your SSR(Server-side Rendering) app more stable and faster](#tips-make-your-ssrserver-side-rendering-app-more-stable-and-faster)
 - [Plugins](#plugins)
@@ -380,6 +381,70 @@ controller.abort(new CancelRequestError()); // abort request with custom error
 ### Proxy or use custom fetch implementations
 
 See [3. How can I use custom fetch implementation or How to support **proxy** feature?](#3-how-can-i-use-custom-fetch-implementation-or-how-to-support-proxy-feature)
+
+### Custom data parse
+
+In `xior`, the default response parser is this:
+
+```ts
+let data = response.text();
+if (data) {
+  try {
+    data = JSON.parse(data);
+  } catch (e) {}
+}
+return data;
+```
+
+But maybe we don't want do this way, we want parse the data based on the `content-type` from `response`'s headers, so we can do this way:
+
+```ts
+import axios from 'xior';
+
+const http = Xior.create({
+  baseURL,
+  responseType: 'custom', // Tell xior no need to parse body
+});
+
+// Define content type matchers as [responseMethod, [regexpPatterns]]
+const typeMatchers = [
+  ['json', [/^application\/.*json$/, /^$/]],
+  ['text', [/^text\//, /^image\/svg\+xml$/, /^application\/.*xml$/]],
+  // ['arrayBuffer', [/^application\/octet-stream/]],
+] as const;
+
+http.interceptors.response.use(
+  async (res) => {
+    try {
+      if (res.config.responseType !== 'custom') return res;
+
+      const { response } = res;
+      const headers = response?.headers;
+      if (!response || headers.get('Content-Length') === '0') return res;
+
+      const contentType = headers.get('Content-Type')?.split(';')?.[0]?.trim() || '';
+
+      // Find matching response method using the typeMatchers array
+      const matchedType = typeMatchers.find(([_, patterns]) =>
+        patterns.some((pattern) => pattern.test(contentType))
+      );
+
+      if (matchedType) {
+        const [method] = matchedType;
+        res.data = await response[method]();
+      } else {
+        console.warn(`Unknown Content-Type: ${contentType}`);
+      }
+
+      return res;
+    } catch (error) {
+      console.error('Interceptor error:', error);
+      return Promise.reject(error);
+    }
+  },
+  (error) => Promise.reject(error)
+);
+```
 
 ### Encrypt and Decrypt Example
 
@@ -1507,7 +1572,7 @@ fetch('https://exmaple.com/some/api')
   });
 ```
 
-**But when `responseType` set to `'stream', 'document' or 'original'`, Xior will return the original fetch response:**
+**But when `responseType` set to `'stream', 'document', 'custom' or 'original'`, Xior will return the original fetch response and `res.data` will be undefined:**
 
 ```ts
 fetch('https://exmaple.com/some/api').then((response) => {

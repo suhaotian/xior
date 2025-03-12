@@ -39,7 +39,15 @@ export type Fetch = typeof fetch;
 
 async function getResponseData(
   response: Response,
-  responseType?: 'json' | 'text' | 'blob' | 'arraybuffer' | 'stream' | 'document' | 'original'
+  responseType?:
+    | 'json'
+    | 'text'
+    | 'blob'
+    | 'arraybuffer'
+    | 'stream'
+    | 'document'
+    | 'original'
+    | 'custom'
 ) {
   let data: any;
   if (!responseType || !response.ok || [text, json].includes(responseType)) {
@@ -98,7 +106,7 @@ export class Xior {
       request: {
         use: (
           fn: (
-            config: XiorInterceptorRequestConfig
+            requestConfig: XiorInterceptorRequestConfig
           ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig,
           /** @deprecated useless here */
           onRejected?: null | ((error: any) => any),
@@ -109,7 +117,7 @@ export class Xior {
         },
         eject: (
           fn: (
-            config: XiorInterceptorRequestConfig
+            responseWithConfig: XiorInterceptorRequestConfig
           ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig
         ) => {
           this.REQI = this.REQI.filter((item) => item !== fn);

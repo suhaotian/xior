@@ -16,7 +16,15 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
    * Currently only support 'json' | 'text', default: 'json';
    * Others will just return the original response
    */
-  responseType?: 'json' | 'text' | 'stream' | 'document' | 'arraybuffer' | 'blob' | 'original';
+  responseType?:
+    | 'json'
+    | 'text'
+    | 'stream'
+    | 'document'
+    | 'arraybuffer'
+    | 'blob'
+    | 'original'
+    | 'custom';
   data?: any;
   /**
    * @deprecated Internal use only

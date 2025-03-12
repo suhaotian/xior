@@ -361,6 +361,70 @@ describe('xior tests', () => {
     });
   });
 
+  describe('Custom response parser should work', () => {
+    it('Custom response parser should work', async () => {
+      const http = Xior.create({
+        baseURL,
+        responseType: 'custom', // Tell xior no need to parse body
+      });
+
+      let shouldUseJSON = false;
+
+      // Define content type matchers as [responseMethod, [regexpPatterns]]
+      const typeMatchers = [
+        ['json', [/^application\/.*json$/, /^$/]],
+        ['text', [/^text\//, /^image\/svg\+xml$/, /^application\/.*xml$/]],
+        // ['arrayBuffer', [/^application\/octet-stream/]],
+      ] as const;
+      http.interceptors.response.use(
+        async (res) => {
+          try {
+            if (res.config.responseType !== 'custom') return res;
+
+            const { response } = res;
+            const headers = response?.headers;
+            if (!response || headers.get('Content-Length') === '0') return res;
+
+            const contentType = headers.get('Content-Type')?.split(';')?.[0]?.trim() || '';
+
+            // Find matching response method using the typeMatchers array
+            const matchedType = typeMatchers.find(([_, patterns]) =>
+              patterns.some((pattern) => pattern.test(contentType))
+            );
+
+            if (matchedType) {
+              const [method] = matchedType;
+              res.data = await response[method]();
+              if (method === 'json') shouldUseJSON = true;
+            } else {
+              console.warn(`Unknown Content-Type: ${contentType}`);
+            }
+
+            return res;
+          } catch (error) {
+            console.error('Interceptor error:', error);
+            return Promise.reject(error);
+          }
+        },
+        (error) => Promise.reject(error)
+      );
+
+      const { data, request } = await http.get<{
+        method: string;
+        body: object;
+        query: Record<string, any>;
+      }>('/get', {
+        params: { a: 1, b: '2/', c: { a: 1 } },
+      });
+      assert.strictEqual(shouldUseJSON, true);
+      assert.strictEqual(data.method, 'get');
+      assert.strictEqual(data.query.a, '1');
+      assert.strictEqual(data.query.b, '2/');
+      assert.strictEqual(data.query.c.a, '1');
+      assert.strictEqual(request._url, '/get?a=1&b=2%2F&c%5Ba%5D=1');
+    });
+  });
+
   describe('custom AbortController signal should work', () => {
     it('should work with abort early GET', async () => {
       const xiorInstance = Xior.create({ baseURL });
