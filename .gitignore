@@ -18,4 +18,4 @@ tauri-app
 !src/plugins
 !src/tests/plugins
 !tests/src/tests/plugins
-!scripts
+!scripts/*

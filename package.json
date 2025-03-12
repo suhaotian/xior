@@ -117,10 +117,10 @@
     "> 1%"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && node scripts/remove-type.mjs",
     "build:lib": "rm -rf lib && tsc --project tsconfig.json",
     "build:umd": "pnpm build:lib && pnpm webpack --config ./scripts/webpack.config.mjs",
-    "test": "tsup && pnpm --filter=xior-tests test",
+    "test": "npm run build && pnpm --filter=xior-tests test",
     "checktype": "tsc --noEmit",
     "start-publish": "pnpm build && pnpm build:umd && node scripts/purge-pkg-for-publish.mjs && npm publish --access public --no-git-checks --provenance --registry=https://registry.npmjs.org",
     "push": "git push && git lfs push --all origin",
@@ -154,7 +154,8 @@
     "webpack-cli": "^6.0.1",
     "change-case": "^5.4.4",
     "typedoc": "^0.27.9",
-    "tsup": "^8.4.0"
+    "tsup": "^8.4.0",
+    "fast-glob": "^3.3.3"
   },
   "prettier": {
     "printWidth": 100,
