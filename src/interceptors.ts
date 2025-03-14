@@ -4,10 +4,11 @@ import { trimUndefined, encodeParams, merge } from './utils';
 
 const appPrefix = 'application/';
 const formUrl = `${appPrefix}x-www-form-urlencoded`;
+const formUrlRegex = new RegExp(`^${formUrl}`, 'i');
 const jsonType = `${appPrefix}${json}`;
 const jsonRegex = new RegExp(`^${appPrefix}.*${json}.*`, 'i');
 
-export function likeGET(method = GET) {
+function likeGET(method = GET) {
   return [HEAD, GET, OPTIONS].includes(method);
 }
 
@@ -50,7 +51,7 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
       }
       if (jsonRegex.test(contentType)) {
         _data = JSON.stringify(trimUndefined(data));
-      } else if (!isGet && contentType === formUrl) {
+      } else if (!isGet && formUrlRegex.test(contentType)) {
         _data = stringifyParams(data);
       }
     }
