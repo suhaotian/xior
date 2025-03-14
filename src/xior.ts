@@ -51,9 +51,6 @@ async function getResponseData(
 ) {
   let data: any;
   if (!responseType || !response.ok || [text, json].includes(responseType)) {
-    const contentLength = response[h].get('Content-Length');
-    if (contentLength === '0') return '';
-
     data = await response[text]();
     if (data && responseType !== text) {
       try {
