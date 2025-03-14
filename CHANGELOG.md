@@ -2,7 +2,7 @@
 
 ## v0.7.7
 
-- Feat: support `application/vnd.api+json`
+- Feat: support `application/vnd.api+json` and `application/x-www-form-urlencoded; charset=utf-8`
 - Feat: when `headers.get('Content-Length')` is `'0'`, don't parse body
 - Chore: remove `export { type A }`'s `type ` in `*.d.ts` after build(some old typescript doesn't support this syntax)
 - Chore: Improve README and make minor code improvements
