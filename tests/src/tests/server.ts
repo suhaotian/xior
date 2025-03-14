@@ -8,7 +8,7 @@ export async function startServer(port: number) {
   const app = express();
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
-
+  app.use(express.json({ type: 'application/vnd.api+json' }));
   (['get', 'post', 'patch', 'put', 'delete', 'head', 'options'] as const).forEach((method) => {
     app[method](`/${method}`, async (req, res) => {
       if (req.headers['x-delay-value']) {

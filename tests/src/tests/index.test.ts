@@ -74,6 +74,49 @@ describe('xior tests', () => {
       assert.strictEqual(Object.keys(data.body).length, 0);
     });
 
+    it(`POST should work when Content-Type: 'application/vnd.api+json'`, async () => {
+      const { data, config } = await xiorInstance.post<{
+        method: string;
+        body: Record<string, any>;
+        query: Record<string, any>;
+      }>(
+        '/post',
+        { a: 1 },
+        {
+          params: { b: 2 },
+          headers: {
+            'Content-Type': 'application/vnD.api+json',
+          },
+        }
+      );
+      console.log('data :', data, config);
+      assert.strictEqual(data.method, 'post');
+      assert.strictEqual(Object.keys(data.body).length, 1);
+      assert.strictEqual(data.body.a, 1);
+      assert.strictEqual(data.query.b, '2');
+    });
+
+    it(`POST should work when Content-Type: 'application/json; charset=utf-8'`, async () => {
+      const { data } = await xiorInstance.post<{
+        method: string;
+        body: Record<string, any>;
+        query: Record<string, any>;
+      }>(
+        '/post',
+        { a: 1 },
+        {
+          params: { b: 2 },
+          headers: {
+            'Content-Type': 'application/Json; charset=utf-8',
+          },
+        }
+      );
+      assert.strictEqual(data.method, 'post');
+      assert.strictEqual(Object.keys(data.body).length, 1);
+      assert.strictEqual(data.body.a, 1);
+      assert.strictEqual(data.query.b, '2');
+    });
+
     it("POST should work with body when header's `content-type: application/x-www-form-urlencoded`", async () => {
       const { data } = await xiorInstance.post<{
         method: string;
