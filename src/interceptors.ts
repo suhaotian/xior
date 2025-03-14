@@ -4,9 +4,11 @@ import { trimUndefined, encodeParams, merge } from './utils';
 
 const appPrefix = 'application/';
 const formUrl = `${appPrefix}x-www-form-urlencoded`;
-const formUrlRegex = new RegExp(`^${formUrl}`, 'i');
+
+const R = RegExp;
+const formUrlRegex = new R(`^${formUrl}`, 'i'); // \^application\/x-www-form-urlencoded\i
 const jsonType = `${appPrefix}${json}`;
-const jsonRegex = new RegExp(`^${appPrefix}.*${json}.*`, 'i');
+const jsonRegex = new R(`^${appPrefix}.*${json}.*`, 'i'); // \^application\/.*json.*\i
 
 function likeGET(method = GET) {
   return [HEAD, GET, OPTIONS].includes(method);
@@ -31,9 +33,7 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
     let contentType = '',
       contentTypeKey = 'content-type';
     if (req?.[h]) {
-      const key = keys(req[h]).find((key) => {
-        return key.toLowerCase() === contentTypeKey;
-      });
+      const key = keys(req[h]).find((key) => key.toLowerCase() === contentTypeKey);
       if (key) {
         contentTypeKey = key;
         contentType = req[h][key];

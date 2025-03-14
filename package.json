@@ -118,6 +118,7 @@
   ],
   "scripts": {
     "build": "tsup && node scripts/remove-type.mjs",
+    "postbuild": "is-ci || sh ./scripts/check-bundle-size.sh",
     "build:lib": "rm -rf lib && tsc --project tsconfig.json",
     "build:umd": "pnpm build:lib && pnpm webpack --config ./scripts/webpack.config.mjs",
     "test": "npm run build && pnpm --filter=xior-tests test",
