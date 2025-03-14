@@ -1641,36 +1641,14 @@ axios:
 import axios from 'axios';
 
 // Make a request for a user with a given ID
-axios
-  .get('/user?ID=12345')
-  .then(function (response) {
-    // handle success
-    console.log(response);
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  })
-  .finally(function () {
-    // always executed
-  });
+axios.get('/user?ID=12345');
 
 // Optionally the request above could also be done as
-axios
-  .get('/user', {
-    params: {
-      ID: 12345,
-    },
-  })
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  })
-  .finally(function () {
-    // always executed
-  });
+axios.get('/user', {
+  params: {
+    ID: 12345,
+  },
+});
 
 // Want to use async/await? Add the `async` keyword to your outer function/method.
 async function getUser() {
@@ -1689,36 +1667,14 @@ xior:
 import axios from 'xior';
 
 // Make a request for a user with a given ID
-axios
-  .get('/user?ID=12345')
-  .then(function (response) {
-    // handle success
-    console.log(response);
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  })
-  .finally(function () {
-    // always executed
-  });
+axios.get('/user?ID=12345');
 
 // Optionally the request above could also be done as
-axios
-  .get('/user', {
-    params: {
-      ID: 12345,
-    },
-  })
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  })
-  .finally(function () {
-    // always executed
-  });
+axios.get('/user', {
+  params: {
+    ID: 12345,
+  },
+});
 
 // Want to use async/await? Add the `async` keyword to your outer function/method.
 async function getUser() {
@@ -1738,17 +1694,10 @@ axios:
 ```ts
 import axios from 'axios';
 
-axios
-  .post('/user', {
-    firstName: 'Fred',
-    lastName: 'Flintstone',
-  })
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
+axios.post('/user', {
+  firstName: 'Fred',
+  lastName: 'Flintstone',
+});
 ```
 
 xior:
@@ -1756,17 +1705,10 @@ xior:
 ```ts
 import axios from 'xior';
 
-axios
-  .post('/user', {
-    firstName: 'Fred',
-    lastName: 'Flintstone',
-  })
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
+axios.post('/user', {
+  firstName: 'Fred',
+  lastName: 'Flintstone',
+});
 ```
 
 ### `axios(requestObj)`: axios({ method: 'get', params: { a: 1 } })
