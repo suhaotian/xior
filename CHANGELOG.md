@@ -2,8 +2,8 @@
 
 ## v0.7.7
 
-- Feat: support `application/vnd.api+json` and `application/x-www-form-urlencoded; charset=utf-8`
-- Chore: remove `export { type A }`'s `type ` in `*.d.ts` after build(some old typescript doesn't support this syntax)
+- Feat: Support `application/vnd.api+json` and `application/x-www-form-urlencoded; charset=utf-8` in Requst `Content-Type`
+- Chore: Remove `export { type A }`'s `type` in `*.d.ts` after build (some old TypeScript versions (before 3.8) don't support this syntax)
 - Chore: Improve README and make minor code improvements
 
 ## v0.7.6
