@@ -31,7 +31,7 @@ declare module 'xior' {
     cacheKey?: string;
   }
 
-  interface XiorResponseInterceptorConfig {
+  interface XiorInterceptorResponseConfig {
     fromCache?: boolean;
     cacheTime?: number;
     cacheKey?: string;

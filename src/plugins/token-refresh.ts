@@ -1,4 +1,4 @@
-import type { XiorResponse, XiorResponseInterceptorConfig } from '../types';
+import type { XiorResponse, XiorInterceptorResponseConfig } from '../types';
 import type { XiorError as AxiosError } from '../utils';
 import type { XiorInstance } from '../xior';
 
@@ -16,7 +16,7 @@ export default function setupTokenRefresh(
   let refreshingToken = false;
   const queue: (() => void)[] = [];
   instance.interceptors.response.use(
-    async (response: XiorResponseInterceptorConfig) => {
+    async (response: XiorInterceptorResponseConfig) => {
       return response;
     },
     async (error: AxiosError) => {

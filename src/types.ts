@@ -12,6 +12,7 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
   paramsSerializer?: (params: Record<string, any>) => string;
   /** Use encodeURIComponent, default: true */
   encodeURI?: boolean;
+
   /**
    * Currently only support 'json' | 'text', default: 'json';
    * Others will just return the original response
@@ -44,6 +45,23 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
    * response interceptors already run?
    */
   _did?: boolean;
+
+  /**
+   * @deprecated Useless here. Try `import axios from 'xior/axios'`;
+   */
+  validateStatus?: (status: number) => boolean;
+  /**
+   * @deprecated Useless here. Try `import axios from 'xior/axios'`;
+   */
+  fetchOptions?: any;
+  /**
+   * @deprecated Useless here. Try `import axios from 'xior/axios'`;
+   */
+  transformRequest?: any[];
+  /**
+   * @deprecated Useless here. Try `import axios from 'xior/axios'`;
+   */
+  transformResponse?: any[];
 }
 
 export type XiorInterceptorRequestConfig<T = any> = XiorRequestConfig & {
@@ -74,7 +92,7 @@ export interface XiorInterceptorOptions {
   runWhen?: (config: XiorInterceptorRequestConfig) => boolean;
 }
 
-export interface XiorResponseInterceptorConfig<T = any> {
+export interface XiorInterceptorResponseConfig<T = any> {
   data: T;
   config: XiorInterceptorRequestConfig<T>;
   request: XiorInterceptorRequestConfig<T>;
@@ -83,3 +101,6 @@ export interface XiorResponseInterceptorConfig<T = any> {
   statusText: string;
   headers: Headers;
 }
+
+/** @deprecated please use `XiorInterceptorResponseConfig` */
+export type XiorResponseInterceptorConfig = XiorInterceptorResponseConfig;

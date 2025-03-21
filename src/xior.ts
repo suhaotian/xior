@@ -20,7 +20,7 @@ import type {
   XiorPlugin,
   XiorRequestConfig,
   XiorResponse,
-  XiorResponseInterceptorConfig,
+  XiorInterceptorResponseConfig,
 } from './types';
 import {
   ClearableSignal,
@@ -92,8 +92,8 @@ export class Xior {
   /** response interceptors */
   RESI: {
     fn: (
-      config: XiorResponseInterceptorConfig
-    ) => Promise<XiorResponseInterceptorConfig> | XiorResponseInterceptorConfig;
+      config: XiorInterceptorResponseConfig
+    ) => Promise<XiorInterceptorResponseConfig> | XiorInterceptorResponseConfig;
     /** error: XiorError | Error | TypeError */
     onRejected?: null | ((error: XiorError) => any);
   }[] = [];
@@ -126,8 +126,8 @@ export class Xior {
       response: {
         use: (
           fn: (
-            config: XiorResponseInterceptorConfig
-          ) => Promise<XiorResponseInterceptorConfig> | XiorResponseInterceptorConfig,
+            config: XiorInterceptorResponseConfig
+          ) => Promise<XiorInterceptorResponseConfig> | XiorInterceptorResponseConfig,
           /** error: XiorError | Error | TypeError */
           onRejected?: null | ((error: XiorError) => any)
         ) => {
@@ -136,8 +136,8 @@ export class Xior {
         },
         eject: (
           fn: (
-            config: XiorResponseInterceptorConfig
-          ) => Promise<XiorResponseInterceptorConfig> | XiorResponseInterceptorConfig
+            config: XiorInterceptorResponseConfig
+          ) => Promise<XiorInterceptorResponseConfig> | XiorInterceptorResponseConfig
         ) => {
           this.RESI = this.RESI.filter((item) => item.fn !== fn);
         },
