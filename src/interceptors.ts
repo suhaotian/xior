@@ -38,8 +38,8 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
     const key = keys(req[h]).find((key) => key.toLowerCase() === contentTypeKey);
     if (key) {
       contentTypeKey = key;
-      contentType = req[h][key];
-      if (isFormData) delete req[h][key];
+      contentType = headers[key];
+      if (isFormData) delete headers[key];
     }
   }
 

@@ -86,6 +86,7 @@ export async function startServer(port: number) {
       file: req.file,
       query: req.query,
       body: req.body,
+      headers: req.headers,
     });
   });
 

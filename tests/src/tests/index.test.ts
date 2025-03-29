@@ -380,11 +380,16 @@ describe('xior tests', () => {
       body.set('field2', 'val2');
       body.set('file', blob, fileName);
 
-      const xiorInstance = Xior.create({ baseURL });
-      const { data } = await xiorInstance.post<{ file: any; body: Record<string, string> }>(
-        '/upload',
-        body
-      );
+      const xiorInstance = Xior.create({
+        baseURL,
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const { data, config } = await xiorInstance.post<{
+        file: any;
+        body: Record<string, string>;
+        headers: Record<string, string>;
+      }>('/upload', body);
+      assert.strictEqual(data.headers['content-type'].startsWith('multipart/form-data;'), true);
       assert.strictEqual(data.body.field1, 'val1');
       assert.strictEqual(data.body.field2, 'val2');
       assert.strictEqual(data.file.originalname, 'sample.txt');
