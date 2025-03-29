@@ -29,7 +29,7 @@ declare module 'xior' {
 
 /** upload progress / download progress */
 export default function xiorProgressPlugin(options: XiorProgressOptions = {}): XiorPlugin {
-  const { progressDuration: _progressDuration = 5 * 1000 } = options;
+  const { progressDuration: _progressDuration = 5e3 } = options;
   return function (adapter) {
     return async (config) => {
       const {
@@ -40,7 +40,7 @@ export default function xiorProgressPlugin(options: XiorProgressOptions = {}): X
 
       let interval: ReturnType<typeof setInterval> | undefined;
       if (onUploadProgress || onDownloadProgress) {
-        const total = 1000;
+        const total = 1e3;
         let loaded = 0;
         let progress = 0;
         const step = total / (progressDuration / 300);
@@ -62,12 +62,8 @@ export default function xiorProgressPlugin(options: XiorProgressOptions = {}): X
           }
 
           // Fixed: Separate callbacks for upload and download progress
-          if (onUploadProgress) {
-            onUploadProgress({ ...event, upload: true });
-          }
-          if (onDownloadProgress) {
-            onDownloadProgress({ ...event, download: true });
-          }
+          if (onUploadProgress) onUploadProgress({ ...event, upload: true });
+          if (onDownloadProgress) onDownloadProgress({ ...event, download: true });
         }, 300);
       }
 

@@ -28,17 +28,22 @@ export default async function defaultRequestInterceptor(req: XiorInterceptorRequ
   const headers = req?.[h] ? { ...req[h] } : {};
   let newParams = req.params;
   const isGet = likeGET(method);
+
   // const isFormData = typeof data?.append === f; // f: 'function'
-  if (data && !(typeof data.append === f)) {
-    let contentType = '',
-      contentTypeKey = 'content-type';
-    if (req?.[h]) {
-      const key = keys(req[h]).find((key) => key.toLowerCase() === contentTypeKey);
-      if (key) {
-        contentTypeKey = key;
-        contentType = req[h][key];
-      }
+  const isFormData = typeof data?.append === f;
+
+  let contentType = '',
+    contentTypeKey = 'content-type';
+  if (data && req?.[h]) {
+    const key = keys(req[h]).find((key) => key.toLowerCase() === contentTypeKey);
+    if (key) {
+      contentTypeKey = key;
+      contentType = req[h][key];
+      if (isFormData) delete req[h][key];
     }
+  }
+
+  if (data && !isFormData) {
     if (!contentType || isUrlSearchParams) {
       contentType = isGet || isUrlSearchParams ? formUrl : jsonType;
       headers[contentTypeKey] = contentType;
