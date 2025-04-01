@@ -12,6 +12,7 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
   paramsSerializer?: (params: Record<string, any>) => string;
   /** Use encodeURIComponent, default: true */
   encodeURI?: boolean;
+  method?: string;
 
   /**
    * Currently only support 'json' | 'text', default: 'json';
