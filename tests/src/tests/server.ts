@@ -40,6 +40,9 @@ export async function startServer(port: number) {
   app.get('/xyz*', (req, res) => {
     res.status(200).send(req.url);
   });
+  app.get('/orgs/tsdk-monorepo/repos', (req, res) => {
+    res.status(200).send([]);
+  });
 
   app.get('/timeout', (req, res) => {
     setTimeout(

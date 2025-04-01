@@ -113,8 +113,8 @@ describe('axios compatible tests', () => {
   });
 
   it('should work with params', async () => {
-    const axiosInstance = axios.create({ baseURL: 'https://api.github.com' });
-    const xiorInstance = xior.create({ baseURL: 'https://api.github.com/' });
+    const axiosInstance = axios.create({ baseURL });
+    const xiorInstance = xior.create({ baseURL });
     const { data } = await axiosInstance.get<any[]>('/orgs/tsdk-monorepo/repos', {
       data: { page: 1 },
       params: { page: 100 },
