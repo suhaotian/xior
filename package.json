@@ -137,7 +137,7 @@
     "lint-staged": "^15.2.7",
     "prettier": "^3.5.3",
     "is-ci": "^3.0.1",
-    "typescript": "^5.8.2",
+    "typescript": "^5.8.3",
     "@types/node": "^20.11.13",
     "@tsconfig/recommended": "^1.0.8",
     "@types/mime": "^3.0.4",

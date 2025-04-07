@@ -20,8 +20,8 @@
     "@vitejs/plugin-react": "^4.2.1",
     "jsdom": "^24.0.0",
     "react-test-renderer": "^18.2.0",
-    "vite": "^5.1.6",
-    "vitest": "^1.4.0",
+    "vite": "^6.2.5",
+    "vitest": "^3.1.1",
     "xior": "workspace:*"
   },
   "keywords": [],
