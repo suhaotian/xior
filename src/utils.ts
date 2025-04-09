@@ -118,6 +118,6 @@ export class XiorTimeoutError<T = any> extends XiorError<T> {
   }
 }
 
-export function isXiorError(error: any) {
+export function isXiorError<T = any>(error: any): error is XiorError<T> | XiorTimeoutError<T> {
   return error?.name === XE || error?.name === XTE;
 }
