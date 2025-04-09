@@ -48,7 +48,7 @@ describe('xior error retry plugin tests', () => {
       } as any);
     } catch (e) {
       if (isXiorError(e)) {
-        error = e as XiorError;
+        error = e;
       }
     }
     assert.strictEqual(typeof error !== 'undefined', true);
@@ -63,7 +63,7 @@ describe('xior error retry plugin tests', () => {
       await instance.post('/retry-error', { count: 1 });
     } catch (e) {
       if (isXiorError(e)) {
-        error = e as XiorError;
+        error = e;
       }
     }
     assert.strictEqual(typeof error !== 'undefined', true);
@@ -110,7 +110,7 @@ describe('xior error retry plugin tests', () => {
       } as any);
     } catch (e) {
       if (isXiorError(e)) {
-        error = e as XiorError;
+        error = e;
       }
     }
     assert.strictEqual(typeof error !== 'undefined', true);
@@ -170,7 +170,7 @@ describe('xior error retry plugin tests', () => {
       msg = data.msg;
     } catch (e) {
       if (isXiorError(e)) {
-        error = e as XiorError;
+        error = e;
       }
     }
     assert.strictEqual((config as any).isRetry, true);
@@ -207,7 +207,7 @@ describe('xior error retry plugin tests', () => {
       } as any);
     } catch (e) {
       if (isXiorError(e)) {
-        error = e as XiorError;
+        error = e;
       }
     }
     assert.strictEqual(typeof error !== 'undefined', true);
@@ -236,7 +236,7 @@ describe('xior error retry plugin tests', () => {
       } as any);
     } catch (e) {
       if (isXiorError(e)) {
-        error = e as XiorError;
+        error = e;
       }
     }
     assert.strictEqual(typeof error !== 'undefined', true);
