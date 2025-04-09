@@ -1,5 +1,11 @@
 # CHANGELOG 📝
 
+## v0.7.8
+
+- Fix: make `isXiorError` type guard https://github.com/suhaotian/xior/pull/42 Thanks @kosmotema !
+- Fix: add `method` to `XiorRequestConfig` fix https://github.com/suhaotian/xior/issues/40
+- Chore: fix some typos.
+
 ## v0.7.7
 
 - Feat: Support `application/vnd.api+json` and `application/x-www-form-urlencoded; charset=utf-8` in Request `Content-Type`
