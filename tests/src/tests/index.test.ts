@@ -382,7 +382,7 @@ describe('xior tests', () => {
 
       const xiorInstance = Xior.create({
         baseURL,
-        headers: { 'Content-Type': 'application/json' },
+        // headers: { 'Content-Type': 'application/json' },
       });
       const { data, config } = await xiorInstance.post<{
         file: any;
