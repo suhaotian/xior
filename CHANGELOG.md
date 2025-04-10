@@ -31,7 +31,7 @@
 - Refactor: minor improve size
 - Plugins: use relative path to import utils and types
 
-## v0.7
+## v0.7.2
 
 - Refactor: Don't exports unnecessary internal properties
 - Chore: update README.md
