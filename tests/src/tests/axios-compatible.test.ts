@@ -18,8 +18,8 @@ after(async () => {
 
 describe('axios compatible tests', () => {
   it('should work with axios.get/axios.post', async () => {
-    const res = await axios.get('/get', { baseURL });
-    const xiorRes = await xior.get('/get', { baseURL });
+    const res = await axios.get<any, any>('/get', { baseURL });
+    const xiorRes = await xior.get<any, any>('/get', { baseURL });
     assert.strictEqual(res.data.method, xiorRes.data.method);
 
     const res1 = await axios.post('/post', null, { baseURL });

@@ -165,7 +165,7 @@ export class Xior {
     };
   }
 
-  async request<T>(options: XiorRequestConfig | string) {
+  async request<T, R = XiorResponse<T>>(options: XiorRequestConfig | string) {
     let requestConfig: XiorRequestConfig = merge(
       this.config || {},
       this.defaults,
@@ -200,7 +200,7 @@ export class Xior {
       }
     }
 
-    return promise;
+    return promise as Promise<R>;
   }
 
   /** @deprecated for internal use only */
@@ -296,42 +296,42 @@ export class Xior {
     };
   }
 
-  get<T = any>(
+  get<T = any, R = XiorResponse<T>>(
     url: string,
     options?: XiorRequestConfig & {
       /** @deprecated No `data` in `GET` method */
       data?: any;
     }
   ) {
-    return this.cG<T>(GET)(url, options);
+    return this.cG<T>(GET)(url, options) as Promise<R>;
   }
-  head<T = any>(
+  head<T = any, R = XiorResponse<T>>(
     url: string,
     options?: XiorRequestConfig & {
       /** @deprecated No `data` in `HEAD` method */
       data?: any;
     }
   ) {
-    return this.cG<T>(HEAD)(url, options);
+    return this.cG<T>(HEAD)(url, options) as Promise<R>;
   }
 
-  post<T = any>(url: string, data?: any, options?: XiorRequestConfig) {
-    return this.cP<T>(POST)(url, data, options);
+  post<T = any, R = XiorResponse<T>>(url: string, data?: any, options?: XiorRequestConfig) {
+    return this.cP<T>(POST)(url, data, options) as Promise<R>;
   }
 
-  put<T = any>(url: string, data?: any, options?: XiorRequestConfig) {
-    return this.cP<T>(PUT)(url, data, options);
+  put<T = any, R = XiorResponse<T>>(url: string, data?: any, options?: XiorRequestConfig) {
+    return this.cP<T>(PUT)(url, data, options) as Promise<R>;
   }
 
-  patch<T = any>(url: string, data?: any, options?: XiorRequestConfig) {
-    return this.cP<T>(PATCH)(url, data, options);
+  patch<T = any, R = XiorResponse<T>>(url: string, data?: any, options?: XiorRequestConfig) {
+    return this.cP<T>(PATCH)(url, data, options) as Promise<R>;
   }
 
-  delete<T = any>(url: string, options?: XiorRequestConfig) {
-    return this.cG<T>(DELETE)(url, options);
+  delete<T = any, R = XiorResponse<T>>(url: string, options?: XiorRequestConfig) {
+    return this.cG<T>(DELETE)(url, options) as Promise<R>;
   }
 
-  options<T = any>(
+  options<T = any, R = XiorResponse<T>>(
     url: string,
     options?: XiorRequestConfig & {
       /** @deprecated No `data` in `OPTIONS` method */
