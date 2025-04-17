@@ -1,7 +1,8 @@
 [![Build](https://github.com/suhaotian/xior/actions/workflows/check.yml/badge.svg)](https://github.com/suhaotian/xior/actions/workflows/check.yml)
 [![Size](https://deno.bundlejs.com/badge?q=xior@0.7.8&badge=detailed&treeshake=%5B%7B+default+%7D%5D)](https://bundlejs.com/?q=xior%400.7.8&treeshake=%5B%7B+default+%7D%5D)
-[![npm version](https://badgen.net/npm/v/xior?color=green)](https://www.npmjs.com/package/xior)
-![Downloads](https://img.shields.io/npm/dm/xior.svg?style=flat)
+[![NPM Version](https://badgen.net/npm/v/xior?color=green)](https://www.npmjs.com/package/xior)
+![NPM Weekly Downloads](https://img.shields.io/npm/dw/xior)
+![NPM Month Downloads](https://img.shields.io/npm/dm/xior.svg?style=flat)
 ![typescript](https://badgen.net/badge/icon/typescript?icon=typescript&label&color=blue)
 
 ## Intro
