@@ -1,4 +1,5 @@
 [![Build](https://github.com/suhaotian/xior/actions/workflows/check.yml/badge.svg)](https://github.com/suhaotian/xior/actions/workflows/check.yml)
+[![GitHub Issues](https://img.shields.io/github/issues-closed/suhaotian/xior)](https://github.com/suhaotian/xior/issues)
 [![Size](https://deno.bundlejs.com/badge?q=xior@0.7.8&badge=detailed&treeshake=%5B%7B+default+%7D%5D)](https://bundlejs.com/?q=xior%400.7.8&treeshake=%5B%7B+default+%7D%5D)
 [![NPM Version](https://badgen.net/npm/v/xior?color=green)](https://www.npmjs.com/package/xior)
 ![NPM Weekly Downloads](https://img.shields.io/npm/dw/xior)
