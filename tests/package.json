@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build:lib": "rm -rf lib && tsc --project tsconfig.json",
-    "test": "pnpm build:lib && node --test ./lib",
+    "test": "pnpm build:lib && node --test ./lib/*.test.js",
     "test:cache": "pnpm build:lib && node --test ./lib/plugins/persist-cache.test.js",
     "test:undici-fetch": "pnpm build:lib && node --test ./lib/undici-fetch.test.js",
     "test:node-fetch": "pnpm build:lib && node --test ./lib/node-fetch.test.js"
