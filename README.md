@@ -1809,7 +1809,7 @@ console.log(headers.get('X-Header-Name'));
 
 Ref: https://github.com/suhaotian/xior/issues/21
 
-`transformRequest` This property is unnecessary and useless in xior.js..
+`transformRequest` This property is unnecessary and useless in xior.js.
 You can modify the payload in request interceptors, or directly before calling the request function.
 
 ```ts
@@ -1842,7 +1842,7 @@ xiorInstance.interceptors.request.use((config) => {
 
 ### `transformResponse`
 
-`transformResponse` this property is unnecessary and useless in xior.js..
+`transformResponse` this property is unnecessary and useless in xior.js.
 You can transform the response directly in a .then() callback.
 
 ```ts
