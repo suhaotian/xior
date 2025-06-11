@@ -48,19 +48,40 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
   _did?: boolean;
 
   /**
-   * @deprecated Useless here. Try `import axios from 'xior/axios'`;
+   * @deprecated Useless here.
    */
   validateStatus?: (status: number) => boolean;
   /**
-   * @deprecated Useless here. Try `import axios from 'xior/axios'`;
+   * @deprecated Useless here.
    */
   fetchOptions?: any;
   /**
-   * @deprecated Useless here. Try `import axios from 'xior/axios'`;
+   * @deprecated Useless here.
+   * You can modify the payload in request interceptors,
+   * or directly before calling the request function.
+   *
+   * @example
+   * ```ts
+   * function requestAPI(payload: any) {
+   *   const newPayload = {
+   *     // modify `payload` before request
+   *     ...payload,
+   *   };
+   *   xior.post('/api', newPayload);
+   * }
+   * ```
    */
   transformRequest?: any[];
   /**
-   * @deprecated Useless here. Try `import axios from 'xior/axios'`;
+   * @deprecated Useless here.
+   * You can handle response transformation in `.then()`.
+   *
+   * @example
+   * ```ts
+   * xior.get('/api').then(response => {
+   *   // transform response here
+   * });
+   * ```
    */
   transformResponse?: any[];
 }
