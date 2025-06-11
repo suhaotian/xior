@@ -67,6 +67,8 @@ A lite http request lib based on **fetch** with plugin support and similar API t
   - [`axios(requestObj)`: axios({ method: 'get', params: { a: 1 } })](#axiosrequestobj-axios-method-get-params--a-1--)
   - [Creating an instance](#creating-an-instance)
   - [Get response headers](#get-response-headers-1)
+  - [`transformRequest`](#transformrequest)
+  - [`transformResponse`](#transformresponse)
   - [Download file with `responseType: 'stream' | 'blob'`](#download-file-with-responsetype-stream--blob)
   - [Use stream](#use-stream)
 - [Migrate from `fetch` to **xior**](#migrate-from-fetch-to-xior)
@@ -1801,6 +1803,53 @@ const xiorInstance = xior.create({
 const { data, headers } = await xiorInstance.get('/');
 
 console.log(headers.get('X-Header-Name'));
+```
+
+### `transformRequest`
+
+Ref: https://github.com/suhaotian/xior/issues/21
+
+`transformRequest` This property is unnecessary and useless in xior.js..
+You can modify the payload in request interceptors, or directly before calling the request function.
+
+```ts
+function requestAPI(payload: any) {
+  // modify payload here
+  const newPayload = {
+    ...payload,
+  };
+  return xiorInstance.post('/api', newPayload);
+}
+```
+
+Or change `data` or `headers` in request interceptors:
+
+```ts
+xiorInstance.interceptors.request.use((config) => {
+  if (config.url === '/endpoint') {
+    delete config.headers['Content-Type'];
+  }
+  /* 
+    or delete the `Content-Type` if the data is FormData, 
+    because if it's formData, browser will automatically add headers 
+  */
+  // if (config.data instanceof FormData) {
+  //   delete config.headers['Content-Type']
+  // }
+  return config;
+});
+```
+
+### `transformResponse`
+
+`transformResponse` this property is unnecessary and useless in xior.js..
+You can transform the response directly in a .then() callback.
+
+```ts
+xiorInstance.get('/api').then((response) => {
+  // transform response data here
+  return response;
+});
 ```
 
 ### Download file with `responseType: 'stream' | 'blob'`
