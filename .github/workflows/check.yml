@@ -1,6 +1,11 @@
 name: Tests & Build
-on: [push, pull_request]
 
+on:
+  push:
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+  
 jobs:
   check:
     name: Tests & Build
