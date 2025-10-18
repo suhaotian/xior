@@ -1593,6 +1593,25 @@ fetch('https://exmaple.com/some/api')
 
 **But when `responseType` set to `'stream', 'document', 'custom' or 'original'`, Xior will return the original fetch response and `res.data` will be undefined:**
 
+**But if you want responseType: 'stream' with the same behavior as Axios, use Xior's stream plugin:**
+
+```ts
+import xior from 'xior';
+import streamPlugin from 'xior/plugins/stream';
+
+const axios = xior.create();
+axios.plugins.use(streamPlugin());
+
+const { data } = await axios.request({
+  url,
+  responseType: 'stream',
+});
+
+data.pipe(something).pipe(somethingElse);
+
+// Issue ref: https://github.com/suhaotian/xior/issues/46
+```
+
 ```ts
 fetch('https://exmaple.com/some/api').then((response) => {
   console.log(response);

@@ -8,6 +8,7 @@ export default defineConfig({
     'plugins/throttle': 'src/plugins/throttle.ts',
     'plugins/dedupe': 'src/plugins/dedupe.ts',
     'plugins/cache': 'src/plugins/cache.ts',
+    'plugins/stream': 'src/plugins/stream.ts',
     'plugins/progress': 'src/plugins/progress.ts',
     'plugins/mock': 'src/plugins/mock.ts',
     'plugins/error-cache': 'src/plugins/error-cache.ts',
