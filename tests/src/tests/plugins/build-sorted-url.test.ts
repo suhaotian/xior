@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 import { stringify } from 'qs';
 import { buildSortedURL } from 'xior';
 
-describe('build-sorted-url tests', () => {
+describe('build-sorted-url simple tests', () => {
   it('should work without data', () => {
     const result = buildSortedURL('/a', {}, (a) => stringify(a));
     assert.strictEqual(result, '/a');

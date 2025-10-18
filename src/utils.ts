@@ -1,8 +1,10 @@
-import { isArray, keys, nullValue, o, op, undefinedValue } from './shorts';
+import { isArray, nullValue, o, op, undefinedValue } from './shorts';
 import type { XiorRequestConfig, XiorResponse } from './types';
 export * from './any-signals';
 export * from './merge';
 export * from './plugins/utils';
+
+const hasOwnProperty = op.hasOwnProperty;
 
 export function encodeParams<T = any>(
   params: T,
@@ -15,58 +17,66 @@ export function encodeParams<T = any>(
   }
 ): string {
   if (params === undefinedValue || params === nullValue) return '';
-  const encodedParams = [];
-  const encodeURIFn = encodeURI ? encodeURIComponent : (v: string) => v;
-  const paramsIsArray = isArray(params);
-  const { arrayFormat, allowDots, serializeDate } = options || {};
-  const getKey = (key: string) => {
-    if (allowDots && !paramsIsArray) return `.${key}`;
-    if (paramsIsArray) {
-      if (arrayFormat === 'brackets') {
-        return `[]`;
-      } else if (arrayFormat === 'repeat') {
-        return ``;
-      }
-    }
-    return `[${key}]`;
-  };
-  for (const key in params) {
-    if (op.hasOwnProperty.call(params, key)) {
-      let value = (params as any)[key];
-      if (value !== undefinedValue) {
-        const encodedKey = parentKey ? `${parentKey}${getKey(key)}` : encodeURIFn(key as string);
 
-        if (!isNaN(value) && value instanceof Date) {
-          value = serializeDate ? serializeDate(value) : value.toISOString();
-        }
-        if (typeof value === o) {
-          // If the value is an object or array, recursively encode its contents
-          const result = encodeParams(value, encodeURI, encodedKey, options);
-          if (result !== '') encodedParams.push(result);
-        } else {
-          // Otherwise, encode the key-value pair
-          encodedParams.push(`${encodeURIFn(encodedKey)}=${encodeURIFn(value)}`);
-        }
-      }
+  const encodedParams: string[] = [];
+  const encode = encodeURI ? encodeURIComponent : (v: string) => v;
+  const paramsIsArray = isArray(params);
+  const { arrayFormat = 'indices', allowDots = false, serializeDate } = options || {};
+
+  const getKey = (key: string): string => {
+    if (paramsIsArray) {
+      if (arrayFormat === 'brackets') return '[]';
+      if (arrayFormat === 'repeat') return '';
+      return `[${key}]`; // indices
+    }
+    return allowDots ? `.${key}` : `[${key}]`;
+  };
+
+  for (const key in params) {
+    if (!hasOwnProperty.call(params, key)) continue;
+
+    let value = (params as any)[key];
+    if (value === undefinedValue) continue;
+
+    // Build key - don't double encode
+    const fullKey = parentKey ? `${parentKey}${getKey(key)}` : (key as string);
+
+    // Handle dates
+    if (!isNaN(value) && value instanceof Date) {
+      value = serializeDate ? serializeDate(value) : value.toISOString();
+    }
+
+    // Recursively handle objects/arrays
+    if (typeof value === o && value !== nullValue) {
+      const result = encodeParams(value, encodeURI, fullKey, options);
+      if (result) encodedParams.push(result);
+    } else {
+      // Encode key-value pair - only encode once
+      encodedParams.push(`${encode(fullKey)}=${encode(String(value))}`);
     }
   }
 
   return encodedParams.join('&');
 }
 
-export function trimUndefined(obj: any): any {
+export function trimUndefined<T>(obj: T): T {
   if (isArray(obj)) {
-    return obj.map(trimUndefined);
-  } else if (obj && typeof obj === o) {
-    keys(obj).forEach((key) => {
-      const value = obj[key];
-      if (value === undefinedValue) {
-        delete obj[key];
-      } else {
-        trimUndefined(value);
-      }
-    });
+    return obj.map(trimUndefined) as T;
   }
+
+  if (obj && typeof obj === o) {
+    for (const key in obj) {
+      if (hasOwnProperty.call(obj, key)) {
+        const value = (obj as any)[key];
+        if (value === undefinedValue) {
+          delete (obj as any)[key];
+        } else if (typeof value === o && value !== nullValue) {
+          trimUndefined(value);
+        }
+      }
+    }
+  }
+
   return obj;
 }
 
