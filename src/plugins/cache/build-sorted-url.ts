@@ -1,16 +1,27 @@
+function addParams(params: string[], str: string): void {
+  if (!str) return;
+  const parts = str.split('&');
+  for (let i = 0; i < parts.length; i++) {
+    if (parts[i]) params.push(parts[i]);
+  }
+}
+
 export default function buildSortedURL(
   url: string,
   data: Record<string, any> | null,
   paramsSerializer: (obj: Record<string, any>) => string
 ): string {
-  const serializedParams = data ? paramsSerializer(data) : '';
-  const separator = url.includes('?') ? '&' : '?';
-  const builtURL = serializedParams ? `${url}${separator}${serializedParams}` : url;
+  const queryIndex = url.indexOf('?');
+  const noQueryIndex = queryIndex === -1;
+  const urlPath = noQueryIndex ? url : url.slice(0, queryIndex);
 
-  const [urlPath, queryString] = builtURL.split('?');
+  const params: string[] = [];
 
-  if (!queryString) return builtURL;
+  if (!noQueryIndex) addParams(params, url.slice(queryIndex + 1));
+  if (data) addParams(params, paramsSerializer(data));
 
-  const sortedParams = queryString.split('&').sort().join('&');
-  return `${urlPath}?${sortedParams}`;
+  if (params.length === 0) return urlPath;
+  if (params.length > 1) params.sort();
+
+  return `${urlPath}?${params.join('&')}`;
 }
