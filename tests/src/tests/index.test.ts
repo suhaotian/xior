@@ -529,6 +529,19 @@ describe('xior tests', () => {
       assert.strictEqual(timeoutError, true);
     });
 
+    it('Check real timeout', async () => {
+      const xiorInstance = Xior.create({ baseURL });
+      let timeoutError = false;
+      let begin = Date.now();
+      try {
+        await xiorInstance.get('/timeout?timeout=2000', { timeout: 200 });
+      } catch (e) {
+        timeoutError = isXiorError(e);
+      }
+      console.log('Real timeout is:', Date.now() - begin);
+      assert.strictEqual(timeoutError, true);
+    });
+
     it('should work with abort early POST', async () => {
       const xiorInstance = Xior.create({ baseURL });
       const controller = new AbortController();
