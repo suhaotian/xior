@@ -1,9 +1,5 @@
 function addParams(params: string[], str: string): void {
-  if (!str) return;
-  const parts = str.split('&');
-  for (let i = 0; i < parts.length; i++) {
-    if (parts[i]) params.push(parts[i]);
-  }
+  if (str) str.split('&').forEach((item) => item && params.push(item));
 }
 
 export default function buildSortedURL(
