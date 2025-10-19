@@ -92,7 +92,9 @@ export function isAbsoluteURL(url: string) {
 export function joinPath(path1?: string, path2?: string) {
   if (!path1) return path2 || '';
   if (!path2) return path1;
-  return (path1.endsWith('/') ? path1 : path1 + '/') + (path2[0] === '/' ? path2.slice(1) : path2);
+  const p1 = path1.endsWith('/') ? path1.slice(0, -1) : path1;
+  const p2 = path2.startsWith('/') ? path2.slice(1) : path2;
+  return `${p1}/${p2}`;
 }
 
 const XE = 'XiorError';
@@ -119,5 +121,5 @@ export class XiorTimeoutError<T = any> extends XiorError<T> {
 }
 
 export function isXiorError<T = any>(error: any): error is XiorError<T> | XiorTimeoutError<T> {
-  return error?.name === XE || error?.name === XTE;
+  return [XE, XTE].includes(error?.name);
 }
