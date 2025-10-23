@@ -4,6 +4,7 @@ export default defineConfig({
   entry: {
     'dist/index': 'src/index.ts',
     utils: 'src/utils.ts',
+    axios: 'src/axios.ts',
     'plugins/error-retry': 'src/plugins/error-retry.ts',
     'plugins/throttle': 'src/plugins/throttle.ts',
     'plugins/dedupe': 'src/plugins/dedupe.ts',

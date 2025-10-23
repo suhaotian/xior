@@ -6,7 +6,7 @@ import path from 'node:path';
 import zlib from 'node:zlib';
 import { Readable } from 'node:stream';
 
-import axios, { XiorResponse as AxiosResponse } from 'xior';
+import axios, { AxiosResponse } from 'xior/axios';
 import xiorStreamPlugin from 'xior/plugins/stream';
 
 axios.plugins.use(xiorStreamPlugin());
