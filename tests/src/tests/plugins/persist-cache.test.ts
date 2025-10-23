@@ -2,8 +2,9 @@ import fs from 'fs/promises';
 import assert from 'node:assert';
 import { after, before, describe, it } from 'node:test';
 import { lru, LRU } from 'tiny-lru';
-import { Xior as xior, delay, Xior } from 'xior';
+import { Xior as xior, delay, Xior, XiorResponse } from 'xior';
 import xiorCachePlugin from 'xior/plugins/cache';
+import errorCachePlugin from 'xior/plugins/error-cache';
 
 import { startServer } from '../server';
 
@@ -21,6 +22,11 @@ after(async () => {
 export function persistCachePlugin(
   xiorInstance: Xior,
   cache: LRU<any>,
+  defaultCacheForErrorCachePlugin: LRU<{
+    loading?: boolean;
+    res?: XiorResponse;
+    cacheTime?: number;
+  }>,
   filePath: string,
   debounceTime = 500
 ) {
@@ -37,6 +43,11 @@ export function persistCachePlugin(
       data.forEach(([key, value]: [string, any]) => {
         if (value) {
           cache.set(key, Promise.resolve(value));
+          defaultCacheForErrorCachePlugin.set(key, {
+            loading: false,
+            res: Promise.resolve(value) as unknown as XiorResponse,
+            cacheTime: value.cacheTime,
+          });
         }
       });
     } catch (e) {
@@ -67,14 +78,28 @@ export function persistCachePlugin(
 }
 
 const instance = xior.create({ baseURL });
-const cache = lru(100, 1000 * 60 * 5);
+const defaultCache = lru(100, 1000 * 60 * 5);
+const defaultCacheForErrorCachePlugin = lru(100, 1000 * 60 * 5);
+
 instance.plugins.use(
   xiorCachePlugin({
     enableCache: (config) => config?.method === 'GET' || config?.isGet === true,
-    defaultCache: cache,
+    defaultCache: defaultCache,
   })
 );
-const { initFromFs } = persistCachePlugin(instance, cache, './cache.json', 500);
+instance.plugins.use(
+  errorCachePlugin({
+    enableCache: (config) => config?.method === 'GET' || config?.isGet === true,
+    defaultCache: defaultCacheForErrorCachePlugin,
+  })
+);
+const { initFromFs } = persistCachePlugin(
+  instance,
+  defaultCache,
+  defaultCacheForErrorCachePlugin,
+  './cache.json',
+  500
+);
 
 describe('xior cache plugin tests', async () => {
   it('Generate cache data should work', async () => {
@@ -87,17 +112,17 @@ describe('xior cache plugin tests', async () => {
       });
       assert.strictEqual(data.value, key + '');
     }
-    assert.strictEqual(cache.size, 8);
+    assert.strictEqual(defaultCache.size, 8);
     await delay(600);
   });
 
   it('Async cache should work', async () => {
-    cache.clear();
-    assert.strictEqual(cache.size, 0);
+    defaultCache.clear();
+    assert.strictEqual(defaultCache.size, 0);
 
     await initFromFs();
 
-    assert.strictEqual(cache.size, 8);
+    assert.strictEqual(defaultCache.size, 8);
     for (const key of [1, 2, 3, 4, 5, 6, 7, 8]) {
       const { data, fromCache } = await instance.get<{ value: string }>('/get', {
         params: { idx: key },

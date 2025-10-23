@@ -518,19 +518,21 @@ instance.interceptors.response.use((res) => {
 
 ```ts
 import xior, { XiorError as AxiosError } from 'xior';
-import errorRetryPlugin from 'xior/plugins/error-retry';
+import retryPlugin from 'xior/plugins/error-retry';
 import dedupePlugin from 'xior/plugins/dedupe';
 import throttlePlugin from 'xior/plugins/throttle';
+import cachePlugin from 'xior/plugins/cache';
 import errorCachePlugin from 'xior/plugins/error-cache';
 
 // Setup
 const http = axios.create({
   baseURL: 'http://localhost:3000',
 });
-http.plugins.use(errorRetryPlugin());
-http.plugins.use(errorCachePlugin());
-http.plugins.use(dedupePlugin()); // Prevent same GET requests from occurring simultaneously.
 http.plugins.use(throttlePlugin()); // Throttle same `GET` request in 1000ms
+http.plugins.use(dedupePlugin()); // Prevent same GET requests from occurring simultaneously.
+http.plugins.use(retryPlugin());
+http.plugins.use(cachePlugin());
+http.plugins.use(errorCachePlugin());
 
 // 1. If `GET` data error, at least have chance to retry;
 // 2. If retry still error, return the cache data(if have) to prevent page crash or show error page;
@@ -555,9 +557,23 @@ http.get('/api/get-some-big-data', { threshold: 10e3 });
 http.get('/api/get-some-big-data', { threshold: 10e3, useCacheFirst: true });
 ```
 
+> Above plugins execution order: errorCache → cache → retry → dedupe → throttle → real request
+
 ## Plugins
 
 **xior** offers a variety of built-in plugins to enhance its functionality:
+
+> The plugin mechanism is: first in, last run.
+
+For example:
+
+```ts
+plugins.use(plugin1);
+plugins.use(plugin2);
+plugins.use(plugin3);
+```
+
+Run order: plugin3 → plugin2 → plugin1
 
 - [Error retry plugin](#error-retry-plugin)
 - [Request dedupe plugin](#request-dedupe-plugin)
