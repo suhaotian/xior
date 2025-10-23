@@ -573,7 +573,7 @@ plugins.use(plugin2);
 plugins.use(plugin3);
 ```
 
-Run order: plugin3 → plugin2 → plugin1
+> Run order: plugin3 → plugin2 → plugin1
 
 - [Error retry plugin](#error-retry-plugin)
 - [Request dedupe plugin](#request-dedupe-plugin)
