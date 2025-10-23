@@ -1,8 +1,16 @@
-import axios from 'axios';
+import axios, { RawAxiosRequestHeaders, AxiosError as AError } from 'axios';
 import assert from 'node:assert';
 import { before, after, describe, it } from 'node:test';
 import xior, { XiorInstance, XiorError, encodeParams, isXiorError } from 'xior';
 
+import a, {
+  AxiosResponse,
+  AxiosError,
+  AxiosRequestConfig,
+  RawAxiosRequestHeaders as _RawAxiosRequestHeaders,
+} from 'xior/axios';
+
+const b = {} as _RawAxiosRequestHeaders;
 import { startServer } from './server';
 
 let close: Function;

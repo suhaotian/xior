@@ -14,5 +14,8 @@ export {
 } from './';
 export * from './utils';
 
+/** @deprecated please use `Header`, useless here */
+export interface RawAxiosRequestHeaders {}
+
 import xiorInstance from './';
 export default xiorInstance;
