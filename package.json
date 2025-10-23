@@ -31,6 +31,16 @@
         "default": "./utils.js"
       }
     },
+    "./axios": {
+      "import": {
+        "types": "./axios.mts",
+        "default": "./axios.mjs"
+      },
+      "require": {
+        "types": "./axios.ts",
+        "default": "./axios.js"
+      }
+    },
     "./plugins/error-retry": {
       "import": {
         "types": "./plugins/error-retry.mts",
