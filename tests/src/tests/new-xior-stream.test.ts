@@ -105,7 +105,8 @@ test.describe('Xior new Stream Tests', () => {
     const filePath = path.join(process.cwd(), 'test-output2.txt');
 
     try {
-      const res: AxiosResponse<Readable> = await axios.get(url, {
+      const res: AxiosResponse<Readable> = await axios({
+        url,
         responseType: 'stream',
       });
       const ws = fs.createWriteStream(filePath);

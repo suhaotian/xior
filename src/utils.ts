@@ -111,6 +111,9 @@ export class XiorError<T = any> extends Error {
     this.config = request;
     this.response = response;
   }
+  toString() {
+    return `${this.message}`;
+  }
 }
 
 export class XiorTimeoutError<T = any> extends XiorError<T> {

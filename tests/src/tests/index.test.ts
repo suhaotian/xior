@@ -418,7 +418,6 @@ describe('xior tests', () => {
 
     it('stream download image should work', async () => {
       const xiorInstance = Xior.create({ baseURL });
-
       // GET request for remote image in node.js
       await xiorInstance
         .get('https://bit.ly/2mTM3nY', {
@@ -551,7 +550,10 @@ describe('xior tests', () => {
       }, 500);
       let timeoutError = true;
       try {
-        await xiorInstance.post('/timeout', null, { signal: controller.signal, timeout: 1000 });
+        await xiorInstance.post(
+          { url: '/timeout', signal: controller.signal, timeout: 1000 },
+          null
+        );
       } catch (e) {
         timeoutError = !(e instanceof CancelFetchError);
       }

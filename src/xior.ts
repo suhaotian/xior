@@ -267,8 +267,8 @@ export class Xior {
     return (url: string | XiorRequestConfig, data?: any, options?: XiorRequestConfig) => {
       return this.request<T>(
         typeof url === 'string'
-          ? { ...options, method, url, data }
-          : { ...url, ...options, method, data }
+          ? { data, ...options, method, url }
+          : { data, ...url, ...options, method }
       );
     };
   }
