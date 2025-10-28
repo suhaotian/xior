@@ -20,7 +20,6 @@ import type {
   XiorPlugin,
   XiorRequestConfig,
   XiorResponse,
-  XiorInterceptorResponseConfig,
 } from './types';
 import {
   ClearableSignal,
@@ -66,6 +65,14 @@ async function getResponseData(
   return data;
 }
 
+const createManager = <T>(array: T[]) => ({
+  use: (item: T) => (array.push(item), item),
+  eject: (key: T) => {
+    array.splice(0, array.length, ...array.filter((x) => x !== key));
+  },
+  clear: () => (array.length = 0),
+});
+
 const createXior = (options?: XiorRequestConfig): XiorInstance => {
   return new Xior(options);
 };
@@ -91,79 +98,43 @@ export class Xior {
   ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig)[] = [];
   /** response interceptors */
   RESI: {
-    fn: (
-      config: XiorInterceptorResponseConfig
-    ) => Promise<XiorInterceptorResponseConfig> | XiorInterceptorResponseConfig;
+    fn: (config: XiorResponse) => Promise<XiorResponse> | XiorResponse;
     /** error: XiorError | Error | TypeError */
     onRejected?: null | ((error: XiorError) => any);
   }[] = [];
 
-  get interceptors() {
-    return {
-      request: {
-        use: (
-          fn: (
-            requestConfig: XiorInterceptorRequestConfig
-          ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig,
-          /** @deprecated useless here */
-          onRejected?: null | ((error: any) => any),
-          options?: XiorInterceptorOptions
-        ) => {
-          this.REQI.push(fn);
-          return fn;
-        },
-        eject: (
-          fn: (
-            responseWithConfig: XiorInterceptorRequestConfig
-          ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig
-        ) => {
-          this.REQI = this.REQI.filter((item) => item !== fn);
-        },
-        clear: () => {
-          this.REQI = [];
-        },
+  interceptors = {
+    request: {
+      ...createManager(this.REQI),
+      use: (
+        fn: (
+          requestConfig: XiorInterceptorRequestConfig
+        ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig,
+        /** @deprecated useless here */
+        onRejected?: null | ((error: any) => any),
+        options?: XiorInterceptorOptions
+      ) => {
+        this.REQI.push(fn);
+        return fn;
       },
-      response: {
-        use: (
-          fn: (
-            config: XiorInterceptorResponseConfig
-          ) => Promise<XiorInterceptorResponseConfig> | XiorInterceptorResponseConfig,
-          /** error: XiorError | Error | TypeError */
-          onRejected?: null | ((error: XiorError) => any)
-        ) => {
-          this.RESI.push({ fn, onRejected });
-          return fn;
-        },
-        eject: (
-          fn: (
-            config: XiorInterceptorResponseConfig
-          ) => Promise<XiorInterceptorResponseConfig> | XiorInterceptorResponseConfig
-        ) => {
-          this.RESI = this.RESI.filter((item) => item.fn !== fn);
-        },
-        clear: () => {
-          this.RESI = [];
-        },
+    },
+    response: {
+      ...createManager(this.RESI),
+      use: (
+        fn: (config: XiorResponse) => Promise<XiorResponse> | XiorResponse,
+        /** error: XiorError | Error | TypeError */
+        onRejected?: null | ((error: XiorError) => any)
+      ) => {
+        const handler = { fn, onRejected };
+        this.RESI.push(handler);
+        return handler;
       },
-    };
-  }
+    },
+  };
 
   /** plugins */
   P: XiorPlugin[] = [];
-  get plugins() {
-    return {
-      use: (plugin: XiorPlugin) => {
-        this.P.push(plugin);
-        return plugin;
-      },
-      eject: (plugin: XiorPlugin) => {
-        this.P = this.P.filter((item) => item !== plugin);
-      },
-      clear: () => {
-        this.P = [];
-      },
-    };
-  }
+  plugins = createManager(this.P);
 
   async request<T, R = XiorResponse<T>>(options: XiorRequestConfig | string) {
     let requestConfig: XiorRequestConfig = merge(
