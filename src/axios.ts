@@ -11,11 +11,18 @@ export {
   XiorError as AxiosError,
   isXiorError as isAxiosError,
   XiorTimeoutError as AxiosTimeoutError,
+  Xior as Axios,
+  merge as mergeConfig,
 } from './';
 export * from './utils';
 
 /** @deprecated please use `Header`, useless here */
 export interface RawAxiosRequestHeaders {}
 
-import xiorInstance from './';
-export default xiorInstance;
+import axios from './';
+
+export function isCancel(err: any) {
+  return err?.name === 'AbortError';
+}
+
+export default Object.assign(axios, { isCancel });
