@@ -73,8 +73,15 @@ const createManager = <T>(array: T[]) => ({
   clear: () => (array.length = 0),
 });
 
-const createXior = (options?: XiorRequestConfig): XiorInstance => {
-  return new Xior(options);
+function createXiorInstance<T extends { request: XiorInstance['request'] }>(context: T) {
+  const fn = context.request.bind(context);
+  Object.assign(fn, context);
+  Object.setPrototypeOf(fn, Object.getPrototypeOf(context));
+  return fn as T & XiorInstance['request'];
+}
+
+const createXior = (options?: XiorRequestConfig) => {
+  return createXiorInstance(new Xior(options));
 };
 
 export class Xior {

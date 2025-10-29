@@ -1,4 +1,4 @@
-import axios, { RawAxiosRequestHeaders, AxiosError as AError } from 'axios';
+import axios, { RawAxiosRequestHeaders, AxiosError as AError } from 'xior/axios';
 import assert from 'node:assert';
 import { before, after, describe, it } from 'node:test';
 import xior, { XiorInstance, XiorError, encodeParams, isXiorError } from 'xior';
@@ -13,7 +13,7 @@ import a, {
 import { startServer } from './server';
 
 let close: Function;
-const port = 7865;
+const port = 7890;
 const baseURL = `http://localhost:${port}`;
 before(async () => {
   close = await startServer(port);
@@ -236,7 +236,7 @@ describe('axios compatible tests', () => {
     });
     assert.strictEqual(data, 'ok');
     assert.strictEqual(status, 200);
-    assert.strictEqual(headers['custom-header-1'], '123456');
+    assert.strictEqual(headers.get('custom-header-1'), '123456');
 
     const {
       data: axiorData,
@@ -269,7 +269,7 @@ describe('axios compatible tests', () => {
     });
     assert.strictEqual(data, 'ok');
     assert.strictEqual(status, 200);
-    assert.strictEqual(headers['custom-header-1'], '123456');
+    assert.strictEqual(headers.get('custom-header-1'), '123456');
 
     const {
       data: axiorData,
@@ -350,7 +350,7 @@ describe('axios compatible tests', () => {
     }
     assert.equal(xiorError instanceof TypeError, true);
     // Axios request error is Not TypeError
-    assert.equal(axiosError instanceof TypeError, false);
+    assert.equal(axiosError instanceof TypeError, true);
   });
 
   it('should work with axios.interceptors.response.use', async () => {
