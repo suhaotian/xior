@@ -32,13 +32,17 @@
       }
     },
     "./axios": {
-      "import": {
-        "types": "./axios.mts",
-        "default": "./axios.mjs"
-      },
       "require": {
         "types": "./axios.ts",
-        "default": "./axios.js"
+        "browser": "./axios.js",
+        "node": "./node-axios.js",
+        "default": "./dist/node-axios.js"
+      },
+      "import": {
+        "types": "./axios.mts",
+        "browser": "./axios.mjs",
+        "node": "./node-axios.mjs",
+        "default": "./dist/axios.mjs"
       }
     },
     "./plugins/error-retry": {

@@ -1,4 +1,5 @@
 import axios, { Xior as Axios, XiorRequestConfig } from '.';
+import streamPlugin from './plugins/stream';
 
 // Type exports
 export type {
@@ -16,7 +17,7 @@ export {
   isXiorError as isAxiosError,
   XiorTimeoutError as AxiosTimeoutError,
   merge as mergeConfig,
-} from './';
+} from '.';
 
 export * from './utils';
 
@@ -77,6 +78,8 @@ const originalCreate = Axios.create;
 
 axios.create = Axios.create = (options?: XiorRequestConfig) => {
   const instance = originalCreate(options);
+
+  instance.plugins.use(streamPlugin());
 
   instance.plugins.use((adapter) => {
     return async (config) => {
