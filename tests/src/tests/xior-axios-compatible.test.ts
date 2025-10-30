@@ -236,7 +236,7 @@ describe('axios compatible tests', () => {
     });
     assert.strictEqual(data, 'ok');
     assert.strictEqual(status, 200);
-    assert.strictEqual(headers.get('custom-header-1'), '123456');
+    assert.strictEqual(headers['custom-header-1'], '123456');
 
     const {
       data: axiorData,
@@ -253,7 +253,7 @@ describe('axios compatible tests', () => {
     assert.strictEqual(axiorData, 'ok');
     assert.strictEqual(axiorStatus, 200);
     assert.strictEqual(axiorStatusText, statusText);
-    assert.strictEqual(axiorHeaders.get('custom-header-1'), '123456');
+    assert.strictEqual(axiorHeaders['custom-header-1'], '123456');
   });
 
   it('should work with params POST', async () => {
@@ -269,7 +269,7 @@ describe('axios compatible tests', () => {
     });
     assert.strictEqual(data, 'ok');
     assert.strictEqual(status, 200);
-    assert.strictEqual(headers.get('custom-header-1'), '123456');
+    assert.strictEqual(headers['custom-header-1'], '123456');
 
     const {
       data: axiorData,
@@ -283,7 +283,7 @@ describe('axios compatible tests', () => {
     assert.strictEqual(axiorData, 'ok');
     assert.strictEqual(axiorStatus, 200);
     assert.strictEqual(axiorStatusText, statusText);
-    assert.strictEqual(axiorHeaders.get('custom-header-1'), '123456');
+    assert.strictEqual(axiorHeaders['custom-header-1'], '123456');
   });
 
   it('should work with delete', async () => {

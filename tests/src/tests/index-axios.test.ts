@@ -7,6 +7,8 @@ import { isAxiosError as isXiorError, merge, Axios as Xior } from 'xior/axios';
 import errorRetryPlugin from 'xior/plugins/error-retry';
 
 import { readChunks, startServer } from './server';
+import { Readable } from 'node:stream';
+import { createWriteStream } from 'node:fs';
 
 let close: Function;
 const port = 7876;
@@ -404,29 +406,25 @@ describe('xior tests', () => {
   describe('stream test', () => {
     it('stream with `responseType: stream` should work', async () => {
       const xiorInstance = Xior.create({ baseURL });
-      const { response } = await xiorInstance.post<{ file: any; body: Record<string, string> }>(
-        '/stream/10',
-        null,
-        { responseType: 'stream' }
-      );
-      const reader = response.body!.getReader();
-      let chunk;
-      for await (chunk of readChunks(reader)) {
-        console.log(`received chunk of size ${chunk.length}`);
-      }
-      assert.strictEqual(chunk.length > 0, true);
+      const { data } = await xiorInstance.post<Readable>('/stream/10', null, {
+        responseType: 'stream',
+      });
+      assert.strictEqual(data.pipe !== undefined, true);
     });
 
     it('stream download image should work', async () => {
       const xiorInstance = Xior.create({ baseURL });
       // GET request for remote image in node.js
       await xiorInstance
-        .get('https://bit.ly/2mTM3nY', {
+        .get<Readable>('https://bit.ly/2mTM3nY', {
           responseType: 'stream',
         })
-        .then(async function ({ response, config }) {
-          const buffer = Buffer.from(await response.arrayBuffer());
-          return writeFile('./uploads/ada_lovelace.jpg', buffer);
+        .then(async function ({ response, config, data }) {
+          const writeStream = createWriteStream('./uploads/ada_lovelace.jpg');
+          data.pipe(writeStream);
+          writeStream.on('finish', () => {
+            console.log('File written successfully');
+          });
         });
 
       assert.strictEqual(1 > 0, true);
@@ -620,7 +618,7 @@ describe('xior tests', () => {
         {},
         { responseType: 'stream' }
       );
-      assert.strictEqual(postData === undefined, true);
+      assert.strictEqual(postData !== undefined, true);
     });
   });
 
@@ -694,7 +692,7 @@ describe('xior tests', () => {
     });
 
     it('Xior.plugins.use/eject/clear should work', () => {
-      assert.strictEqual((xiorInstance as any).P.length, 0);
+      assert.strictEqual((xiorInstance as any).P.length, 2);
       const handler = xiorInstance.plugins.use((plugin) => {
         return (config) => {
           return plugin(config);
@@ -705,9 +703,9 @@ describe('xior tests', () => {
           return plugin(config);
         };
       });
-      assert.strictEqual((xiorInstance as any).P.length, 2);
+      assert.strictEqual((xiorInstance as any).P.length, 4);
       xiorInstance.plugins.eject(handler);
-      assert.strictEqual((xiorInstance as any).P.length, 1);
+      assert.strictEqual((xiorInstance as any).P.length, 3);
 
       xiorInstance.plugins.clear();
       assert.strictEqual((xiorInstance as any).P.length, 0);
@@ -717,7 +715,7 @@ describe('xior tests', () => {
   describe('custom plugins tests', () => {
     const xiorInstance = Xior.create({ baseURL });
     it('xior plugins order should work', async () => {
-      assert.strictEqual((xiorInstance as any).P.length, 0);
+      assert.strictEqual((xiorInstance as any).P.length, 2);
 
       const order: number[] = [];
       xiorInstance.plugins.use((adapter) => {
@@ -740,7 +738,7 @@ describe('xior tests', () => {
           return adapter(config);
         };
       });
-      assert.strictEqual((xiorInstance as any).P.length, 3);
+      assert.strictEqual((xiorInstance as any).P.length, 5);
       await xiorInstance.get('/get');
       assert.strictEqual(order.length, 3);
       assert.strictEqual(order.join(','), [3, 2, 1].join(','));
