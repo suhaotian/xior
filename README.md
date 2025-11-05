@@ -1639,14 +1639,16 @@ for await (chunk of readChunks(reader)) {
 }
 ```
 
-**But if you want `responseType: 'stream'` do the same behavior as Axios, use Xior's stream plugin:**
+**But if you want `responseType: 'stream'` do the same behavior as Axios, use `'xior/axios'` entry with built-in stream plugin: (Only for Node.js)**
 
 ```ts
-import xior from 'xior';
-import streamPlugin from 'xior/plugins/stream';
+import xior from 'xior/axios';
 
 const axios = xior.create();
-axios.plugins.use(streamPlugin());
+
+/** if you don't like `xior/axios` entry, manually add stream plugin:*/
+// import streamPlugin from 'xior/plugins/stream';
+// axios.plugins.use(streamPlugin());
 
 const { data } = await axios.request({
   url,
