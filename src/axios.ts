@@ -43,9 +43,8 @@ declare global {
   }
 }
 
-// Utilities
-export function isCancel(err: any): boolean {
-  return err?.name === 'AbortError';
+export function isCancel(value: any) {
+  return value.name === 'AbortError';
 }
 
 function createSmartHeaders(init?: HeadersInit): SmartHeaders {
@@ -55,10 +54,13 @@ function createSmartHeaders(init?: HeadersInit): SmartHeaders {
     get(target, prop: string | symbol) {
       if (typeof prop === 'string') {
         const value = target.get(prop);
-        if (value !== null) return value;
+        if (value === null) return undefined;
+        return value;
       }
       // @ts-ignore
-      return target[prop] || undefined;
+      if (target[prop] === null) return undefined;
+      // @ts-ignore
+      return target[prop];
     },
     set(target, prop: string | symbol, value: any) {
       if (typeof prop === 'string') {
@@ -91,3 +93,39 @@ axios.create = Axios.create = (options?: XiorRequestConfig) => {
 
 export { Axios };
 export default Object.assign(axios, { isCancel });
+
+/** @deprecated useless, only for compatiable with axios */
+export interface CancelStatic {
+  new (message?: string): Cancel;
+}
+
+/** @deprecated useless, only for compatiable with axios */
+export interface Cancel {
+  message: string | undefined;
+}
+
+/** @deprecated useless, only for compatiable with axios */
+export interface Canceler {
+  (message?: string, config?: XiorRequestConfig, request?: any): void;
+}
+
+/** @deprecated useless, only for compatiable with axios */
+export interface CancelTokenStatic {
+  new (executor: (cancel: Canceler) => void): CancelToken;
+  source(): CancelTokenSource;
+}
+
+/** @deprecated useless, only for compatiable with axios */
+export interface CancelToken {
+  promise: Promise<Cancel>;
+  reason?: Cancel;
+  throwIfRequested(): void;
+}
+
+/** @deprecated useless, only for compatiable with axios */
+export interface CancelTokenSource {
+  token: CancelToken;
+  cancel: Canceler;
+}
+
+export type { XiorProgressEvent as AxiosProgressEvent } from './plugins/progress';

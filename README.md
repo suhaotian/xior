@@ -1783,7 +1783,7 @@ import xior from 'xior';
 
 const axios = xior.create();
 
-await axios.request({ method: 'get', params: { a: 1 } });
+await axios({ method: 'get', params: { a: 1 } });
 ```
 
 ### Creating an instance
