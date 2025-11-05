@@ -1943,10 +1943,6 @@ axios
     return fs.writeFile('ada_lovelace.jpg', buffer);
   });
 
-// Node.js with using xior's stream plugin
-import streamPlugin from 'xior/plugins/stream';
-axios.plugins.use(streamPlugin());
-
 // GET request for remote image in Node.js, Same with axios `responseType: 'stream'`.
 axios
   .request({
@@ -1996,14 +1992,12 @@ async function getStream(url: string, params: Record<string, any>) {
 }
 ```
 
-xior with stream plugin:
+xior with stream plugin at Node.js:
 
 ```ts
 import axios from 'xior';
-import streamPlugin from 'xior/plugins/stream';
 
 const http = axios.create();
-htpp.plugins.use(streamPlugin());
 
 async function getStream(url: string, params: Record<string, any>) {
   const { data } = await http.get(url, {
@@ -2012,38 +2006,6 @@ async function getStream(url: string, params: Record<string, any>) {
   });
   const stream = data;
   return stream;
-}
-```
-
-xior without stream plugin:
-
-```ts
-import axios from 'xior';
-import { Readable } from 'stream';
-
-const http = axios.create();
-
-async function getStream(url: string, params: Record<string, any>) {
-  const { response } = await http.get(url, {
-    params,
-    responseType: 'stream',
-  });
-  const stream = convertResponseToReadable(response);
-  return stream;
-}
-
-function convertResponseToReadable(response: Response): Readable {
-  const reader = response.body.getReader();
-  return new Readable({
-    async read() {
-      const { done, value } = await reader.read();
-      if (done) {
-        this.push(null);
-      } else {
-        this.push(Buffer.from(value));
-      }
-    },
-  });
 }
 ```
 
