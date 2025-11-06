@@ -43,10 +43,6 @@ declare global {
   }
 }
 
-export function isCancel(value: any) {
-  return value.name === 'AbortError';
-}
-
 function createSmartHeaders(init?: HeadersInit): SmartHeaders {
   const headers = new Headers(init);
 
@@ -92,7 +88,7 @@ axios.create = Axios.create = (options?: XiorRequestConfig) => {
 };
 
 export { Axios };
-export default Object.assign(axios, { isCancel });
+export default axios;
 
 /** @deprecated useless, only for compatiable with axios */
 export interface CancelStatic {

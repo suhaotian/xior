@@ -126,3 +126,7 @@ export class XiorTimeoutError<T = any> extends XiorError<T> {
 export function isXiorError<T = any>(error: any): error is XiorError<T> | XiorTimeoutError<T> {
   return [XE, XTE].includes(error?.name);
 }
+
+export function isCancel(value: any) {
+  return value.name === 'AbortError';
+}
