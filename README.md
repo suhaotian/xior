@@ -1443,21 +1443,39 @@ import {
 
 **No**, but **xior** offers a similar API like axios: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`.
 
-**The most common change is replacing `axios` with `xior` and checking if the TypeScript types pass**:
+**The most common change is replacing `axios` with `xior/axios` and checking if the TypeScript types pass**:
 
 ```ts
 import axios, {
-  XiorError as AxiosError,
-  isXiorError as isAxiosError,
-  XiorRequestConfig as AxiosRequestConfig,
-  XiorResponse as AxiosResponse,
-} from 'xior';
+  AxiosError,
+  isAxiosError,
+  AxiosRequestConfig,
+  AxiosResponse,
+  isCancel,
+} from 'xior/axios';
+
+/** or */
+// import axios, {
+//   XiorError as AxiosError,
+//   isXiorError as isAxiosError,
+//   XiorRequestConfig as AxiosRequestConfig,
+//   XiorResponse as AxiosResponse,
+//   isCancel,
+// } from 'xior';
 
 const instance = axios.create({
   baseURL: '...',
   timeout: 20e3,
 });
+
+// Get response headers
+instance.get('/').then((response) => {
+  response.headers.get('x-response-time');
+  // At axios, it's `response.headers['x-response-time']`
+});
 ```
+
+Check [./Migrate-axios-to-xior.md](./migrate-axios-to-xior.md)
 
 ### 2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, Nuxt.js, Tauri or `NervJS/Taro`?
 
