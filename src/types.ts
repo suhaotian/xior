@@ -85,6 +85,7 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
    */
   transformResponse?: any[];
 }
+export type AxiosRequestConfig = XiorRequestConfig;
 
 export type XiorInterceptorRequestConfig<T = any> = XiorRequestConfig & {
   headers: Record<string, any>;
@@ -92,6 +93,7 @@ export type XiorInterceptorRequestConfig<T = any> = XiorRequestConfig & {
   url: string;
   method: string;
 };
+export type AxiosInterceptorRequestConfig = XiorInterceptorRequestConfig;
 
 export type XiorPlugin = (
   adapter: (request: XiorRequestConfig) => Promise<XiorResponse>,
@@ -104,6 +106,7 @@ export interface XiorInterceptorOptions {
   /** @deprecated useless here */
   runWhen?: (config: XiorInterceptorRequestConfig) => boolean;
 }
+export type AxiosInterceptorOptions = XiorInterceptorOptions;
 
 export interface XiorResponse<T = any> {
   data: T;
@@ -114,6 +117,7 @@ export interface XiorResponse<T = any> {
   response: Response;
   request: XiorInterceptorRequestConfig<T>;
 }
+export type AxiosResponse = XiorResponse;
 
 /** @deprecated please use `XiorResponse` */
 export type XiorInterceptorResponseConfig<T = any> = XiorResponse<T>;

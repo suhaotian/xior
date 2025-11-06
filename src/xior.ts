@@ -34,6 +34,7 @@ import {
 
 const supportAbortController = typeof AbortController !== `${undefinedValue}`;
 export type XiorInstance = Xior;
+export type AxiosInstance = Xior;
 export type Fetch = typeof fetch;
 
 async function getResponseData(

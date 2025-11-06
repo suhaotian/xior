@@ -93,4 +93,4 @@ axios.create = Axios.create = (options?: XiorRequestConfig) => {
 };
 
 export { Axios };
-export default Object.assign(axios, { isCancel });
+export default axios;
