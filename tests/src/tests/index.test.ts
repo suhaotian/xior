@@ -7,6 +7,41 @@ import errorRetryPlugin from 'xior/plugins/error-retry';
 
 import { readChunks, startServer } from './server';
 
+import axios, {
+  Axios,
+  AxiosError,
+  isAxiosError,
+  mergeConfig,
+  Cancel,
+  CancelStatic,
+  CancelTokenStatic,
+} from 'xior/axios';
+const a = new Axios();
+Axios.VERSION;
+axios.isCancel;
+
+/*
+
+export interface AxiosStatic extends AxiosInstance {
+  Cancel: CancelStatic;
+  CancelToken: CancelTokenStatic;
+  Axios: typeof Axios;
+  AxiosError: typeof AxiosError;
+  HttpStatusCode: typeof HttpStatusCode;
+  readonly VERSION: string;
+  isCancel: typeof isCancel;
+  all: typeof all;
+  spread: typeof spread;
+  isAxiosError: typeof isAxiosError;
+  toFormData: typeof toFormData;
+  formToJSON: typeof formToJSON;
+  getAdapter: typeof getAdapter;
+  CanceledError: typeof CanceledError;
+  AxiosHeaders: typeof AxiosHeaders;
+  mergeConfig: typeof mergeConfig;
+}
+*/
+
 let close: Function;
 const port = 7866;
 const baseURL = `http://localhost:${port}`;

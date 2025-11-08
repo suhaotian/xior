@@ -2,8 +2,11 @@ import Vue from 'vue';
 import App from './App.vue';
 import { instance } from './xior';
 import { delay } from 'xior';
+import { instance as axiosInstance } from './xior-axios'
 
 instance.get('/');
+axiosInstance.get('/', { responseType: 'stream' });
+
 
 Vue.config.productionTip = false;
 

@@ -11,8 +11,8 @@
     "xior": "workspace:*"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240222.0",
+    "@cloudflare/workers-types": "^4.20251107.0",
     "typescript": "^5.8.3",
-    "wrangler": "^3.0.0"
+    "wrangler": "^4.46.0"
   }
 }

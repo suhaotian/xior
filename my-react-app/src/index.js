@@ -5,8 +5,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { instance } from './xior';
+import { instance as axiosInstance } from './xior-axios';
 
 instance.get('/');
+
+axiosInstance.get('/123', { responseType: 'stream' });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
