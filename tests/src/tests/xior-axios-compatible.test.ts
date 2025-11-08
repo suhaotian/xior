@@ -253,7 +253,7 @@ describe('axios compatible tests', () => {
     assert.strictEqual(axiorData, 'ok');
     assert.strictEqual(axiorStatus, 200);
     assert.strictEqual(axiorStatusText, statusText);
-    assert.strictEqual(axiorHeaders['custom-header-1'], '123456');
+    assert.strictEqual(axiorHeaders.get('custom-header-1'), '123456');
   });
 
   it('should work with params POST', async () => {
@@ -284,7 +284,7 @@ describe('axios compatible tests', () => {
     assert.strictEqual(axiorData, 'ok');
     assert.strictEqual(axiorStatus, 200);
     assert.strictEqual(axiorStatusText, statusText);
-    assert.strictEqual(axiorHeaders['custom-header-1'], '123456');
+    assert.strictEqual(axiorHeaders.get('custom-header-1'), '123456');
   });
 
   it('should work with delete', async () => {

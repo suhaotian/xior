@@ -1,4 +1,4 @@
-import axios, { Xior as Axios, XiorRequestConfig } from '.';
+import { Xior as Axios, XiorInstance, isCancel, XiorRequestConfig } from '.';
 
 // Type exports
 export type {
@@ -72,10 +72,13 @@ function createSmartHeaders(init?: HeadersInit): SmartHeaders {
 
 // Override create method
 const originalCreate = Axios.create;
+const axios = Object.assign(Axios.create(), {
+  create: Axios.create,
+  VERSION: Axios.VERSION,
+  isCancel,
+});
 
-axios.create = Axios.create = (options?: XiorRequestConfig) => {
-  const instance = originalCreate(options);
-
+function setupPlugins(instance: XiorInstance) {
   instance.plugins.use((adapter) => {
     return async (config) => {
       const res = await adapter(config);
@@ -83,6 +86,13 @@ axios.create = Axios.create = (options?: XiorRequestConfig) => {
       return res;
     };
   });
+}
+setupPlugins(axios);
+
+axios.create = Axios.create = (options?: XiorRequestConfig) => {
+  const instance = originalCreate(options);
+
+  setupPlugins(instance);
 
   return instance;
 };

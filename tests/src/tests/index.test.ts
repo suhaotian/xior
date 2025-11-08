@@ -7,19 +7,6 @@ import errorRetryPlugin from 'xior/plugins/error-retry';
 
 import { readChunks, startServer } from './server';
 
-import axios, {
-  Axios,
-  AxiosError,
-  isAxiosError,
-  mergeConfig,
-  Cancel,
-  CancelStatic,
-  CancelTokenStatic,
-} from 'xior/axios';
-const a = new Axios();
-Axios.VERSION;
-axios.isCancel;
-
 /*
 
 export interface AxiosStatic extends AxiosInstance {

@@ -26,8 +26,13 @@ Before we migrate, we need to understand the key differences between Axios and X
    - Axios has built-in real progress tracking
 
 6. **Nested Query Params Encoding**:
+
    - Xior.js supports nested query params encoding out of the box
    - Axios requires the `qs` module (adds another 15KB gzipped size) to handle nested objects
+
+7. **Network error**:
+   - Axios throws a network error code
+   - Xior follows the Fetch standards — when there is a network error, it throws a TypeError.
 
 ## Migration Examples
 

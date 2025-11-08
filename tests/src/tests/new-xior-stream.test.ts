@@ -7,9 +7,6 @@ import zlib from 'node:zlib';
 import { Readable } from 'node:stream';
 
 import axios, { AxiosResponse } from 'xior/axios';
-import xiorStreamPlugin from 'xior/plugins/stream';
-
-axios.plugins.use(xiorStreamPlugin());
 
 const CHUNK_DELAY = 50;
 const TEST_TIMEOUT = 10000;
@@ -682,9 +679,9 @@ test.describe('Xior new Stream Tests', () => {
 
       // Verify headers and status before consuming stream
       assert.strictEqual(res.status, 200);
-      assert.strictEqual(res.headers.get('content-type'), 'application/json');
-      assert.strictEqual(res.headers.get('x-custom-header'), 'test-value');
-      assert.strictEqual(res.headers.get('content-length'), '12');
+      assert.strictEqual(res.headers['content-type'], 'application/json');
+      assert.strictEqual(res.headers['x-custom-header'], 'test-value');
+      assert.strictEqual(res.headers['content-length'], '12');
 
       const chunks: Buffer[] = [];
 
@@ -961,7 +958,7 @@ test.describe('Xior new Stream Tests', () => {
       });
 
       assert.strictEqual(res.status, 206);
-      assert.ok(res.headers.get('content-range'));
+      assert.ok(res.headers['content-range']);
 
       const chunks: string[] = [];
       await new Promise<void>((resolve, reject) => {
