@@ -13,7 +13,7 @@ import MockPlugin from 'xior/plugins/mock';
 import uploadDownloadProgressPlugin from 'xior/plugins/progress';
 import throttlePlugin from 'xior/plugins/throttle';
 
-console.log(merge, delay, buildSortedURL);
+console.log(merge, delay, buildSortedURL, mergeConfig);
 
 const instance: XiorInstance = xior.create({});
 instance.plugins.use(errorRetryPlugin({}));
