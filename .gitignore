@@ -20,3 +20,4 @@ tauri-app
 !tests/src/tests/plugins
 !scripts/*
 !my-react-app/src/*.js
+!vue-cli-app/src/*.js
