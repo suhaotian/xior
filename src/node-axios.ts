@@ -38,39 +38,9 @@ declare module 'xior' {
   }
 }
 
-declare global {
-  interface Headers {
-    [key: string]: string | any;
-  }
-}
-
 // Utilities
 export function isCancel(err: any): boolean {
   return err?.name === 'AbortError';
-}
-
-function createSmartHeaders(init?: HeadersInit): SmartHeaders {
-  const headers = new Headers(init);
-
-  return new Proxy(headers, {
-    get(target, prop: string | symbol) {
-      if (typeof prop === 'string') {
-        const value = target.get(prop);
-        if (value !== null) return value;
-      }
-      // @ts-ignore
-      return target[prop] || undefined;
-    },
-    set(target, prop: string | symbol, value: any) {
-      if (typeof prop === 'string') {
-        target.set(prop, String(value));
-        return true;
-      }
-      // @ts-ignore
-      target[prop] = value;
-      return true;
-    },
-  }) as SmartHeaders;
 }
 
 // Override create method
@@ -82,14 +52,6 @@ const axios = Object.assign(Axios.create(), {
 });
 function setupPlugins(instance: XiorInstance) {
   instance.plugins.use(streamPlugin());
-
-  instance.plugins.use((adapter) => {
-    return async (config) => {
-      const res = await adapter(config);
-      res.headers = createSmartHeaders(res.headers);
-      return res;
-    };
-  });
 }
 setupPlugins(axios);
 

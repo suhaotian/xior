@@ -236,7 +236,7 @@ describe('axios compatible tests', () => {
     });
     assert.strictEqual(data, 'ok');
     assert.strictEqual(status, 200);
-    assert.strictEqual(headers['custom-header-1'], '123456');
+    assert.strictEqual(headers.get('custom-header-1'), '123456');
 
     const {
       data: axiorData,
@@ -269,8 +269,8 @@ describe('axios compatible tests', () => {
     });
     assert.strictEqual(data, 'ok');
     assert.strictEqual(status, 200);
-    assert.strictEqual(headers['custom-header-1'], '123456');
-    assert.strictEqual(headers['custom-header-1222'], undefined);
+    assert.strictEqual(headers.get('custom-header-1'), '123456');
+    assert.strictEqual(headers.get('custom-header-1222'), null);
 
     const {
       data: axiorData,

@@ -692,7 +692,7 @@ describe('xior tests', () => {
     });
 
     it('Xior.plugins.use/eject/clear should work', () => {
-      assert.strictEqual((xiorInstance as any).P.length, 2);
+      assert.strictEqual((xiorInstance as any).P.length, 1);
       const handler = xiorInstance.plugins.use((plugin) => {
         return (config) => {
           return plugin(config);
@@ -703,9 +703,9 @@ describe('xior tests', () => {
           return plugin(config);
         };
       });
-      assert.strictEqual((xiorInstance as any).P.length, 4);
-      xiorInstance.plugins.eject(handler);
       assert.strictEqual((xiorInstance as any).P.length, 3);
+      xiorInstance.plugins.eject(handler);
+      assert.strictEqual((xiorInstance as any).P.length, 2);
 
       xiorInstance.plugins.clear();
       assert.strictEqual((xiorInstance as any).P.length, 0);
@@ -715,7 +715,7 @@ describe('xior tests', () => {
   describe('custom plugins tests', () => {
     const xiorInstance = Xior.create({ baseURL });
     it('xior plugins order should work', async () => {
-      assert.strictEqual((xiorInstance as any).P.length, 2);
+      assert.strictEqual((xiorInstance as any).P.length, 1);
 
       const order: number[] = [];
       xiorInstance.plugins.use((adapter) => {
@@ -738,7 +738,7 @@ describe('xior tests', () => {
           return adapter(config);
         };
       });
-      assert.strictEqual((xiorInstance as any).P.length, 5);
+      assert.strictEqual((xiorInstance as any).P.length, 4);
       await xiorInstance.get('/get');
       assert.strictEqual(order.length, 3);
       assert.strictEqual(order.join(','), [3, 2, 1].join(','));

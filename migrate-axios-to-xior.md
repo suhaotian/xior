@@ -102,26 +102,3 @@ instance.interceptors.response.use(
   }
 );
 ```
-
-## Plugins Examples
-
-### Progress Plugin
-
-```tsx
-import xior from 'xior';
-import uploadDownloadProgressPlugin from 'xior/plugins/progress';
-
-const instance = xior.create({
-  baseURL: 'https://api.example.com',
-});
-
-instance.plugins.use(uploadDownloadProgressPlugin());
-
-// Use with progress callbacks
-instance.post('/upload', formData, {
-  onUploadProgress: (progressEvent) => {
-    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-    console.log(`Upload Progress: ${percentCompleted}%`);
-  },
-});
-```
