@@ -5,9 +5,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 import axios, { XiorResponse as AxiosResponse } from 'xior';
 import { Readable } from 'node:stream';
-import xiorStreamPlugin from 'xior/plugins/stream';
-
-axios.plugins.use(xiorStreamPlugin());
 
 const CHUNK_DELAY = 50;
 const TEST_TIMEOUT = 5000;

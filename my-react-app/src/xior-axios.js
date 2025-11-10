@@ -1,12 +1,5 @@
 /* eslint-disable */
-import xior, {
-  merge,
-  delay,
-  buildSortedURL,
-  encodeParams,
-  mergeConfig,
-  isAxiosError,
-} from 'xior/axios';
+import xior, { merge, delay, buildSortedURL, encodeParams, mergeConfig, isAxiosError } from 'xior';
 import cachePlugin from 'xior/plugins/cache';
 import errorRetryPlugin from 'xior/plugins/error-retry';
 import MockPlugin from 'xior/plugins/mock';

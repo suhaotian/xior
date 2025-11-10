@@ -6,7 +6,7 @@ import path from 'node:path';
 import zlib from 'node:zlib';
 import { Readable } from 'node:stream';
 
-import axios, { AxiosResponse } from 'xior/axios';
+import axios, { AxiosResponse } from 'xior';
 
 const CHUNK_DELAY = 50;
 const TEST_TIMEOUT = 10000;

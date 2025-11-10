@@ -1,11 +1,4 @@
-import xior, {
-  merge,
-  delay,
-  buildSortedURL,
-  encodeParams,
-  mergeConfig,
-  AxiosPlugin,
-} from 'xior/axios';
+import xior, { merge, delay, buildSortedURL, encodeParams, mergeConfig, AxiosPlugin } from 'xior';
 import cachePlugin from 'xior/plugins/cache';
 import errorRetryPlugin from 'xior/plugins/error-retry';
 import MockPlugin from 'xior/plugins/mock';

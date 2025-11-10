@@ -1,6 +1,6 @@
 import xior, { XiorInstance } from 'xior';
 
-import axios, { AxiosInstance } from 'xior/axios';
+import axios, { AxiosInstance } from 'xior';
 
 const axiosInstance: XiorInstance = xior.create({
   baseURL: 'https://jsonplaceholder.typicode.com',

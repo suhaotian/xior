@@ -1,5 +1,11 @@
-import { Xior as Axios, XiorRequestConfig, XiorInstance } from '.';
+import { AxiosInstance, AxiosRequestConfig } from '.';
+import { isCancel } from './utils';
+import { Xior as Axios } from './xior';
 import streamPlugin from './plugins/stream';
+
+export * from './xior';
+export * from './types';
+export * from './utils';
 
 // Type exports
 export type {
@@ -9,6 +15,7 @@ export type {
   XiorInterceptorOptions as AxiosInterceptorOptions,
   XiorPlugin as AxiosPlugin,
 } from './types';
+export type { XiorProgressEvent as AxiosProgressEvent } from './plugins/progress';
 
 // Named exports
 export {
@@ -19,30 +26,6 @@ export {
   merge as mergeConfig,
 } from '.';
 
-export * from './utils';
-
-// Types
-export type SmartHeaders = Headers & {
-  [key: string]: string | any;
-};
-
-/** @deprecated please use `Header`, useless here */
-export interface RawAxiosRequestHeaders {
-  [key: string]: string | undefined;
-}
-
-// @ts-ignore
-declare module 'xior' {
-  interface XiorResponse {
-    headers: SmartHeaders;
-  }
-}
-
-// Utilities
-export function isCancel(err: any): boolean {
-  return err?.name === 'AbortError';
-}
-
 // Override create method
 const originalCreate = Axios.create;
 const axios = Object.assign(Axios.create(), {
@@ -50,12 +33,12 @@ const axios = Object.assign(Axios.create(), {
   VERSION: Axios.VERSION,
   isCancel,
 });
-function setupPlugins(instance: XiorInstance) {
+function setupPlugins(instance: AxiosInstance) {
   instance.plugins.use(streamPlugin());
 }
 setupPlugins(axios);
 
-axios.create = Axios.create = (options?: XiorRequestConfig) => {
+axios.create = Axios.create = (options?: AxiosRequestConfig) => {
   const instance = originalCreate(options);
   setupPlugins(instance);
   return instance;

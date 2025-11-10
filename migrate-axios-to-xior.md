@@ -44,15 +44,7 @@ import axios, { isCancel } from 'axios';
 const request = axios.create({});
 ```
 
-### Option 1: Using `'xior/axios'` (Drop-in Replacement)
-
-```tsx
-import axios, { isCancel, AxiosResponse } from 'xior/axios';
-
-const request = axios.create({});
-```
-
-### Option 2: Using Pure `'xior'`
+### Using `'xior'`
 
 ```tsx
 import axios, { isCancel, XiorResponse as AxiosResponse } from 'xior';

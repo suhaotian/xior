@@ -1,4 +1,4 @@
-import xior from 'xior/axios';
+import xior from 'xior';
 import cachePlugin from 'xior/plugins/cache';
 import errorRetryPlugin from 'xior/plugins/error-retry';
 import MockPlugin from 'xior/plugins/mock';

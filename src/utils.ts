@@ -127,6 +127,6 @@ export function isXiorError<T = any>(error: any): error is XiorError<T> | XiorTi
   return [XE, XTE].includes(error?.name);
 }
 
-export function isCancel(value: any) {
-  return value.name === 'AbortError';
+export function isCancel(error: any) {
+  return [XTE, 'AbortError'].includes(error?.name);
 }

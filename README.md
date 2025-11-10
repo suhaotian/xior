@@ -1443,25 +1443,10 @@ import {
 
 **No**, but **xior** offers a similar API like axios: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`.
 
-**The most common change is replacing `axios` with `xior/axios` and checking if the TypeScript types pass**:
+**The most common change is replacing `axios` with `xior` and checking if the TypeScript types pass**:
 
 ```ts
-import axios, {
-  AxiosError,
-  isAxiosError,
-  AxiosRequestConfig,
-  AxiosResponse,
-  isCancel,
-} from 'xior/axios';
-
-/** or */
-// import axios, {
-//   XiorError as AxiosError,
-//   isXiorError as isAxiosError,
-//   XiorRequestConfig as AxiosRequestConfig,
-//   XiorResponse as AxiosResponse,
-//   isCancel,
-// } from 'xior';
+import axios, { AxiosError, isAxiosError, AxiosRequestConfig, AxiosResponse, isCancel } from 'xior';
 
 const instance = axios.create({
   baseURL: '...',
@@ -1625,7 +1610,7 @@ fetch('https://exmaple.com/some/api')
   });
 ```
 
-**But when `responseType` set to `'stream', 'document', 'custom' or 'original'`, Xior will return the original fetch response and `res.data` will be undefined:**
+**But when `responseType` set to `'document', 'custom' or 'original'`, Xior will return the original fetch response and `res.data` will be undefined:**
 
 ```ts
 fetch('https://exmaple.com/some/api').then((response) => {
@@ -1636,46 +1621,6 @@ fetch('https://exmaple.com/some/api').then((response) => {
 xior.get('https://exmaple.com/some/api', { responseType: 'stream' }).then((res) => {
   console.log(res.response); // But res.data will be undefined
 });
-```
-
-And to handle a stream response, use the `responseType: 'stream'` option in your request, then do something with the `response` as `fetch` does:
-
-```ts
-import xior from 'xior';
-
-const http = xior.create({ baseURL });
-
-const { response } = await http.post<{ file: any; body: Record<string, string> }>(
-  '/stream/10',
-  null,
-  { responseType: 'stream' }
-);
-const reader = response.body!.getReader();
-let chunk;
-for await (chunk of readChunks(reader)) {
-  console.log(`received chunk of size ${chunk.length}`);
-}
-```
-
-**But if you want `responseType: 'stream'` do the same behavior as Axios, use `'xior/axios'` entry with built-in stream plugin: (Only for Node.js)**
-
-```ts
-import xior from 'xior/axios';
-
-const axios = xior.create();
-
-/** if you don't like `xior/axios` entry, manually add stream plugin:*/
-// import streamPlugin from 'xior/plugins/stream';
-// axios.plugins.use(streamPlugin());
-
-const { data } = await axios.request({
-  url,
-  responseType: 'stream',
-});
-
-data.pipe(something).pipe(somethingElse);
-
-// Issue ref: https://github.com/suhaotian/xior/issues/46
 ```
 
 ### 5. How do I support older browsers?

@@ -14,11 +14,17 @@
     ".": {
       "import": {
         "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
+        "browser": "./dist/index.mjs",
+        "worker": "./dist/index.mjs",
+        "node": "./dist/index-node.mjs",
+        "default": "./dist/index-node.mjs"
       },
       "require": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
+        "browser": "./dist/index.js",
+        "worker": "./dist/index.js",
+        "node": "./dist/index-node.js",
+        "default": "./dist/index-node.js"
       }
     },
     "./utils": {
@@ -31,22 +37,6 @@
         "default": "./utils.js"
       }
     },
-    "./axios": {
-      "require": {
-        "types": "./axios.d.ts",
-        "browser": "./axios.js",
-        "node": "./node-axios.js",
-        "worker": "./axios.js",
-        "default": "./dist/node-axios.js"
-      },
-      "import": {
-        "types": "./axios.d.mts",
-        "browser": "./axios.mjs",
-        "worker": "./axios.mjs",
-        "node": "./node-axios.mjs",
-        "default": "./dist/axios.mjs"
-      }
-    },
     "./plugins/error-retry": {
       "import": {
         "types": "./plugins/error-retry.d.mts",
@@ -55,16 +45,6 @@
       "require": {
         "types": "./plugins/error-retry.d.ts",
         "default": "./plugins/error-retry.js"
-      }
-    },
-    "./plugins/stream": {
-      "import": {
-        "types": "./plugins/stream.d.mts",
-        "default": "./plugins/stream.mjs"
-      },
-      "require": {
-        "types": "./plugins/stream.d.ts",
-        "default": "./plugins/stream.js"
       }
     },
     "./plugins/throttle": {

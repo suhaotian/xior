@@ -3,12 +3,7 @@ import assert from 'node:assert';
 import { before, after, describe, it } from 'node:test';
 import xior, { XiorInstance, XiorError, encodeParams, isXiorError } from 'xior';
 
-import a, {
-  AxiosResponse,
-  AxiosError,
-  AxiosRequestConfig,
-  RawAxiosRequestHeaders as _RawAxiosRequestHeaders,
-} from 'xior/axios';
+import a, { AxiosResponse, AxiosError, AxiosRequestConfig } from 'xior';
 
 import { startServer } from './server';
 

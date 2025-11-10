@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { stringify } from 'qs';
 import xior, { merge, delay, buildSortedURL, encodeParams } from 'xior';
-import axios, { mergeConfig, AxiosError, isCancel } from 'xior/axios';
+import axios, { mergeConfig, AxiosError, isCancel } from 'xior';
 
 import cachePlugin from 'xior/plugins/cache';
 import errorRetryPlugin from 'xior/plugins/error-retry';

@@ -5,7 +5,7 @@ import xior, {
   buildSortedURL,
   AxiosInstance as XiorInstance,
   mergeConfig,
-} from 'xior/axios';
+} from 'xior';
 import cachePlugin from 'xior/plugins/cache';
 import errorCachePlugin from 'xior/plugins/error-cache';
 import errorRetryPlugin from 'xior/plugins/error-retry';
