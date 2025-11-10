@@ -5,7 +5,7 @@
   "repository": "suhaotian/xior",
   "bugs": "https://github.com/suhaotian/xior/issues",
   "homepage": "https://github.com/suhaotian/xior",
-  "main": "./dist/index.js",
+  "main": "./dist/index-node.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
