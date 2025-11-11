@@ -191,6 +191,7 @@
     "./xior*",
     "./chunk*",
     "README.md",
+    "migrate-axios-to-xior.md",
     "Mock-plugin.md"
   ],
   "keywords": [

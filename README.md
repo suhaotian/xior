@@ -1633,6 +1633,8 @@ The original name `axior` was unavailable on npm, so when removed the "a": ~~a~~
 
 ### 7. Where can I ask additional questions?
 
+If you have any questions, feel free to create issues.
+
 ## Migrate from **axios** to **xior**
 
 1. **Main change:** replace all `axios` imports with `xior` and check TypeScript types.
