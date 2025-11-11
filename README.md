@@ -61,7 +61,7 @@ A lite http request lib based on **fetch** with plugin support and similar API t
   - [5. How do I support older browsers?](#5-how-do-i-support-older-browsers)
   - [6. Why is xior named "xior"?](#6-why-is-xior-named-xior)
   - [7. Where can I ask additional questions?](#7-where-can-i-ask-additional-questions)
-- [Migrate from `axios` to **xior**](#migrate-from-axios-to-xior)
+- [Migrate from **axios** to **xior**](#migrate-from-axios-to-xior)
   - [GET](#get)
   - [POST](#post)
   - [`axios(requestObj)`: axios({ method: 'get', params: { a: 1 } })](#axiosrequestobj-axios-method-get-params--a-1--)
@@ -1633,25 +1633,58 @@ The original name `axior` was unavailable on npm, so when removed the "a": ~~a~~
 
 ### 7. Where can I ask additional questions?
 
-If you have any questions, feel free to create issues.
+## Migrate from **axios** to **xior**
 
-## Migrate from `axios` to **xior**
+1. **Main change:** replace all `axios` imports with `xior` and check TypeScript types.
 
-**The most common change is replacing `axios` with `xior` and checking if the TypeScript types pass**:
+   ```ts
+   import axios, { AxiosError, isAxiosError, AxiosRequestConfig, AxiosResponse } from 'xior';
 
-```ts
-import axios, {
-  XiorError as AxiosError,
-  isXiorError as isAxiosError,
-  XiorRequestConfig as AxiosRequestConfig,
-  XiorResponse as AxiosResponse,
-} from 'xior';
+   const instance = axios.create({
+     baseURL: '...',
+     timeout: 20e3,
+   });
+   ```
 
-const instance = axios.create({
-  baseURL: '...',
-  timeout: 20e3,
-});
-```
+2. **Headers access:** use
+
+   ```ts
+   response.headers.get('X-Header-Name');
+   ```
+
+   instead of
+
+   ```ts
+   response.headers['X-Header-Name'];
+   ```
+
+3. **Progress events:** `xior` doesn’t include upload/download progress by default. Use the plugin:
+
+   ```ts
+   import Xior from 'xior';
+   import progressPlugin from 'xior/plugins/progress';
+   const axios = Xior.create({});
+
+   http.plugins.use(progressPlugin());
+
+   const formData = FormData();
+   formData.append('file', fileObject);
+   formData.append('field1', 'val1');
+   formData.append('field2', 'val2');
+
+   http.post('/upload', formData, {
+     onUploadProgress(e) {
+       console.log(`Upload progress: ${e.progress}%`);
+     },
+     // progressDuration: 10 \* 1000
+   });
+   ```
+
+4. **Transforms:** `xior` does not support `transformRequest` or `transformResponse`.
+
+5. **Network errors:** in `xior`, network errors are `TypeError`, not `AxiosError` with code or detail.
+
+6. **Recommendation:** keep `axios` for legacy projects. Use `xior` for new or modern TypeScript projects.
 
 ### GET
 
