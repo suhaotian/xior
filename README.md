@@ -2280,7 +2280,7 @@ run();
 
 xior:
 
-> Good to Know: add `{responseType: 'stream'}` options will tell xior no need process response, and return original response in format `{response}`
+> Good to Know: add `{responseType: 'original'}` options will tell xior no need process response, and return original response in format `{response}`
 
 ```ts
 import xior from 'xior';
@@ -2289,7 +2289,7 @@ const http = xior.create();
 
 async function* makeTextFileLineIterator(fileURL) {
   const utf8Decoder = new TextDecoder('utf-8');
-  const { response } = await http.get(fileURL, { responseType: 'stream' });
+  const { response } = await http.get(fileURL, { responseType: 'original' });
   const reader = response.body.getReader();
   let { value: chunk, done: readerDone } = await reader.read();
   chunk = chunk ? utf8Decoder.decode(chunk) : '';
