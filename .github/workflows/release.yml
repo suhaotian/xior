@@ -2,21 +2,16 @@ name: Release
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*'
-  pull_request:
 
 jobs:
   release:
     runs-on: ubuntu-latest
 
-    if: startsWith(github.ref, 'refs/tags/v')
-
     permissions:
       id-token: write
-      contents: read
+      contents: write
 
     steps:
       - name: Check out
@@ -40,6 +35,9 @@ jobs:
       - name: Check types
         run: pnpm checktype
 
+      - name: Run tests
+        run: pnpm test
+
       - name: Determine release tag
         id: release-tag
         run: |
@@ -48,9 +46,11 @@ jobs:
 
           if [[ "$TAG" =~ -alpha(\.|$) ]] || [[ "$TAG" =~ -beta(\.|$) ]]; then
             echo "npm_tag=next" >> $GITHUB_OUTPUT
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
             echo "📦 Publishing as pre-release: $TAG (npm tag: next)"
           else
             echo "npm_tag=latest" >> $GITHUB_OUTPUT
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
             echo "📦 Publishing as stable release: $TAG (npm tag: latest)"
           fi
 
@@ -60,7 +60,20 @@ jobs:
       - name: Prepare package
         run: node scripts/purge-pkg-for-publish.mjs
 
+      - name: Verify package contents
+        run: npm pack --dry-run
+
       - name: Publish to npm
         run: npm publish --access public --no-git-checks --provenance --registry=https://registry.npmjs.org --tag=${{ steps.release-tag.outputs.npm_tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_ELEVATED }}
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release-tag.outputs.version }}
+          release_name: Release ${{ steps.release-tag.outputs.version }}
+          draft: false
+          prerelease: ${{ steps.release-tag.outputs.is_prerelease }}

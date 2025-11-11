@@ -100,19 +100,6 @@ export default function xiorProgressPlugin(options: XiorProgressOptions = {}): X
       } catch (e) {
         // Clean up interval if there's an error
         if (interval) clearInterval(interval);
-        // Optional: notify about error state with special flag
-        if (onUploadProgress || onDownloadProgress) {
-          const errorEvent: XiorProgressEvent = {
-            total: 1000,
-            loaded: 0,
-            progress: 0,
-            lengthComputable: false,
-            bytes: 0,
-            // Could add: error: true
-          };
-          if (onUploadProgress) onUploadProgress({ ...errorEvent, upload: true });
-          if (onDownloadProgress) onDownloadProgress({ ...errorEvent, download: true });
-        }
         throw e;
       }
     };
