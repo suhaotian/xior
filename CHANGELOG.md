@@ -1,5 +1,34 @@
 # CHANGELOG 📝
 
+## v0.8.0
+
+- Feat: support `xior(requestObj)` syntax, Fix https://github.com/suhaotian/xior/issues/45
+- Feat: add `isCancel` util, re-export `merge` as `mergeConfig` util
+- Feat(Breaking change in Node/bun when use `responseType: 'stream'`): add `xior/stream` plugin, built it into package.json's node `exports` entry, now `{responseType: 'stream'}` is same behaviour with axios in nodejs; Fix https://github.com/suhaotian/xior/issues/46
+- Feat: re-export `Xior*` as `Axios*`, now you can just `import {AxiosResponse, AxiosRequestConfig} from 'xior'`
+- ci: skip ci tests when only markdown files are edited by @kitsiosk in https://github.com/suhaotian/xior/pull/44
+- Chore: minor code and doc improvement
+
+### Breaking change:
+
+- if you use `{responseType: 'stream'}` in Node.js, follow the issue https://github.com/suhaotian/xior/issues/46 . Others platform like browser keep the original behaviour.
+
+In Bun or node:
+
+```ts
+import axios from 'xior';
+
+axios
+  .request({
+    method: 'get',
+    url: 'https://bit.ly/2mTM3nY',
+    responseType: 'stream',
+  })
+  .then(function (response) {
+    response.data.pipe(fs.createWriteStream('ada_lovelace.jpg'));
+  });
+```
+
 ## v0.7.8
 
 - Fix: make `isXiorError` type guard https://github.com/suhaotian/xior/pull/42 Thanks @kosmotema !
