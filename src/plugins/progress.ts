@@ -10,12 +10,13 @@ export interface XiorProgressEvent {
   loaded: number;
   total: number;
   progress: number;
-  bytes?: number;
+  bytes: number;
   rate?: number;
   estimated?: number;
   upload?: boolean;
   download?: boolean;
   event?: BrowserProgressEvent;
+  lengthComputable: boolean;
 }
 
 export interface XiorProgressRequestOptions extends XiorProgressOptions {
@@ -55,6 +56,8 @@ export default function xiorProgressPlugin(options: XiorProgressOptions = {}): X
             total,
             loaded,
             progress,
+            lengthComputable: false,
+            bytes: 0,
           };
           if (event.progress >= 99) {
             event.progress = 99;
@@ -80,6 +83,8 @@ export default function xiorProgressPlugin(options: XiorProgressOptions = {}): X
             total: 1000,
             loaded: 1000,
             progress: 100,
+            lengthComputable: false,
+            bytes: 0,
           };
 
           // Fixed: Separate final callbacks for upload and download progress
@@ -94,8 +99,19 @@ export default function xiorProgressPlugin(options: XiorProgressOptions = {}): X
         return res;
       } catch (e) {
         // Clean up interval if there's an error
-        if (interval) {
-          clearInterval(interval);
+        if (interval) clearInterval(interval);
+        // Optional: notify about error state with special flag
+        if (onUploadProgress || onDownloadProgress) {
+          const errorEvent: XiorProgressEvent = {
+            total: 1000,
+            loaded: 0,
+            progress: 0,
+            lengthComputable: false,
+            bytes: 0,
+            // Could add: error: true
+          };
+          if (onUploadProgress) onUploadProgress({ ...errorEvent, upload: true });
+          if (onDownloadProgress) onDownloadProgress({ ...errorEvent, download: true });
         }
         throw e;
       }

@@ -3,6 +3,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: {
     'dist/index': 'src/index.ts',
+    'dist/index-node': 'src/index-node.ts',
     utils: 'src/utils.ts',
     'plugins/error-retry': 'src/plugins/error-retry.ts',
     'plugins/throttle': 'src/plugins/throttle.ts',

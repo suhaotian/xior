@@ -1,4 +1,4 @@
-import { XiorInstance, type Fetch } from './xior';
+import { XiorInstance } from './xior';
 
 export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
   /** fetch?: @type Fetch  */
@@ -85,6 +85,7 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
    */
   transformResponse?: any[];
 }
+export type AxiosRequestConfig = XiorRequestConfig;
 
 export type XiorInterceptorRequestConfig<T = any> = XiorRequestConfig & {
   headers: Record<string, any>;
@@ -92,15 +93,7 @@ export type XiorInterceptorRequestConfig<T = any> = XiorRequestConfig & {
   url: string;
   method: string;
 };
-export interface XiorResponse<T = any> {
-  data: T;
-  status: number;
-  statusText: string;
-  headers: Headers;
-  response: Response;
-  config: XiorInterceptorRequestConfig;
-  request?: any;
-}
+export type AxiosInterceptorRequestConfig = XiorInterceptorRequestConfig;
 
 export type XiorPlugin = (
   adapter: (request: XiorRequestConfig) => Promise<XiorResponse>,
@@ -113,16 +106,21 @@ export interface XiorInterceptorOptions {
   /** @deprecated useless here */
   runWhen?: (config: XiorInterceptorRequestConfig) => boolean;
 }
+export type AxiosInterceptorOptions = XiorInterceptorOptions;
 
-export interface XiorInterceptorResponseConfig<T = any> {
+export interface XiorResponse<T = any> {
   data: T;
   config: XiorInterceptorRequestConfig<T>;
-  request: XiorInterceptorRequestConfig<T>;
-  response: Response;
   status: number;
   statusText: string;
   headers: Headers;
+  response: Response;
+  request: XiorInterceptorRequestConfig<T>;
 }
+export type AxiosResponse = XiorResponse;
 
-/** @deprecated please use `XiorInterceptorResponseConfig` */
+/** @deprecated please use `XiorResponse` */
+export type XiorInterceptorResponseConfig<T = any> = XiorResponse<T>;
+
+/** @deprecated please use `XiorResponse` */
 export type XiorResponseInterceptorConfig = XiorInterceptorResponseConfig;

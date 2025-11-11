@@ -1,7 +1,9 @@
-import axios from 'axios';
+import axios, { RawAxiosRequestHeaders, AxiosError as AError } from 'axios';
 import assert from 'node:assert';
 import { before, after, describe, it } from 'node:test';
 import xior, { XiorInstance, XiorError, encodeParams, isXiorError } from 'xior';
+
+import a, { AxiosResponse, AxiosError, AxiosRequestConfig } from 'xior';
 
 import { startServer } from './server';
 

@@ -518,19 +518,21 @@ instance.interceptors.response.use((res) => {
 
 ```ts
 import xior, { XiorError as AxiosError } from 'xior';
-import errorRetryPlugin from 'xior/plugins/error-retry';
+import retryPlugin from 'xior/plugins/error-retry';
 import dedupePlugin from 'xior/plugins/dedupe';
 import throttlePlugin from 'xior/plugins/throttle';
+import cachePlugin from 'xior/plugins/cache';
 import errorCachePlugin from 'xior/plugins/error-cache';
 
 // Setup
 const http = axios.create({
   baseURL: 'http://localhost:3000',
 });
-http.plugins.use(errorRetryPlugin());
-http.plugins.use(errorCachePlugin());
-http.plugins.use(dedupePlugin()); // Prevent same GET requests from occurring simultaneously.
 http.plugins.use(throttlePlugin()); // Throttle same `GET` request in 1000ms
+http.plugins.use(dedupePlugin()); // Prevent same GET requests from occurring simultaneously.
+http.plugins.use(retryPlugin());
+http.plugins.use(cachePlugin());
+http.plugins.use(errorCachePlugin());
 
 // 1. If `GET` data error, at least have chance to retry;
 // 2. If retry still error, return the cache data(if have) to prevent page crash or show error page;
@@ -555,9 +557,23 @@ http.get('/api/get-some-big-data', { threshold: 10e3 });
 http.get('/api/get-some-big-data', { threshold: 10e3, useCacheFirst: true });
 ```
 
+> Above plugins execution order: errorCache → cache → retry → dedupe → throttle → real request
+
 ## Plugins
 
 **xior** offers a variety of built-in plugins to enhance its functionality:
+
+> The plugin mechanism is: first in, last run.
+
+For example:
+
+```ts
+plugins.use(plugin1);
+plugins.use(plugin2);
+plugins.use(plugin3);
+```
+
+> Run order: plugin3 → plugin2 → plugin1
 
 - [Error retry plugin](#error-retry-plugin)
 - [Request dedupe plugin](#request-dedupe-plugin)
@@ -1430,18 +1446,21 @@ import {
 **The most common change is replacing `axios` with `xior` and checking if the TypeScript types pass**:
 
 ```ts
-import axios, {
-  XiorError as AxiosError,
-  isXiorError as isAxiosError,
-  XiorRequestConfig as AxiosRequestConfig,
-  XiorResponse as AxiosResponse,
-} from 'xior';
+import axios, { AxiosError, isAxiosError, AxiosRequestConfig, AxiosResponse, isCancel } from 'xior';
 
 const instance = axios.create({
   baseURL: '...',
   timeout: 20e3,
 });
+
+// Get response headers
+instance.get('/').then((response) => {
+  response.headers.get('x-response-time');
+  // At axios, it's `response.headers['x-response-time']`
+});
 ```
+
+Check [./Migrate-axios-to-xior.md](./migrate-axios-to-xior.md)
 
 ### 2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, Nuxt.js, Tauri or `NervJS/Taro`?
 
@@ -1591,7 +1610,7 @@ fetch('https://exmaple.com/some/api')
   });
 ```
 
-**But when `responseType` set to `'stream', 'document', 'custom' or 'original'`, Xior will return the original fetch response and `res.data` will be undefined:**
+**But when `responseType` set to `'document', 'custom' or 'original'`, Xior will return the original fetch response and `res.data` will be undefined:**
 
 ```ts
 fetch('https://exmaple.com/some/api').then((response) => {
@@ -1602,25 +1621,6 @@ fetch('https://exmaple.com/some/api').then((response) => {
 xior.get('https://exmaple.com/some/api', { responseType: 'stream' }).then((res) => {
   console.log(res.response); // But res.data will be undefined
 });
-```
-
-And to handle a stream response, use the `responseType: 'stream'` option in your request, then do something with the `response` as `fetch` does:
-
-```ts
-import xior from 'xior';
-
-const http = xior.create({ baseURL });
-
-const { response } = await http.post<{ file: any; body: Record<string, string> }>(
-  '/stream/10',
-  null,
-  { responseType: 'stream' }
-);
-const reader = response.body!.getReader();
-let chunk;
-for await (chunk of readChunks(reader)) {
-  console.log(`received chunk of size ${chunk.length}`);
-}
 ```
 
 ### 5. How do I support older browsers?
@@ -1748,7 +1748,7 @@ import xior from 'xior';
 
 const axios = xior.create();
 
-await axios.request({ method: 'get', params: { a: 1 } });
+await axios({ method: 'get', params: { a: 1 } });
 ```
 
 ### Creating an instance
@@ -1896,6 +1896,7 @@ xior:
 ```ts
 // Node.js
 import xior from 'xior';
+import fs from 'fs';
 const axios = xior.create();
 
 axios
@@ -1904,7 +1905,18 @@ axios
   })
   .then(async function ({ response, config }) {
     const buffer = Buffer.from(await response.arrayBuffer());
-    return writeFile('ada_lovelace.jpg', buffer);
+    return fs.writeFile('ada_lovelace.jpg', buffer);
+  });
+
+// GET request for remote image in Node.js, Same with axios `responseType: 'stream'`.
+axios
+  .request({
+    method: 'get',
+    url: 'https://bit.ly/2mTM3nY',
+    responseType: 'stream',
+  })
+  .then(function (response) {
+    response.data.pipe(fs.createWriteStream('ada_lovelace.jpg'));
   });
 
 // For browser
@@ -1933,7 +1945,6 @@ axios:
 
 ```ts
 import axios from 'axios';
-import { Readable } from 'stream';
 
 const http = axios.create();
 
@@ -1946,35 +1957,20 @@ async function getStream(url: string, params: Record<string, any>) {
 }
 ```
 
-xior:
+xior with stream plugin at Node.js:
 
 ```ts
-import axxios from 'xior';
-import { Readable } from 'stream';
+import axios from 'xior';
 
 const http = axios.create();
 
 async function getStream(url: string, params: Record<string, any>) {
-  const { response } = await http.get(url, {
+  const { data } = await http.get(url, {
     params,
     responseType: 'stream',
   });
-  const stream = convertResponseToReadable(response);
+  const stream = data;
   return stream;
-}
-
-function convertResponseToReadable(response: Response): Readable {
-  const reader = response.body.getReader();
-  return new Readable({
-    async read() {
-      const { done, value } = await reader.read();
-      if (done) {
-        this.push(null);
-      } else {
-        this.push(Buffer.from(value));
-      }
-    },
-  });
 }
 ```
 

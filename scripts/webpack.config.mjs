@@ -20,7 +20,7 @@ function getConfig() {
     },
   };
   Object.keys(exports).forEach((key) => {
-    if (key === '.' || key === './package.json') return;
+    if (key === '.' || key === './package.json' || key === './plugins/stream') return;
     const filename = fs.existsSync(path.join('lib', key + '.js'))
       ? key + '.js'
       : path.join(key, 'index.js');

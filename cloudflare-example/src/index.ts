@@ -9,6 +9,7 @@
  */
 
 import { http } from './xior';
+import { http as axiosHttp } from './xior-axios';
 
 export interface Env {
 	// Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
@@ -32,6 +33,7 @@ export default {
 		let error = '';
 		try {
 			const { data } = await http.get('https://github.com');
+			await axiosHttp.get('https://github.com', { responseType: 'stream' });
 		} catch (e) {
 			error = (e as any).message;
 		}

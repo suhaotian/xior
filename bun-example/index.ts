@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { stringify } from 'qs';
 import xior, { merge, delay, buildSortedURL, encodeParams } from 'xior';
+import axios, { mergeConfig, AxiosError, isCancel } from 'xior';
+
 import cachePlugin from 'xior/plugins/cache';
 import errorRetryPlugin from 'xior/plugins/error-retry';
 import MockPlugin from 'xior/plugins/mock';
@@ -17,6 +19,14 @@ instance.plugins.use(cachePlugin({}));
 instance.plugins.use(throttlePlugin({}));
 instance.plugins.use(uploadDownloadProgressPlugin({}));
 
+const axiosInstance = axios.create({
+  paramsSerializer: (params: Record<string, any>) => stringify(params),
+});
+axiosInstance.plugins.use(errorRetryPlugin({}));
+axiosInstance.plugins.use(cachePlugin({}));
+axiosInstance.plugins.use(throttlePlugin({}));
+axiosInstance.plugins.use(uploadDownloadProgressPlugin({}));
+
 const mock = new MockPlugin(instance, { onNoMatch: 'passthrough' });
 
 instance.plugins.use((adapter) => {
@@ -27,7 +37,22 @@ instance.plugins.use((adapter) => {
   };
 });
 
+axiosInstance.plugins.use((adapter) => {
+  return async (config) => {
+    const res = await adapter(config);
+    console.log(`%s %s -> %s`, config.method, config.url, res.status);
+    return res;
+  };
+});
+
 instance.get('https://google.com', {
+  progressDuration: 500,
+  onDownloadProgress(e) {
+    console.log(`Download %s%`, e.progress);
+  },
+});
+
+axiosInstance.get('https://github.com/suhaotian/xior', {
   progressDuration: 500,
   onDownloadProgress(e) {
     console.log(`Download %s%`, e.progress);

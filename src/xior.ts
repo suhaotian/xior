@@ -20,7 +20,6 @@ import type {
   XiorPlugin,
   XiorRequestConfig,
   XiorResponse,
-  XiorInterceptorResponseConfig,
 } from './types';
 import {
   ClearableSignal,
@@ -35,6 +34,7 @@ import {
 
 const supportAbortController = typeof AbortController !== `${undefinedValue}`;
 export type XiorInstance = Xior;
+export type AxiosInstance = Xior;
 export type Fetch = typeof fetch;
 
 async function getResponseData(
@@ -66,8 +66,23 @@ async function getResponseData(
   return data;
 }
 
-const createXior = (options?: XiorRequestConfig): XiorInstance => {
-  return new Xior(options);
+const createManager = <T>(array: T[]) => ({
+  use: (item: T) => (array.push(item), item),
+  eject: (key: T) => {
+    array.splice(0, array.length, ...array.filter((x) => x !== key));
+  },
+  clear: () => (array.length = 0),
+});
+
+function createXiorInstance<T extends { request: XiorInstance['request'] }>(context: T) {
+  const fn = context.request.bind(context);
+  Object.assign(fn, context);
+  Object.setPrototypeOf(fn, Object.getPrototypeOf(context));
+  return fn as T & XiorInstance['request'];
+}
+
+const createXior = (options?: XiorRequestConfig) => {
+  return createXiorInstance(new Xior(options));
 };
 
 export class Xior {
@@ -91,79 +106,43 @@ export class Xior {
   ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig)[] = [];
   /** response interceptors */
   RESI: {
-    fn: (
-      config: XiorInterceptorResponseConfig
-    ) => Promise<XiorInterceptorResponseConfig> | XiorInterceptorResponseConfig;
+    fn: (config: XiorResponse) => Promise<XiorResponse> | XiorResponse;
     /** error: XiorError | Error | TypeError */
     onRejected?: null | ((error: XiorError) => any);
   }[] = [];
 
-  get interceptors() {
-    return {
-      request: {
-        use: (
-          fn: (
-            requestConfig: XiorInterceptorRequestConfig
-          ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig,
-          /** @deprecated useless here */
-          onRejected?: null | ((error: any) => any),
-          options?: XiorInterceptorOptions
-        ) => {
-          this.REQI.push(fn);
-          return fn;
-        },
-        eject: (
-          fn: (
-            responseWithConfig: XiorInterceptorRequestConfig
-          ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig
-        ) => {
-          this.REQI = this.REQI.filter((item) => item !== fn);
-        },
-        clear: () => {
-          this.REQI = [];
-        },
+  interceptors = {
+    request: {
+      ...createManager(this.REQI),
+      use: (
+        fn: (
+          requestConfig: XiorInterceptorRequestConfig
+        ) => Promise<XiorInterceptorRequestConfig> | XiorInterceptorRequestConfig,
+        /** @deprecated useless here */
+        onRejected?: null | ((error: any) => any),
+        options?: XiorInterceptorOptions
+      ) => {
+        this.REQI.push(fn);
+        return fn;
       },
-      response: {
-        use: (
-          fn: (
-            config: XiorInterceptorResponseConfig
-          ) => Promise<XiorInterceptorResponseConfig> | XiorInterceptorResponseConfig,
-          /** error: XiorError | Error | TypeError */
-          onRejected?: null | ((error: XiorError) => any)
-        ) => {
-          this.RESI.push({ fn, onRejected });
-          return fn;
-        },
-        eject: (
-          fn: (
-            config: XiorInterceptorResponseConfig
-          ) => Promise<XiorInterceptorResponseConfig> | XiorInterceptorResponseConfig
-        ) => {
-          this.RESI = this.RESI.filter((item) => item.fn !== fn);
-        },
-        clear: () => {
-          this.RESI = [];
-        },
+    },
+    response: {
+      ...createManager(this.RESI),
+      use: (
+        fn: (config: XiorResponse) => Promise<XiorResponse> | XiorResponse,
+        /** error: XiorError | Error | TypeError */
+        onRejected?: null | ((error: XiorError) => any)
+      ) => {
+        const handler = { fn, onRejected };
+        this.RESI.push(handler);
+        return handler;
       },
-    };
-  }
+    },
+  };
 
   /** plugins */
   P: XiorPlugin[] = [];
-  get plugins() {
-    return {
-      use: (plugin: XiorPlugin) => {
-        this.P.push(plugin);
-        return plugin;
-      },
-      eject: (plugin: XiorPlugin) => {
-        this.P = this.P.filter((item) => item !== plugin);
-      },
-      clear: () => {
-        this.P = [];
-      },
-    };
-  }
+  plugins = createManager(this.P);
 
   async request<T, R = XiorResponse<T>>(options: XiorRequestConfig | string) {
     let requestConfig: XiorRequestConfig = merge(
@@ -284,20 +263,26 @@ export class Xior {
 
   /** create get like method */
   cG<T>(method: string) {
-    return (url: string, options?: XiorRequestConfig) => {
-      return this.request<T>(options ? { ...options, method, url } : { method, url });
+    return (url: string | XiorRequestConfig, options?: XiorRequestConfig) => {
+      return this.request<T>(
+        typeof url === 'string' ? { ...options, method, url } : { ...url, ...options, method }
+      );
     };
   }
 
   /** create post like method */
   cP<T>(method: string) {
-    return (url: string, data?: any, options?: XiorRequestConfig) => {
-      return this.request<T>(options ? { ...options, method, url, data } : { method, url, data });
+    return (url: string | XiorRequestConfig, data?: any, options?: XiorRequestConfig) => {
+      return this.request<T>(
+        typeof url === 'string'
+          ? { data, ...options, method, url }
+          : { data, ...url, ...options, method }
+      );
     };
   }
 
   get<T = any, R = XiorResponse<T>>(
-    url: string,
+    url: string | XiorRequestConfig,
     options?: XiorRequestConfig & {
       /** @deprecated No `data` in `GET` method */
       data?: any;
@@ -306,7 +291,7 @@ export class Xior {
     return this.cG<T>(GET)(url, options) as Promise<R>;
   }
   head<T = any, R = XiorResponse<T>>(
-    url: string,
+    url: string | XiorRequestConfig,
     options?: XiorRequestConfig & {
       /** @deprecated No `data` in `HEAD` method */
       data?: any;
@@ -315,24 +300,39 @@ export class Xior {
     return this.cG<T>(HEAD)(url, options) as Promise<R>;
   }
 
-  post<T = any, R = XiorResponse<T>>(url: string, data?: any, options?: XiorRequestConfig) {
+  post<T = any, R = XiorResponse<T>>(
+    url: string | XiorRequestConfig,
+    data?: any,
+    options?: XiorRequestConfig
+  ) {
     return this.cP<T>(POST)(url, data, options) as Promise<R>;
   }
 
-  put<T = any, R = XiorResponse<T>>(url: string, data?: any, options?: XiorRequestConfig) {
+  put<T = any, R = XiorResponse<T>>(
+    url: string | XiorRequestConfig,
+    data?: any,
+    options?: XiorRequestConfig
+  ) {
     return this.cP<T>(PUT)(url, data, options) as Promise<R>;
   }
 
-  patch<T = any, R = XiorResponse<T>>(url: string, data?: any, options?: XiorRequestConfig) {
+  patch<T = any, R = XiorResponse<T>>(
+    url: string | XiorRequestConfig,
+    data?: any,
+    options?: XiorRequestConfig
+  ) {
     return this.cP<T>(PATCH)(url, data, options) as Promise<R>;
   }
 
-  delete<T = any, R = XiorResponse<T>>(url: string, options?: XiorRequestConfig) {
+  delete<T = any, R = XiorResponse<T>>(
+    url: string | XiorRequestConfig,
+    options?: XiorRequestConfig
+  ) {
     return this.cG<T>(DELETE)(url, options) as Promise<R>;
   }
 
   options<T = any, R = XiorResponse<T>>(
-    url: string,
+    url: string | XiorRequestConfig,
     options?: XiorRequestConfig & {
       /** @deprecated No `data` in `OPTIONS` method */
       data?: any;

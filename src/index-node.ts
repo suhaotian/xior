@@ -1,5 +1,7 @@
+import { AxiosInstance, AxiosRequestConfig } from '.';
 import { isCancel } from './utils';
-import { Xior, Xior as Axios } from './xior';
+import { Xior as Axios } from './xior';
+import streamPlugin from './plugins/stream';
 
 export * from './xior';
 export * from './types';
@@ -22,12 +24,25 @@ export {
   isXiorError as isAxiosError,
   XiorTimeoutError as AxiosTimeoutError,
   merge as mergeConfig,
-} from './';
+} from '.';
 
-const axios = Object.assign(Xior.create(), {
-  create: Xior.create,
-  VERSION: Xior.VERSION,
+// Override create method
+const originalCreate = Axios.create;
+const axios = Object.assign(Axios.create(), {
+  create: Axios.create,
+  VERSION: Axios.VERSION,
   isCancel,
 });
+function setupPlugins(instance: AxiosInstance) {
+  instance.plugins.use(streamPlugin());
+}
+setupPlugins(axios);
+
+axios.create = Axios.create = (options?: AxiosRequestConfig) => {
+  const instance = originalCreate(options);
+  setupPlugins(instance);
+  return instance;
+};
+
 export { Axios };
 export default axios;

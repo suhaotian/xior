@@ -5,7 +5,7 @@
   "repository": "suhaotian/xior",
   "bugs": "https://github.com/suhaotian/xior/issues",
   "homepage": "https://github.com/suhaotian/xior",
-  "main": "./dist/index.js",
+  "main": "./dist/index-node.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
@@ -14,100 +14,106 @@
     ".": {
       "import": {
         "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
+        "browser": "./dist/index.mjs",
+        "worker": "./dist/index.mjs",
+        "node": "./dist/index-node.mjs",
+        "default": "./dist/index-node.mjs"
       },
       "require": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
+        "browser": "./dist/index.js",
+        "worker": "./dist/index.js",
+        "node": "./dist/index-node.js",
+        "default": "./dist/index-node.js"
       }
     },
     "./utils": {
       "import": {
-        "types": "./utils.mts",
+        "types": "./utils.d.mts",
         "default": "./utils.mjs"
       },
       "require": {
-        "types": "./utils.ts",
+        "types": "./utils.d.ts",
         "default": "./utils.js"
       }
     },
     "./plugins/error-retry": {
       "import": {
-        "types": "./plugins/error-retry.mts",
+        "types": "./plugins/error-retry.d.mts",
         "default": "./plugins/error-retry.mjs"
       },
       "require": {
-        "types": "./plugins/error-retry.ts",
+        "types": "./plugins/error-retry.d.ts",
         "default": "./plugins/error-retry.js"
       }
     },
     "./plugins/throttle": {
       "import": {
-        "types": "./plugins/throttle.mts",
+        "types": "./plugins/throttle..dmts",
         "default": "./plugins/throttle.mjs"
       },
       "require": {
-        "types": "./plugins/throttle.ts",
+        "types": "./plugins/throttle.d.ts",
         "default": "./plugins/throttle.js"
       }
     },
     "./plugins/dedupe": {
       "import": {
-        "types": "./plugins/dedupe.mts",
+        "types": "./plugins/dedupe.d.mts",
         "default": "./plugins/dedupe.mjs"
       },
       "require": {
-        "types": "./plugins/dedupe.ts",
+        "types": "./plugins/dedupe.d.ts",
         "default": "./plugins/dedupe.js"
       }
     },
     "./plugins/cache": {
       "import": {
-        "types": "./plugins/cache.mts",
+        "types": "./plugins/cache.d.mts",
         "default": "./plugins/cache.mjs"
       },
       "require": {
-        "types": "./plugins/cache.ts",
+        "types": "./plugins/cache.d.ts",
         "default": "./plugins/cache.js"
       }
     },
     "./plugins/progress": {
       "import": {
-        "types": "./plugins/progress.mts",
+        "types": "./plugins/progress.d.mts",
         "default": "./plugins/progress.mjs"
       },
       "require": {
-        "types": "./plugins/progress.ts",
+        "types": "./plugins/progress.d.ts",
         "default": "./plugins/progress.js"
       }
     },
     "./plugins/mock": {
       "import": {
-        "types": "./plugins/mock.mts",
+        "types": "./plugins/mock.d.mts",
         "default": "./plugins/mock.mjs"
       },
       "require": {
-        "types": "./plugins/mock.ts",
+        "types": "./plugins/mock.d.ts",
         "default": "./plugins/mock.js"
       }
     },
     "./plugins/error-cache": {
       "import": {
-        "types": "./plugins/error-cache.mts",
+        "types": "./plugins/error-cache.d.mts",
         "default": "./plugins/error-cache.mjs"
       },
       "require": {
-        "types": "./plugins/error-cache.ts",
+        "types": "./plugins/error-cache.d.ts",
         "default": "./plugins/error-cache.js"
       }
     },
     "./plugins/token-refresh": {
       "import": {
-        "types": "./plugins/token-refresh.mts",
+        "types": "./plugins/token-refresh.d.mts",
         "default": "./plugins/token-refresh.mjs"
       },
       "require": {
-        "types": "./plugins/token-refresh.ts",
+        "types": "./plugins/token-refresh.d.ts",
         "default": "./plugins/token-refresh.js"
       }
     }
@@ -143,7 +149,7 @@
     "@types/mime": "^3.0.4",
     "express": "^4.19.2",
     "@types/express": "^4.17.21",
-    "axios": "^1.8.1",
+    "axios": "^1.12.2",
     "multer": "^1.4.5-lts.1",
     "@types/multer": "^1.4.11",
     "qs": "^6.14.0",
