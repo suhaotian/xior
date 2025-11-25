@@ -1,6 +1,6 @@
 {
   "name": "xior",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "A lite http request lib based on fetch with plugins support and similar API to axios.",
   "repository": "suhaotian/xior",
   "bugs": "https://github.com/suhaotian/xior/issues",
@@ -15,6 +15,7 @@
       "import": {
         "types": "./dist/index.d.mts",
         "browser": "./dist/index.mjs",
+        "react-native": "./dist/index.mjs",
         "worker": "./dist/index.mjs",
         "node": "./dist/index-node.mjs",
         "default": "./dist/index-node.mjs"
@@ -22,6 +23,7 @@
       "require": {
         "types": "./dist/index.d.ts",
         "browser": "./dist/index.js",
+        "react-native": "./dist/index.js",
         "worker": "./dist/index.js",
         "node": "./dist/index-node.js",
         "default": "./dist/index-node.js"

@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.8.1
+
+- Fix: broken when used with React Native Ref:https://github.com/suhaotian/xior/issues/51
+
 ## v0.8.0
 
 - Feat: support `xior(requestObj)` syntax, Fix https://github.com/suhaotian/xior/issues/45
