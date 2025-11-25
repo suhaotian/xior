@@ -53,6 +53,9 @@ jobs:
       - name: Run webpack react build
         run: pnpm --filter=my-react-app build
 
+      - name: Run expo react-native build
+        run: pnpm --filter=expo-app build
+
       - name: Run vue-cli build check
         run: pnpm --filter=vue-cli-app build
 
