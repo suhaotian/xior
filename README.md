@@ -2329,8 +2329,6 @@ run();
 
 ## API Reference
 
-- https://suhaotian.github.io/xior
-
 - https://www.jsdocs.io/package/xior
 
 ## Star History
