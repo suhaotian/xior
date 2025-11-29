@@ -54,7 +54,7 @@ A lite http request lib based on **fetch** with plugin support and similar API t
   - [Cleanup plugins example](#cleanup-plugins-example)
 - [Helper functions](#helper-functions)
 - [FAQ](#faq)
-  - [1. Is **xior** 100% compatiable with `axios`?](#1-is-xior-100-compatiable-with-axios)
+  - [1. Is **xior** 100% compatible with `axios`?](#1-is-xior-100-compatible-with-axios)
   - [2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, Nuxt.js, Tauri or `NervJS/Taro`?](#2-can-i-use-xior-in-projects-like-bun-expo-react-native-remixjs-nextjs-vue-nuxtjs-tauri-or-nervjstaro)
   - [3. How can I use custom fetch implementation or How to support **proxy** feature?](#3-how-can-i-use-custom-fetch-implementation-or-how-to-support-proxy-feature)
   - [4. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?](#4-how-do-i-handle-responses-with-types-like-stream-document-arraybuffer-or-blob)
@@ -1439,28 +1439,29 @@ import {
 
 **xior** frequently asked questions.
 
-### 1. Is **xior** 100% compatiable with `axios`?
+### 1. Is **xior** 100% compatible with `axios`?
 
-**No**, but **xior** offers a similar API like axios: `axios.create` / `axios.interceptors` / `.get/post/put/patch/delete/head/options`.
+**No**, but **xior** keeps a very similar API to axios. It supports things like `axios.create`, `axios.interceptors`, and all the common HTTP methods (`get`, `post`, `put`, `patch`, `delete`, `head`, `options`).
+Overall, it’s about **90% compatible**.
 
-**The most common change is replacing `axios` with `xior` and checking if the TypeScript types pass**:
+For most projects, the main change is just **replacing `axios` with `xior` and checking if your TypeScript types still pass**.
 
 ```ts
 import axios, { AxiosError, isAxiosError, AxiosRequestConfig, AxiosResponse, isCancel } from 'xior';
 
 const instance = axios.create({
   baseURL: '...',
-  timeout: 20e3,
+  timeout: 20_000,
 });
 
 // Get response headers
 instance.get('/').then((response) => {
   response.headers.get('x-response-time');
-  // At axios, it's `response.headers['x-response-time']`
+  // In axios, this would be: response.headers['x-response-time']
 });
 ```
 
-Check [./Migrate-axios-to-xior.md](./migrate-axios-to-xior.md)
+For a full guide, check **[Migrate-axios-to-xior.md](./migrate-axios-to-xior.md)**.
 
 ### 2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, Nuxt.js, Tauri or `NervJS/Taro`?
 
