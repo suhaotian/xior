@@ -11,7 +11,7 @@ export function encodeParams<T = any>(
   options?: {
     allowDots?: boolean;
     serializeDate?: (value: Date) => string;
-    arrayFormat?: 'indices' | 'repeat' | 'brackets';
+    arrayFormat?: 'indices' | 'repeat' | 'brackets' | 'comma';
   }
 ): string {
   if (params === undefinedValue || params === nullValue) return '';
@@ -19,6 +19,19 @@ export function encodeParams<T = any>(
   const encodeURIFn = encodeURI ? encodeURIComponent : (v: string) => v;
   const paramsIsArray = isArray(params);
   const { arrayFormat, allowDots, serializeDate } = options || {};
+
+  // Handle comma format for arrays
+  if (paramsIsArray && arrayFormat === 'comma') {
+    const values = (params as any[]).map((item) => {
+      if (!isNaN(item) && item instanceof Date) {
+        return serializeDate ? serializeDate(item) : item.toISOString();
+      }
+      return typeof item === o ? JSON.stringify(item) : String(item);
+    });
+    const commaValues = encodeURIFn(values.join(','));
+    return parentKey ? `${encodeURIFn(parentKey)}=${commaValues}` : commaValues;
+  }
+
   const getKey = (key: string) => {
     if (allowDots && !paramsIsArray) return `.${key}`;
     if (paramsIsArray) {
@@ -30,6 +43,7 @@ export function encodeParams<T = any>(
     }
     return `[${key}]`;
   };
+
   for (const key in params) {
     if (op.hasOwnProperty.call(params, key)) {
       let value = (params as any)[key];

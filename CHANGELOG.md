@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.8.2.alpha-0
+
+- Feat: support `comma` arrayFormat for params encoding Ref:https://github.com/suhaotian/xior/issues/52
+
 ## v0.8.1
 
 - Fix: broken when used with React Native Ref:https://github.com/suhaotian/xior/issues/51

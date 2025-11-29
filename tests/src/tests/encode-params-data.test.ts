@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { after, before, describe, it } from 'node:test';
-import { stringify } from 'qs';
+import { stringify, parse } from 'qs';
 import { Xior, encodeParams } from 'xior';
 
 import { startServer } from './server';
@@ -185,5 +185,47 @@ describe('encodeParams()', function () {
 
   it('encode with illegal date should not throw error', () => {
     encodeParams({ d: new Date('illegal') });
+  });
+
+  describe('arrayFormat: comma', () => {
+    it('should format array with comma separation', () => {
+      const result = stringify({ a: ['b', 'c'] }, { arrayFormat: 'comma' });
+      assert.strictEqual(result, 'a=b%2Cc');
+      assert.strictEqual(
+        result,
+        encodeParams({ a: ['b', 'c'] }, true, null, { arrayFormat: 'comma' })
+      );
+    });
+
+    it('should handle single element', () => {
+      const result = stringify({ a: ['b'] }, { arrayFormat: 'comma' });
+      assert.strictEqual(result, 'a=b');
+      assert.strictEqual(result, encodeParams({ a: ['b'] }, true, null, { arrayFormat: 'comma' }));
+    });
+
+    it('should handle many elements', () => {
+      const result = stringify({ a: ['b', 'c', 'd', 'e'] }, { arrayFormat: 'comma' });
+      assert.strictEqual(result, 'a=b%2Cc%2Cd%2Ce');
+      assert.strictEqual(
+        result,
+        encodeParams({ a: ['b', 'c', 'd', 'e'] }, true, null, { arrayFormat: 'comma' })
+      );
+    });
+
+    it('should handle nested object', () => {
+      const result = stringify({ a: { b: ['c', 'd'] } }, { arrayFormat: 'comma' });
+      assert.strictEqual(result, 'a%5Bb%5D=c%2Cd');
+      assert.strictEqual(
+        result,
+        encodeParams({ a: { b: ['c', 'd'] } }, true, null, { arrayFormat: 'comma' })
+      );
+    });
+
+    it('should handle nested object 2', () => {
+      assert.strictEqual(
+        'items=%7B%22id%22%3A1%7D%2C%7B%22id%22%3A2%7D',
+        encodeParams({ items: [{ id: 1 }, { id: 2 }] }, true, null, { arrayFormat: 'comma' })
+      );
+    });
   });
 });
