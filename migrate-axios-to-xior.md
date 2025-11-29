@@ -4,7 +4,7 @@ Before we migrate, we need to understand the key differences between Axios and X
 
 ## Key Differences
 
-1. **Bundle Size**: Xior.js is a lightweight alternative to Axios (3KB gzipped vs 13.5KB gzipped)
+1. **Bundle Size**: Xior.js is a lightweight alternative to Axios (3KB gzipped vs 13.5KB gzipped) but Purely write in TypeScript
 
 2. **Response Headers**:
 
