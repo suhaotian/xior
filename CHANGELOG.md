@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.8.2-alpha.1
+
+- Feat: add `validResponse` option. Now you can customise what counts as an “OK response” behaviour.
+
 ## v0.8.2-alpha.0
 
 - Feat: support `comma` arrayFormat for params encoding Ref:https://github.com/suhaotian/xior/issues/52
