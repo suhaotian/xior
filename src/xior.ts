@@ -195,6 +195,7 @@ export class Xior {
       _url,
       isGet,
       fetch: _fetch,
+      validateResponse,
       ...rest
     } = await defaultRequestInterceptor(requestConfig as XiorInterceptorRequestConfig);
     requestConfig._url = _url;
@@ -234,7 +235,7 @@ export class Xior {
       .then(async (response) => {
         const { responseType } = requestConfig;
         const data = await getResponseData(response, responseType);
-        const commonRes = {
+        const xiorResponse = {
           data,
           response,
           config: requestConfig as XiorInterceptorRequestConfig,
@@ -243,17 +244,17 @@ export class Xior {
           statusText: response.statusText,
           [h]: response[h],
         };
-        if (!response.ok) {
+        if (validateResponse ? !validateResponse(xiorResponse) : !response.ok) {
           const error = new XiorError(
             !response[status]
               ? `Network error`
               : `Request failed with status code ${response[status]}`,
             requestConfig,
-            commonRes
+            xiorResponse
           );
           return Promise.reject(error);
         }
-        return commonRes;
+        return xiorResponse;
       })
       .finally(() => {
         if (timer) clearTimeout(timer);

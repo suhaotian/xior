@@ -58,9 +58,10 @@ A lite http request lib based on **fetch** with plugin support and similar API t
   - [2. Can I use xior in projects like Bun, Expo, React Native, RemixJS, Next.js, Vue, Nuxt.js, Tauri or `NervJS/Taro`?](#2-can-i-use-xior-in-projects-like-bun-expo-react-native-remixjs-nextjs-vue-nuxtjs-tauri-or-nervjstaro)
   - [3. How can I use custom fetch implementation or How to support **proxy** feature?](#3-how-can-i-use-custom-fetch-implementation-or-how-to-support-proxy-feature)
   - [4. How do I handle responses with types like `'stream'`, `'document'`, `'arraybuffer'`, or `'blob'`?](#4-how-do-i-handle-responses-with-types-like-stream-document-arraybuffer-or-blob)
-  - [5. How do I support older browsers?](#5-how-do-i-support-older-browsers)
-  - [6. Why is xior named "xior"?](#6-why-is-xior-named-xior)
-  - [7. Where can I ask additional questions?](#7-where-can-i-ask-additional-questions)
+  - [5. How do I change default throw error behaviour, `validStatus` or `validResponse`?](#5-how-do-i-change-default-throw-error-behaviour-validstatus-or-validresponse)
+  - [6. How do I support older browsers?](#6-how-do-i-support-older-browsers)
+  - [7. Why is xior named "xior"?](#7-why-is-xior-named-xior)
+  - [8. Where can I ask additional questions?](#8-where-can-i-ask-additional-questions)
 - [Migrate from **axios** to **xior**](#migrate-from-axios-to-xior)
   - [GET](#get)
   - [POST](#post)
@@ -1624,15 +1625,39 @@ xior.get('https://exmaple.com/some/api', { responseType: 'stream' }).then((res) 
 });
 ```
 
-### 5. How do I support older browsers?
+### 5. How do I change default throw error behaviour, `validStatus` or `validResponse`?
+
+Use `validateResponse` (not `validateStatus`), default `validResponse` is:
+
+```ts
+function validateResponse(xiorResponse) {
+  return xiorResponse.response.ok;
+}
+```
+
+Custom yours:
+
+```ts
+import axios from 'xior';
+
+const client = axios.create({
+  validateResponse(xiorResponse) {
+    const { response, data } = xiorResponse;
+    if (response.ok && data.code === '200') return true;
+    return response.ok;
+  },
+});
+```
+
+### 6. How do I support older browsers?
 
 You can use a polyfill for the `fetch` API. Check the file `src/tests/polyfill.test.ts` for a potential example.
 
-### 6. Why is xior named "xior"?
+### 7. Why is xior named "xior"?
 
 The original name `axior` was unavailable on npm, so when removed the "a": ~~a~~**xior**.
 
-### 7. Where can I ask additional questions?
+### 8. Where can I ask additional questions?
 
 If you have any questions, feel free to create issues.
 

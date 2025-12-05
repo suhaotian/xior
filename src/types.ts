@@ -48,9 +48,10 @@ export interface XiorRequestConfig<T = any> extends Omit<RequestInit, 'body'> {
   _did?: boolean;
 
   /**
-   * @deprecated Useless here.
+   * @deprecated Useless here. please use `validateResponse`
    */
   validateStatus?: (status: number) => boolean;
+  validateResponse?: (response: XiorResponse) => boolean;
   /**
    * @deprecated Useless here.
    */

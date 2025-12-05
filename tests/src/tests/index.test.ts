@@ -728,7 +728,12 @@ describe('xior tests', () => {
   });
 
   describe('custom plugins tests', () => {
-    const xiorInstance = Xior.create({ baseURL });
+    const xiorInstance = Xior.create({
+      baseURL,
+      validateResponse(xiorResponse) {
+        return xiorResponse.response.ok;
+      },
+    });
     it('xior plugins order should work', async () => {
       assert.strictEqual((xiorInstance as any).P.length, 1);
 
