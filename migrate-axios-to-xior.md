@@ -4,6 +4,8 @@ Before we migrate, we need to understand the key differences between Axios and X
 
 ## Key Differences
 
+0. **Main change:** Replace all `axios` imports with `xior` and check TypeScript types.
+
 1. **Bundle Size**: Xior.js is a lightweight alternative to Axios (3KB gzipped vs 13.5KB gzipped) but Purely write in TypeScript
 
 2. **Response Headers**:
@@ -47,7 +49,7 @@ const request = axios.create({});
 ### Using `'xior'`
 
 ```tsx
-import axios, { isCancel, XiorResponse as AxiosResponse } from 'xior';
+import axios, { isCancel, AxiosResponse } from 'xior';
 
 const request = axios.create({});
 ```
@@ -57,9 +59,9 @@ const request = axios.create({});
 ### Request and Response Interceptors
 
 ```tsx
-import xior from 'xior';
+import axios from 'xior';
 
-const instance = xior.create({
+const instance = axios.create({
   baseURL: 'https://api.example.com',
 });
 

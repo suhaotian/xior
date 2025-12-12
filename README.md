@@ -1643,7 +1643,7 @@ import axios from 'xior';
 const client = axios.create({
   validateResponse(xiorResponse) {
     const { response, data } = xiorResponse;
-    if (response.ok && data.code === '200') return true;
+    if (response.ok && data?.code === '200') return true;
     return response.ok;
   },
 });
