@@ -17,6 +17,11 @@ export type XiorCacheOptions = {
   cacheItems?: number;
   /** cache time in ms, default is 5 minutes */
   cacheTime?: number;
+  /** remove the key from data/params */
+  omitKey?: (
+    data?: Record<string, string>,
+    params?: Record<string, string>
+  ) => { data?: Record<string, string>; params?: Record<string, string> };
 };
 
 /** @ts-ignore */
@@ -41,6 +46,7 @@ declare module 'xior' {
 export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlugin {
   const {
     enableCache: _enableCache,
+    omitKey: _omitKey,
     defaultCache: _defaultCache = lru(
       options.cacheItems || 100,
       options.cacheTime || 1000 * 60 * 5
@@ -51,6 +57,7 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
     return async (config) => {
       const {
         enableCache = _enableCache,
+        omitKey = _omitKey,
         forceUpdate,
         defaultCache = _defaultCache,
         paramsSerializer,
@@ -74,12 +81,12 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
       let key = '';
       if (enabled) {
         const cache: ICacheLike<XiorPromise> = defaultCache;
-
+        const { data, params } = omitKey?.(config.data, config.params) || config;
         key = buildSortedURL(
           config.url && isAbsoluteURL(config.url)
             ? config.url
             : joinPath(config.baseURL, config.url),
-          { a: config.data, b: config.params },
+          { a: data, b: params },
           paramsSerializer as (obj: Record<string, any>) => string
         );
         let responsePromise = cache.get(key);

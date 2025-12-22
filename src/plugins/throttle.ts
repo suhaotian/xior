@@ -23,6 +23,12 @@ export type XiorThrottleOptions = {
   onThrottle?: (config: XiorRequestConfig) => void;
   /** max throttle numbers in LRU, default is 100 */
   throttleItems?: number;
+
+  /** remove the key from data/params */
+  omitKey?: (
+    data?: Record<string, string>,
+    params?: Record<string, string>
+  ) => { data?: Record<string, string>; params?: Record<string, string> };
 };
 
 /** @ts-ignore */
@@ -35,6 +41,7 @@ declare module 'xior' {
 export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): XiorPlugin {
   const {
     enableThrottle: _enableThrottle,
+    omitKey: _omitKey,
     threshold: _threshold = 1000,
     throttleCache = lru<RecordedCache>(options.throttleItems || 100),
     onThrottle: _onThrottle,
@@ -76,6 +83,7 @@ export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): X
         paramsSerializer,
         threshold = _threshold,
         enableThrottle = _enableThrottle,
+        omitKey = _omitKey,
         onThrottle = _onThrottle,
       } = config as XiorThrottleOptions & XiorRequestConfig;
 
@@ -97,11 +105,12 @@ export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): X
       }
 
       if (enabled) {
+        const { data, params } = omitKey?.(config.data, config.params) || config;
         const index = buildSortedURL(
           config.url && isAbsoluteURL(config.url)
             ? config.url
             : joinPath(config.baseURL, config.url),
-          { a: config.data, b: config.params },
+          { a: data, b: params },
           paramsSerializer as (obj: Record<string, any>) => string
         );
 

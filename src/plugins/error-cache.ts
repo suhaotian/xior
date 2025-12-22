@@ -17,6 +17,12 @@ export type XiorErrorCacheOptions = {
   onCacheRequest?: (config?: XiorRequestConfig) => void;
   /** max cache numbers in LRU, default is 100 */
   cacheItems?: number;
+
+  /** remove the key from data/params */
+  omitKey?: (
+    data?: Record<string, string>,
+    params?: Record<string, string>
+  ) => { data?: Record<string, string>; params?: Record<string, string> };
 };
 
 /** @ts-ignore */
@@ -34,6 +40,7 @@ declare module 'xior' {
 export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}): XiorPlugin {
   const {
     enableCache: _enableCache,
+    omitKey: _omitKey,
     defaultCache: _defaultCache = lru<{
       loading?: boolean;
       res?: XiorResponse;
@@ -47,6 +54,7 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
     return async (config) => {
       const {
         enableCache = _enableCache,
+        omitKey = _omitKey,
         defaultCache = _defaultCache,
         useCacheFirst = _inBg,
         onCacheRequest = _cacheRequest,
@@ -69,10 +77,10 @@ export default function xiorErrorCachePlugin(options: XiorErrorCacheOptions = {}
       if (!enabled) return adapter(config);
 
       const cache = defaultCache;
-
+      const { data, params } = omitKey?.(config.data, config.params) || config;
       const index = buildSortedURL(
         config.url && isAbsoluteURL(config.url) ? config.url : joinPath(config.baseURL, config.url),
-        { a: config.data, b: config.params },
+        { a: data, b: params },
         paramsSerializer as (obj: Record<string, any>) => string
       );
 
