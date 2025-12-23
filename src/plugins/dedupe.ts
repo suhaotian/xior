@@ -1,3 +1,4 @@
+import { mergeConfig } from '..';
 import { f, GET, undefinedValue } from '../shorts';
 import type { XiorPlugin, XiorRequestConfig } from '../types';
 import { joinPath, isAbsoluteURL, buildSortedURL } from '../utils';
@@ -8,12 +9,9 @@ export type XiorDedupeOptions = {
    */
   enableDedupe?: boolean | ((config?: XiorRequestConfig) => boolean);
   onDedupe?: (config: XiorRequestConfig) => void;
-
-  /** remove the key from data/params */
-  omitKey?: (
-    data?: Record<string, string>,
-    params?: Record<string, string>
-  ) => { data?: Record<string, string>; params?: Record<string, string> };
+  /** 
+  Process the config before generating the key based on data/params. The config is a new object, not a request reference. */
+  normalizeParams?: (config: XiorRequestConfig) => XiorRequestConfig;
 };
 
 /** @ts-ignore */
@@ -29,14 +27,18 @@ export const inflight = new Map<string, any[]>();
  * Prevents having multiple identical requests on the fly at the same time.
  */
 export default function xiorDedupePlugin(options: XiorDedupeOptions = {}): XiorPlugin {
-  const { enableDedupe: _enableDedupe, onDedupe: _onDedupe, omitKey: _omitKey } = options;
+  const {
+    enableDedupe: _enableDedupe,
+    onDedupe: _onDedupe,
+    normalizeParams: _normalizeParams,
+  } = options;
 
   return function (adapter) {
     return async (config) => {
       const {
         paramsSerializer,
         enableDedupe = _enableDedupe,
-        omitKey = _omitKey,
+        normalizeParams = _normalizeParams,
         onDedupe = _onDedupe,
       } = config as XiorDedupeOptions & XiorRequestConfig;
 
@@ -56,8 +58,7 @@ export default function xiorDedupePlugin(options: XiorDedupeOptions = {}): XiorP
       if (!enabled) {
         return adapter(config);
       }
-      const { data, params } = omitKey?.(config.data, config.params) || config;
-
+      const { data, params } = normalizeParams?.(mergeConfig(config, {})) || config;
       const key = buildSortedURL(
         config.url && isAbsoluteURL(config.url) ? config.url : joinPath(config.baseURL, config.url),
         { a: data, b: params },

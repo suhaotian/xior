@@ -4,6 +4,7 @@ import { ICacheLike } from './cache/utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../types';
 import { isAbsoluteURL, joinPath, buildSortedURL } from '../utils';
 import { GET, f, undefinedValue } from '../shorts';
+import { mergeConfig } from '..';
 
 type XiorPromise = Promise<XiorResponse>;
 
@@ -24,11 +25,8 @@ export type XiorThrottleOptions = {
   /** max throttle numbers in LRU, default is 100 */
   throttleItems?: number;
 
-  /** remove the key from data/params */
-  omitKey?: (
-    data?: Record<string, string>,
-    params?: Record<string, string>
-  ) => { data?: Record<string, string>; params?: Record<string, string> };
+  /** Process the config before generating the key based on data/params. The config is a new object, not a request reference. */
+  normalizeParams?: (config: XiorRequestConfig) => XiorRequestConfig;
 };
 
 /** @ts-ignore */
@@ -41,7 +39,7 @@ declare module 'xior' {
 export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): XiorPlugin {
   const {
     enableThrottle: _enableThrottle,
-    omitKey: _omitKey,
+    normalizeParams: _normalizeParams,
     threshold: _threshold = 1000,
     throttleCache = lru<RecordedCache>(options.throttleItems || 100),
     onThrottle: _onThrottle,
@@ -83,7 +81,7 @@ export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): X
         paramsSerializer,
         threshold = _threshold,
         enableThrottle = _enableThrottle,
-        omitKey = _omitKey,
+        normalizeParams = _normalizeParams,
         onThrottle = _onThrottle,
       } = config as XiorThrottleOptions & XiorRequestConfig;
 
@@ -105,7 +103,7 @@ export default function xiorThrottlePlugin(options: XiorThrottleOptions = {}): X
       }
 
       if (enabled) {
-        const { data, params } = omitKey?.(config.data, config.params) || config;
+        const { data, params } = normalizeParams?.(mergeConfig(config, {})) || config;
         const index = buildSortedURL(
           config.url && isAbsoluteURL(config.url)
             ? config.url

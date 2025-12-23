@@ -4,6 +4,7 @@ import { ICacheLike } from './cache/utils';
 import type { XiorPlugin, XiorRequestConfig, XiorResponse } from '../types';
 import { buildSortedURL, isAbsoluteURL, joinPath } from '../utils';
 import { f, GET, undefinedValue } from '../shorts';
+import { mergeConfig } from '..';
 
 type XiorPromise = Promise<XiorResponse>;
 
@@ -17,11 +18,9 @@ export type XiorCacheOptions = {
   cacheItems?: number;
   /** cache time in ms, default is 5 minutes */
   cacheTime?: number;
-  /** remove the key from data/params */
-  omitKey?: (
-    data?: Record<string, string>,
-    params?: Record<string, string>
-  ) => { data?: Record<string, string>; params?: Record<string, string> };
+  /** 
+  Process the config before generating the key based on data/params. The config is a new object, not a request reference. */
+  normalizeParams?: (config: XiorRequestConfig) => XiorRequestConfig;
 };
 
 /** @ts-ignore */
@@ -46,7 +45,7 @@ declare module 'xior' {
 export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlugin {
   const {
     enableCache: _enableCache,
-    omitKey: _omitKey,
+    normalizeParams: _normalizeParams,
     defaultCache: _defaultCache = lru(
       options.cacheItems || 100,
       options.cacheTime || 1000 * 60 * 5
@@ -57,7 +56,7 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
     return async (config) => {
       const {
         enableCache = _enableCache,
-        omitKey = _omitKey,
+        normalizeParams = _normalizeParams,
         forceUpdate,
         defaultCache = _defaultCache,
         paramsSerializer,
@@ -81,7 +80,7 @@ export default function xiorCachePlugin(options: XiorCacheOptions = {}): XiorPlu
       let key = '';
       if (enabled) {
         const cache: ICacheLike<XiorPromise> = defaultCache;
-        const { data, params } = omitKey?.(config.data, config.params) || config;
+        const { data, params } = normalizeParams?.(mergeConfig(config, {})) || config;
         key = buildSortedURL(
           config.url && isAbsoluteURL(config.url)
             ? config.url
