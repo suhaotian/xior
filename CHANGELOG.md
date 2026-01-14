@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.8.3
+
+- Feat(plugins): add `normalizeParams` option to `cache`/`dedupe`/`error-cache`/`throttle` plugins
+
 ## v0.8.2
 
 - Feat: add `validResponse` option. Now you can customise what counts as an “OK response” behaviour.
