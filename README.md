@@ -8,7 +8,7 @@
 
 ## Intro
 
-A lite http request lib based on **fetch** with plugin support and similar API to axios.
+A Lightweight HTTP request library based on **fetch** with plugin support and similar API to axios.
 
 **Features:**
 
@@ -152,7 +152,7 @@ export const xiorInstance = xior.create({
 
 GET
 
-> `HEAD` / `DELETE` / `OPTIONS` are same usage with `GET` method
+> `HEAD` / `DELETE` / `OPTIONS` are same usage as `GET` method
 
 ```ts
 async function run() {
@@ -176,7 +176,7 @@ async function run() {
 
 POST
 
-> `PUT`/`PATCH` methods are same usage with `POST`
+> `PUT`/`PATCH` methods are same usage as `POST`
 
 ```ts
 async function run() {
@@ -241,7 +241,7 @@ http.plugins.use(
   })
 );
 
-const formData = FormData();
+const formData = new FormData();
 formData.append('file', fileObject);
 formData.append('field1', 'val1');
 formData.append('field2', 'val2');
@@ -539,7 +539,7 @@ http.plugins.use(errorCachePlugin());
 // 2. If retry still error, return the cache data(if have) to prevent page crash or show error page;
 const res = await http.get('/api/get-data'); // these will retry if have error
 if (res.fromCache) {
-  console.log(`the data from cahce`, res.cacheTime);
+  console.log(`the data from cache`, res.cacheTime);
 }
 
 // 3. Dedupe the same `GET` requests, this will only sent 1 real request
@@ -1152,7 +1152,7 @@ Using unpkg CDN:
 
 ### Mock plugin
 
-> This plugin let you eaisly mock requests
+> This plugin let you easily mock requests
 
 Usage:
 
@@ -1606,7 +1606,7 @@ xior.get('https://exmaple.com/some/api', { responseType: 'arraybuffer' }).then((
 
 // Same with
 fetch('https://exmaple.com/some/api')
-  .then((response) => response.arraybuffer())
+  .then((response) => response.arrayBuffer())
   .then((data) => {
     console.log(data); // is a ArrayBuffer
   });
