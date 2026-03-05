@@ -5,6 +5,7 @@
 ![NPM Weekly Downloads](https://img.shields.io/npm/dw/xior)
 ![NPM Month Downloads](https://img.shields.io/npm/dm/xior.svg?style=flat)
 ![typescript](https://badgen.net/badge/icon/typescript?icon=typescript&label&color=blue)
+[![jsDocs.io](https://img.shields.io/badge/jsDocs.io-reference-blue)](https://www.jsdocs.io/package/broad-infinite-list)
 
 ## Intro
 
@@ -1442,10 +1443,9 @@ import {
 
 ### 1. Is **xior** 100% compatible with `axios`?
 
-**No**, but **xior** keeps a very similar API to axios. It supports things like `axios.create`, `axios.interceptors`, and all the common HTTP methods (`get`, `post`, `put`, `patch`, `delete`, `head`, `options`).
-Overall, it’s about **90% compatible**.
+**xior** keeps a very familiar API for anyone coming from axios. It's about **90% of the axios API is compatible**: Supports `axios.create`, `axios.interceptors`, and the full set of HTTP methods (`get`, `post`, `put`, `patch`, `delete`, `head`, `options`).
 
-For most projects, the main change is just **replacing `axios` with `xior` and checking if your TypeScript types still pass**.
+For most projects, the main change is **replacing `axios` with `xior` and checking if your TypeScript types still pass**.
 
 ```ts
 import axios, { AxiosError, isAxiosError, AxiosRequestConfig, AxiosResponse, isCancel } from 'xior';
