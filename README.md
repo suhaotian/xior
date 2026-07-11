@@ -5,7 +5,7 @@
 ![NPM Weekly Downloads](https://img.shields.io/npm/dw/xior)
 ![NPM Month Downloads](https://img.shields.io/npm/dm/xior.svg?style=flat)
 ![typescript](https://badgen.net/badge/icon/typescript?icon=typescript&label&color=blue)
-[![jsDocs.io](https://img.shields.io/badge/jsDocs.io-reference-blue)](https://www.jsdocs.io/package/broad-infinite-list)
+[![jsDocs.io](https://img.shields.io/badge/jsDocs.io-reference-blue)](https://www.jsdocs.io/package/xior)
 
 ## Intro
 
