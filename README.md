@@ -81,8 +81,9 @@ A Lightweight HTTP request library based on **fetch** with plugin support and si
   - [Uploading a file](#uploading-a-file)
   - [Processing a text file line by line](#processing-a-text-file-line-by-line)
 - [API Reference](#api-reference)
-- [Star History](#star-history)
+- [Who is using xior.js?](#who-is-using-xiorjs)
 - [Thanks](#thanks)
+- [Other awesome projects from Author](#other-awesome-projects-from-author)
 
 ## Getting Started
 
@@ -2357,9 +2358,10 @@ run();
 
 - https://www.jsdocs.io/package/xior
 
-## Star History
+## Who is using xior.js?
 
-[![Star History Chart](https://api.star-history.com/svg?repos=suhaotian/xior&type=Date)](https://star-history.com/#suhaotian/xior&Date)
+- [tsdkarc-x](https://github.com/tsdk-monorepo/tsdkarc) — An end-to-end type-safe RPC framework built on top of xior.js, supporting middleware and multiple transport protocols.
+- [29+ npm dependents](https://www.npmjs.com/package/xior?activeTab=dependents) — Packages that depend on xior.js in the npm ecosystem.
 
 ## Thanks
 
@@ -2372,3 +2374,12 @@ Without the support of these resources, xior wouldn't be possible:
 - [tiny-lru](https://github.com/avoidwork/tiny-lru)
 - ~~[bunchee](https://github.com/huozhi/bunchee)~~ [tsup](https://tsup.egoist.dev)
 - [fetch MDN docs](https://developer.mozilla.org/en-US/docs/Web/API/fetch)
+
+## Other awesome projects from Author
+
+| Project                    | Description                                                                                                                                                                                 | URL                                                           |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| 🛫 **tsdkarc-x**           | Strongly-typed, high-performance, and Edge-compatible RPC for full-stack TypeScript. Type safety from backend middleware to frontend client — no API docs needed. Built-in OPENAPI support. | https://github.com/tsdk-monorepo/tsdkarc/tree/main/tsdkarc-x  |
+| ⚡ **broad-infinite-list** | A high-performance, bidirectional infinite scroll list component for large list rendering, supporting React/Vue/Expo.                                                                       | https://github.com/suhaotian/broad-infinite-list              |
+| 🐰 **tsdkbundle**          | A Bun-based ESM bundler and watcher for multi-entry projects.                                                                                                                               | https://github.com/tsdk-monorepo/tsdkarc/tree/main/tsdkbundle |
+| 🧞‍♂️ **littkk**              | Shows and hides UI elements based on scroll direction.                                                                                                                                      | https://github.com/suhaotian/littkk                           |
