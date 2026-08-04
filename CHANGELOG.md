@@ -1,5 +1,9 @@
 # CHANGELOG 📝
 
+## v0.8.4
+
+- Update README: fix typo, remove not working link, and add others projects recommend section
+
 ## v0.8.3
 
 - Feat(plugins): add `normalizeParams` option to `cache`/`dedupe`/`error-cache`/`throttle` plugins
