@@ -2363,7 +2363,9 @@ run();
 ## Who is using xior.js?
 
 - [tsdkarc-x](https://github.com/tsdk-monorepo/tsdkarc) — An end-to-end type-safe RPC framework built on top of xior.js, supporting middleware and multiple transport protocols.
+- [280+ projects](https://www.npmjs.com/package/xior?activeTab=dependents) — Open source projects that depend on xior.js in GitHub.
 - [29+ npm dependents](https://www.npmjs.com/package/xior?activeTab=dependents) — Packages that depend on xior.js in the npm ecosystem.
+- [Submit](https://github.com/suhaotian/xior/issues/new) your products that use xior.js
 
 ## Thanks
 
