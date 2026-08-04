@@ -87,7 +87,7 @@ const createXior = (options?: XiorRequestConfig) => {
 
 export class Xior {
   static create = createXior;
-  static VERSION = '0.8.3';
+  static VERSION = '0.8.4';
 
   config?: XiorRequestConfig;
   defaults: XiorInterceptorRequestConfig;
