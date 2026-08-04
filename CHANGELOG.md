@@ -4,6 +4,8 @@
 
 - Update README: fix typo, remove not working link, and add others projects recommend section
 
+> Currerntly, xior.js is very stable 🥂
+
 ## v0.8.3
 
 - Feat(plugins): add `normalizeParams` option to `cache`/`dedupe`/`error-cache`/`throttle` plugins
