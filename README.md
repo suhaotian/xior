@@ -39,7 +39,7 @@ A Lightweight HTTP request library based on **fetch** with plugin support and si
   - [Proxy or use custom fetch implementations](#proxy-or-use-custom-fetch-implementations)
   - [Custom data parser](#custom-data-parser)
   - [Encrypt and Decrypt Example](#encrypt-and-decrypt-example)
-  - [Tips: Make your SSR(Server-side Rendering) app more stable and faster](#tips-make-your-ssrserver-side-rendering-app-more-stable-and-faster)
+  - [Tips: Make your SSR (Server-side Rendering) app more stable and faster](#tips-make-your-ssr-server-side-rendering-app-more-stable-and-faster)
 - [Plugins](#plugins)
   - [Error retry plugin](#error-retry-plugin)
   - [Request throttle plugin](#request-throttle-plugin)
@@ -508,9 +508,11 @@ instance.interceptors.response.use((res) => {
 
 > Check test code in `tests/src/tests/encrypt-decrypt/`
 
-### Tips: Make your SSR(Server-side Rendering) app more stable and faster
+### Tips: Make your SSR (Server-side Rendering) app more stable and faster
 
-**How do we achieve this?** By using Xior's plugins:
+Frameworks like Next.js, Remix.js or TanStack Start(TanStack Router) simplify SSR development, but repeated server-side data fetching can cause unnecessary API requests.
+
+**How do we solve this?** By using Xior's plugins, Xior provides request deduplication, caching, and smarter request management to make SSR data fetching faster and more efficient:
 
 1. If a `GET` request fails, allow retries for a second chance at success.
 2. If retries still fail, return cached data (if available) to prevent page crashes or error pages.
