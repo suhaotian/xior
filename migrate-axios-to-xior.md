@@ -35,6 +35,51 @@ Before we migrate, we need to understand the key differences between Axios and X
 7. **Network error**:
    - Axios throws a network error code
    - Xior follows the Fetch standards — when there is a network error, it throws a TypeError.
+8. **Axios style http basic auth option**
+
+If TypeScript types don't pass, don't worry. You can create a custom plugin to support that feature. For example, to support Axios's HTTP auth option in Xior, we can use the built-in [Http basic auth plugin](#http-basic-auth) or create an Xior HTTP auth plugin like this:
+
+```ts
+import xior, { XiorPlugin } from 'xior';
+
+export type AuthConfig = {
+  username: string;
+  password: string;
+};
+
+interface AuthRequestConfig {
+  auth?: AuthConfig;
+}
+
+// @ts-ignore
+declare module 'xior' {
+  interface XiorRequestConfig extends AuthRequestConfig {}
+}
+
+const xiorBasicAuthPlugin: XiorPlugin = (adapter) => {
+  return async (config: XiorRequestConfig & AuthRequestConfig) => {
+    if (config.auth) {
+      const { username, password } = config.auth;
+      const credentials = `${username}:${password}`;
+
+      const encoded =
+        typeof btoa === 'function'
+          ? btoa(decodeURIComponent(encodeURIComponent(credentials)))
+          : // @ts-ignore
+            Buffer.from(credentials).toString('base64');
+
+      config.headers = {
+        ...config.headers,
+        Authorization: `Basic ${encoded}`,
+      };
+    }
+
+    return adapter(config);
+  };
+};
+
+export default xiorBasicAuthPlugin;
+```
 
 ## Migration Examples
 

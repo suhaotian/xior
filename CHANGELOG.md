@@ -3,7 +3,7 @@
 ## v0.8.5
 
 - Add xior http basic auth plugin `xior/plugins/http-auth` to support axios `auth` option
-- Add README
+- Update README
 
 ## v0.8.4
 
