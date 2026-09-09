@@ -1,6 +1,6 @@
 {
   "name": "xior",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "A lite http request lib based on fetch with plugins support and similar API to axios.",
   "repository": "suhaotian/xior",
   "bugs": "https://github.com/suhaotian/xior/issues",
@@ -117,6 +117,16 @@
       "require": {
         "types": "./plugins/token-refresh.d.ts",
         "default": "./plugins/token-refresh.js"
+      }
+    },
+    "./plugins/http-auth": {
+      "import": {
+        "types": "./plugins/http-auth.d.mts",
+        "default": "./plugins/http-auth.mjs"
+      },
+      "require": {
+        "types": "./plugins/http-auth.d.ts",
+        "default": "./plugins/http-auth.js"
       }
     }
   },

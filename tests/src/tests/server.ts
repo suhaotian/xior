@@ -165,6 +165,40 @@ export async function startServer(port: number) {
     res.status(401).send('Token expired');
   });
 
+  app.get('/basic-auth', (req, res) => {
+    const authorization = req.headers.authorization;
+
+    if (!authorization?.startsWith('Basic ')) {
+      res.setHeader('WWW-Authenticate', 'Basic realm="test"');
+      return res.status(401).send('Unauthorized');
+    }
+
+    const encoded = authorization.slice('Basic '.length);
+    const credentials = Buffer.from(encoded, 'base64').toString('utf8');
+
+    const separator = credentials.indexOf(':');
+
+    if (separator === -1) {
+      res.setHeader('WWW-Authenticate', 'Basic realm="test"');
+      return res.status(401).send('Unauthorized');
+    }
+
+    const username = credentials.slice(0, separator);
+    const password = credentials.slice(separator + 1);
+
+    if (
+      (username === 'admin' && password === '123456') ||
+      (username === 'user@example.com' && password === 'p@ss:word')
+    ) {
+      return res.send({
+        message: 'Authorized',
+      });
+    }
+
+    res.setHeader('WWW-Authenticate', 'Basic realm="test"');
+    return res.status(401).send('Unauthorized');
+  });
+
   app.all('/stream/:chunks', function (req, res, next) {
     res.writeHead(200, {
       'Content-Type': 'text/plain',

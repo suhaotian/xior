@@ -13,6 +13,7 @@ export default defineConfig({
     'plugins/mock': 'src/plugins/mock.ts',
     'plugins/error-cache': 'src/plugins/error-cache.ts',
     'plugins/token-refresh': 'src/plugins/token-refresh.ts',
+    'plugins/http-auth': 'src/plugins/http-auth.ts',
   },
   outDir: './',
   splitting: true,

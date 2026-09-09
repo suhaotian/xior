@@ -35,6 +35,7 @@ declare module 'xior' {
     cacheKey?: string;
   }
 
+  // @ts-ignore
   interface XiorInterceptorResponseConfig {
     fromCache?: boolean;
     cacheTime?: number;

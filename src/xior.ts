@@ -87,7 +87,7 @@ const createXior = (options?: XiorRequestConfig) => {
 
 export class Xior {
   static create = createXior;
-  static VERSION = '0.8.4';
+  static VERSION = '0.8.5';
 
   config?: XiorRequestConfig;
   defaults: XiorInterceptorRequestConfig;
@@ -225,41 +225,44 @@ export class Xior {
       finalURL = joinPath(requestConfig[baseURL], finalURL);
     }
 
-    return ((_fetch as Fetch) || fetch)(finalURL, {
-      body: isGet ? undefinedValue : _data,
-      ...rest,
-      signal,
-      method,
-      headers,
-    })
-      .then(async (response) => {
-        const { responseType } = requestConfig;
-        const data = await getResponseData(response, responseType);
-        const xiorResponse = {
-          data,
-          response,
-          config: requestConfig as XiorInterceptorRequestConfig,
-          request: requestConfig as XiorInterceptorRequestConfig,
-          [status]: response[status],
-          statusText: response.statusText,
-          [h]: response[h],
-        };
-        if (validateResponse ? !validateResponse(xiorResponse) : !response.ok) {
-          const error = new XiorError(
-            !response[status]
-              ? `Network error`
-              : `Request failed with status code ${response[status]}`,
-            requestConfig,
-            xiorResponse
-          );
-          return Promise.reject(error);
-        }
-        return xiorResponse;
+    return (
+      ((_fetch as Fetch) || fetch)(finalURL, {
+        body: isGet ? undefinedValue : _data,
+        ...rest,
+        signal,
+        method,
+        headers,
       })
-      .finally(() => {
-        if (timer) clearTimeout(timer);
-        (signal as ClearableSignal)?.clear?.();
-      });
+        .then(async (response) => {
+          const { responseType } = requestConfig;
+          const data = await getResponseData(response, responseType);
+          const xiorResponse = {
+            data,
+            response,
+            config: requestConfig as XiorInterceptorRequestConfig,
+            request: requestConfig as XiorInterceptorRequestConfig,
+            [status]: response[status],
+            statusText: response.statusText,
+            [h]: response[h],
+          };
+          if (validateResponse ? !validateResponse(xiorResponse) : !response.ok) {
+            const error = new XiorError(
+              !response[status]
+                ? `Network error`
+                : `Request failed with status code ${response[status]}`,
+              requestConfig,
+              xiorResponse
+            );
+            return Promise.reject(error);
+          }
+          return xiorResponse;
+        })
+        // @ts-ignore
+        .finally(() => {
+          if (timer) clearTimeout(timer);
+          (signal as ClearableSignal)?.clear?.();
+        })
+    );
   }
 
   /** create get like method */

@@ -33,11 +33,12 @@ describe('xior cache plugin tests', () => {
   });
 
   it('cache size should be 1 when request', async () => {
-    const { data } = await instance.get<{ value: string }>('/get', {
+    const { data, ...rest } = await instance.get<{ value: string }>('/get', {
       headers: {
         'x-custom-value': '1',
       },
     });
+    rest.fromCache;
     assert.strictEqual(cache.size, 1);
     assert.strictEqual(data.value, '1');
   });
