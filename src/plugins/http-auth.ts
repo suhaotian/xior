@@ -9,6 +9,7 @@ interface AuthRequestConfig {
   auth?: AuthConfig;
 }
 
+/** @ts-ignore */
 declare module 'xior' {
   interface XiorRequestConfig extends AuthRequestConfig {}
 }
