@@ -1480,12 +1480,13 @@ interface AuthRequestConfig {
   auth?: AuthConfig;
 }
 
+// @ts-ignore
 declare module 'xior' {
   interface XiorRequestConfig extends AuthRequestConfig {}
 }
 
 const xiorBasicAuthPlugin: XiorPlugin = (adapter) => {
-  return async (config) => {
+  return async (config: XiorRequestConfig & AuthRequestConfig) => {
     if (config.auth) {
       const { username, password } = config.auth;
       const credentials = `${username}:${password}`;

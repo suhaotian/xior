@@ -1,4 +1,4 @@
-import xior, { XiorPlugin } from 'xior';
+import { XiorPlugin, XiorRequestConfig } from '..';
 
 export type AuthConfig = {
   username: string;
@@ -15,7 +15,7 @@ declare module 'xior' {
 }
 
 const xiorAuthPlugin: XiorPlugin = (adapter) => {
-  return async (config) => {
+  return async (config: XiorRequestConfig & AuthRequestConfig) => {
     if (config.auth) {
       const { username, password } = config.auth;
       const credentials = `${username}:${password}`;
