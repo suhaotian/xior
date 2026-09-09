@@ -378,6 +378,7 @@ describe('xior tests', () => {
     it('upload `sample.txt` file should work', async () => {
       const fileName = './src/tests/upload/sample.txt';
       const body = new FormData();
+      // @ts-ignore
       const blob = new Blob([await readFile(fileName)]);
       body.set('field1', 'val1');
       body.set('field2', 'val2');
